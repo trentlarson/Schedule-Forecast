@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration
+    PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+
+    <session-factory>
+
+<!-- Hibernate
+        <property name="connection.driver_class">org.hsqldb.jdbcDriver</property>
+        <property name="connection.url">jdbc:hsqldb:file:/tmp/schedule-db</property>
+        <property name="connection.username">sa</property>
+        <property name="connection.password"></property>
+
+
+        <property name="dialect">org.hibernate.dialect.HSQLDialect</property>
+-->
+
+<!-- MySQL
+-->
+        <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+        <property name="connection.url">jdbc:mysql://10.0.2.16:8319/jiradb?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8</property>
+        <property name="connection.username">jira</property>
+        <property name="connection.password">jirapass</property>
+
+
+        <property name="dialect">org.hibernate.dialect.MySQLDialect</property>
+
+<!-- JNDI
+        <property name="connection.datasource">java:comp/env/jdbc/JiraDS</property>
+        <property name="dialect">org.hibernate.dialect.Oracle9Dialect</property>
+-->
+
+        <property name="show_sql">true</property>
+
+        <!-- Mapping files -->
+        <mapping resource="com/icentris/jira/dao/TeamHours.hbm.xml"/>
+        <mapping resource="com/icentris/jira/dao/Team.hbm.xml"/>
+
+    </session-factory>
+
+</hibernate-configuration>

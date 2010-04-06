@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping
+    PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+
+<!--
+Oracle:
+create table team_hours (
+ id number(18),
+ created date,
+ updated date,
+ team_id number(18),
+ username varchar2(255),
+ start_of_week date,
+ hours_available number(18,2),
+ constraint pk_team_hours primary key (id)
+);
+CREATE SEQUENCE team_hours_seq
+    INCREMENT BY 1
+    START WITH 100;
+
+HSQL:
+create table team_hours (
+ id integer,
+ created date,
+ updated date,
+ team_id integer,
+ username varchar(255),
+ start_of_week date,
+ hours_available decimal,
+ constraint pk_team_hours primary key (id)
+);
+CREATE SEQUENCE team_hours_seq INCREMENT BY 1;
+
+MySQL:
+create table team_hours (
+ id integer primary key,
+ created date,
+ updated date,
+ team_id integer,
+ username varchar(255),
+ start_of_week date,
+ hours_available decimal
+);
+CREATE TABLE team_hours_seq (id INTEGER NOT NULL);
+INSERT INTO team_hours_seq VALUES (0);
+
+
+-->
+
+<hibernate-mapping package="com.icentris.jira.dao">
+
+  <class name="TeamHours" table="team_hours">
+
+    <id name="id" type="long">
+      <column name="ID" not-null="true"/>
+      <generator class="native">
+        <param name="sequence">TEAM_HOURS_SEQ</param>
+      </generator>
+    </id>
+
+    <property name="created" column="CREATED" type="timestamp"/>
+    <property name="updated" column="UPDATED" type="timestamp"/>
+    <!-- not null; must enforce uniqueness of teamId * userName * startOfWeek -->
+    <property name="teamId" column="TEAM_ID" type="long"/>
+    <!-- at most one entry per team * week can have an empty username -->
+    <property name="username" column="USERNAME" type="string"/> 
+    <property name="startOfWeek" column="START_OF_WEEK" type="date"/>
+    <property name="hoursAvailable" column="HOURS_AVAILABLE" type="double"/>
+
+  </class>
+
+  <query name="getAllTeamHours"><![CDATA[
+     from com.icentris.jira.dao.TeamHours teamHours
+  ]]></query>
+
+</hibernate-mapping>

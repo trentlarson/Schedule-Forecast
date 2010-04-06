@@ -1,0 +1,203 @@
+   LINK_SUBTASK="10010", LINK_DEPENDENCY="10000", CUSTOM_START_DATE="10180"
+
+CUSTOMFIELDVALUE
+customfield = company (10002)
+issue = issue.id
+stringvalue = company
+
+create table customfieldvalue (
+ customfield integer,
+ issue integer,
+ datevalue date,
+ stringvalue varchar(255));
+
+ISSUELINK
+linktype = LINK_SUBTASK, LINK_DEPENDENCY
+source, destination = issue.id
+
+create table issuelink (
+ linktype integer,
+ source integer,
+ destination integer);
+
+create table issue (
+ id integer,
+ assignee varchar(255),
+ duedate date,
+ pkey varchar(255),
+ priority integer,
+ project integer,
+ resolution integer,
+ summary varchar(255),
+ timeestimate integer,
+ timespent integer,
+ startdate date);
+
+sequence: lower = do first
+create table priority (
+ id integer,
+ pname varchar(63),
+ sequence integer);
+
+create table project (
+ id integer,
+ pkey varchar(255));
+
+create table userbase (
+ username varchar(255));
+
+
+Create "team" tables; see *.hbm.xml files.
+
+
+
+
+insert into userbase values ('trent');
+
+insert into project values ('1', 'Buehner');
+
+insert into priority values ('0', 'Highest', '0');
+insert into priority values ('1', 'Med-High', '1');
+insert into priority values ('2', 'Medium', '2');
+insert into priority values ('3', 'Med-Low', '3');
+insert into priority values ('4', 'Lowest', '4');
+
+insert into issue values (0, 'trent', '2009-08-10', 'IT-1', 3, 1, null, 'Google App Engine', 4 * 3600, 0, null);
+
+
+insert into team (id, created, updated, name, project_id) values (0, null, null, 'self', 1);
+
+insert into team_hours (id, created, updated, team_id, username, start_of_week, hours_available) values (0, null, null, 0, 'trent', '2009-08-10', '40');
+
+
+
+
+
+
+TeamHoursUtil
+
+      rset = SimpleSQL.executeQuery("select id, pname as name from project", new Object[0], conn);
+
+          "select distinct username from team_hours "
+          + " where team_id = ? and ? <= start_of_week and start_of_week < ?";
+
+TimeScheduleAction
+
+            "update jiraissue set priority = (select id from priority where sequence = ?), "
+            + " timeestimate = ?, duedate = ? where pkey = ?";
+
+TimeScheduleLoader
+
+      String sql = "select username from userbase";
+
+        "select team_id, username, start_of_week, hours_available"
+        + " from team_hours"
+        + " order by team_id, username, start_of_week desc";
+
+      String prioritySql = "select id, sequence from priority";
+
+      String projectTeamSql = "select project_id, id from team";
+
+        "select pkey, summary, assignee, resolution, timeestimate, timespent, duedate,"
+        + " priority, project, cfv.datevalue as must_start_date"
+        + " from jiraissue"
+        + " left outer join customfieldvalue cfv on jiraissue.id = cfv.issue"
+        + "   and cfv.customfield = " + CUSTOM_START_DATE
+        + " where (resolution is null or resolution = 0)";
+
+
+        "select a.pkey as super_key, b.pkey as sub_key"
+        + " from issuelink, jiraissue a, jiraissue b"
+        + " where linktype = '" + LINK_SUBTASK + "'"
+        + " and source = a.id and b.id = destination"
+        + " and a.resolution is null and b.resolution is null";
+
+        "select a.pkey as pre_key, b.pkey as post_key"
+        + " from issuelink, jiraissue a, jiraissue b"
+        + " where linktype = '" + LINK_DEPENDENCY + "'"
+        + " and source = a.id and b.id = destination"
+        + " and a.resolution is null and b.resolution is null";
+
+          "select b.pkey, b.summary, b.assignee, b.timeestimate,"
+          + " b.timespent, b.duedate, b.resolution, b.priority, b.project,"
+          + " cfv.datevalue as must_start_date"
+          + " from issuelink, jiraissue a, jiraissue b"
+          + " left outer join customfieldvalue cfv on b.id = cfv.issue"
+          + "   and cfv.customfield = " + CUSTOM_START_DATE
+          + " where linktype = '" + LINK_SUBTASK + "'"
+          + " and a.pkey = ? and source = a.id and b.id = destination";
+
+          "select b.pkey, b.summary, b.assignee, b.timeestimate,"
+          + " b.timespent, b.duedate, b.resolution, b.priority, b.project,"
+          + " cfv.datevalue as must_start_date"
+          + " from issuelink, jiraissue a, jiraissue b"
+          + " left outer join customfieldvalue cfv on b.id = cfv.issue"
+          + "   and cfv.customfield = " + CUSTOM_START_DATE
+          + " where linktype = '" + LINK_DEPENDENCY + "'"
+          + " and a.pkey = ? and destination = a.id and b.id = source";
+
+          "select b.pkey, b.summary, b.assignee, b.timeestimate,"
+          + " b.timespent, b.duedate, b.resolution, b.priority, b.project,"
+          + " cfv.datevalue as must_start_date"
+          + " from issuelink, jiraissue a, jiraissue b"
+          + " left outer join customfieldvalue cfv on b.id = cfv.issue"
+          + "   and cfv.customfield = " + CUSTOM_START_DATE
+          + " where linktype = '" + LINK_DEPENDENCY + "'"
+          + " and a.pkey = ? and source = a.id and b.id = destination";
+
+
+
+
+        "select jiraissue.pkey, summary, assignee, resolution, timeestimate, timespent,"
+        + " dueDate, priority, jiraissue.project, cfv.datestring as must_start_date "
+        + " from jiraissue, project"
+        + " left outer join customfieldvalue cfv on jiraissue.id = cfv.issue"
+        + "   and cfv.customfield = " + CUSTOM_START_DATE
+        + " where project.pkey = ?"
+        + " and jiraissue.project = project.id and jiraissue.resolution is null";
+
+        "select pkey, summary, assignee, resolution, timeestimate, timespent,"
+        + " dueDate, priority, project, cfv.datevalue as must_start_date"
+        + " from jiraissue"
+        + " left outer join customfieldvalue cfv on jiraissue.id = cfv.issue"
+        + "   and cfv.customfield = " + CUSTOM_START_DATE
+        + " where pkey in ("
+        + Join(issueKeys, false, "?", ",")
+        + ")";
+
+
+        "select pkey, summary, assignee, resolution, timeestimate, timespent, duedate,"
+        + " priority, project, cfv.datevalue as must_start_date"
+        + " from jiraissue"
+        + " left outer join customfieldvalue cfv on jiraissue.id = cfv.issue"
+        + "   and cfv.customfield = " + CUSTOM_START_DATE
+        + " where assignee is null"
+        + " and (resolution is null or resolution = 0)";
+
+
+        "select pkey, summary, assignee, resolution, timeestimate, timespent, duedate,"
+        + " priority, project, cfv.datevalue as must_start_date"
+        + " from jiraissue"
+        + " left outer join customfieldvalue cfv on jiraissue.id = cfv.issue"
+        + "   and cfv.customfield = " + CUSTOM_START_DATE
+        + " where assignee = ?"
+        + " and (resolution is null or resolution = 0)";
+
+
+
+TimeAssignmentsByWeek
+
+        "select j.id, j.pkey as key, j.project, j.assignee, j.summary, "
+        + " p.pname as priority_name, p.sequence as priority_seq, "
+        + " j.timeestimate, j.duedate, j.resolution, cfv.stringvalue as company "
+//v These lines allow for selection of version (more below).
+//v       + ", v.vname as version"
+        + " from jiraissue j "
+//v        + " left outer join nodeassociation na on j.id = na.source_node_id and na.association_type = 'IssueFixVersion' "
+//v        + " left outer join version v on v.id = na.sink_node_id "
+        + " left outer join priority p on p.id = j.priority "
+        + " left outer join customfieldvalue cfv on cfv.issue = j.id and cfv.customfield = '10002'"
+        + " where "
+//v       + " ( "
+        + " (? < duedate and duedate <= ?)";
+//v        + " or (vname like ?) ) ";

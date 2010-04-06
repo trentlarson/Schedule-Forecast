@@ -1,0 +1,39 @@
+<!DOCTYPE web-app PUBLIC
+ "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+ "http://java.sun.com/dtd/web-app_2_3.dtd" >
+
+<web-app>
+  <display-name>Schedule Projections</display-name>
+    
+  <description>Project the schedule of task completion</description>
+    
+  <filter>
+    <filter-name>wicketFilter</filter-name>
+    <filter-class>org.apache.wicket.protocol.http.WicketFilter</filter-class>
+    <init-param>
+      <param-name>applicationClassName</param-name>
+      <param-value>com.icentris.web.ProjectionApplication</param-value>
+    </init-param>
+    <init-param>
+      <param-name>configuration</param-name>
+      <param-value>deployment</param-value>
+    </init-param>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>wicketFilter</filter-name>
+    <url-pattern>/pages/*</url-pattern>
+  </filter-mapping>
+
+  <servlet-mapping>
+     <servlet-name>jsp</servlet-name>
+     <url-pattern>*.jsp</url-pattern>
+  </servlet-mapping>
+
+  <welcome-file-list>
+     <welcome-file>index.html</welcome-file>
+     <welcome-file>index.htm</welcome-file>
+     <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+
+</web-app>
