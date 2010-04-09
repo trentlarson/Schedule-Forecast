@@ -1,3 +1,23 @@
+________________________________________________________________________________
+2010/04/09
+
+If you run this and point to a Jira DB, you'll get some reports
+showing project completion based on the due dates and priorities of the issues.
+
+To deploy:
+- Get tools: Maven; a J2EE server eg. Tomcat
+- Create the TEAM and TEAM_HOURS tables; see Team*.hbm.xml
+- Put DB settings in hibernate.cfg.xml
+- Build the war with: mvn package
+- Copy the target/forecast.war file into the war directory, eg. tomcat/webapps
+
+
+To use:
+- Browse to forecast/gantt.jsp, eg. http://localhost:8080/forecast/gantt.jsp
+
+
+________________________________________________________________________________
+
    LINK_SUBTASK="10010", LINK_DEPENDENCY="10000", CUSTOM_START_DATE="10180"
 
 CUSTOMFIELDVALUE
