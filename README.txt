@@ -1,8 +1,7 @@
 ________________________________________________________________________________
 2010/04/09
 
-If you run this and point to a Jira DB, you'll get some reports
-showing project completion based on the due dates and priorities of the issues.
+If you run this and point to a Jira DB, you'll get some reports showing project completion based on the due dates and priorities of the issues.
 
 To deploy:
 - Get tools: Maven; a J2EE server eg. Tomcat
@@ -11,6 +10,15 @@ To deploy:
 - Build the war with: mvn package
 - Copy the target/forecast.war file into the war directory, eg. tomcat/webapps
 
+Helpful hints for Eclipse:
+- Run this inside the forecast directory: mvn eclipse:eclipse
+- Put the 'forecast' directory inside another one (I use 'forecast').
+- In Eclipse:
+-- switch to that as the workspace
+-- import 'General -> Existing Files'
+-- choose the folder that contains 'forecast'
+-- in 'Window' -> 'Preferences' -> 'Java' -> 'Build Path' -> 'Classpath Variables'
+   add 'M2_REPO' to point to your $HOME/.m2/repository directory
 
 To use:
 - Browse to forecast/gantt.jsp, eg. http://localhost:8080/forecast/gantt.jsp
