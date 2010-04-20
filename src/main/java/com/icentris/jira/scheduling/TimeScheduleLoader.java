@@ -1,15 +1,30 @@
 package com.icentris.jira.scheduling;
 
-import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import com.icentris.sql.SimpleSQL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
+
 import org.apache.log4j.Logger;
+
 import com.icentris.jira.dao.Team;
 import com.icentris.jira.dao.TeamHours;
+import com.icentris.jira.scheduling.Teams.AssigneeKey;
+import com.icentris.jira.scheduling.Teams.UserTimeKey;
+import com.icentris.jira.scheduling.TimeSchedule.HoursForTimeSpan;
+import com.icentris.jira.scheduling.TimeSchedule.WeeklyWorkHours;
+import com.icentris.sql.SimpleSQL;
 
 /**
 Assumptions:
@@ -27,7 +42,6 @@ public class TimeScheduleLoader {
   private static final Logger issueSqlLog  = Logger.getLogger("com.icentris.jira.scheduling.TimeScheduleLoader.IssueSQL");
 
 
-  private static final double WORKHOURS_PER_WEEK = 40.0;
 
 
   // The source is the supertask and the destination is the subtask.
@@ -130,12 +144,12 @@ public class TimeScheduleLoader {
     try {
       String sql = "select username from userbase";
       rset = SimpleSQL.executeQuery(sql, new String[0], conn);
-      ArrayList userList = new ArrayList();
+      ArrayList<String> userList = new ArrayList<String>();
       while (rset.next()) {
         userList.add(rset.getString(1));
       }
       rset.close();
-      userArray = (String[]) userList.toArray(new String[0]);
+      userArray = userList.toArray(new String[0]);
     } finally {
       try { rset.close(); } catch (Exception e) {}
     }
@@ -160,7 +174,7 @@ public class TimeScheduleLoader {
     // load user data
     Map<Teams.AssigneeKey,List<IssueTree>> allUserDetails =
       loadDetails(project, issueKeys, users, conn);
-//      loadAllDetails(conn);
+      //loadAllDetails(conn);
 
     log4jLog.info("Loaded issues in " + ((System.currentTimeMillis() - TIMER_START) / 1000.0) + " seconds.");
 
@@ -190,7 +204,7 @@ public class TimeScheduleLoader {
   (Date startDate, Connection conn) throws SQLException {
     
     SortedMap<Teams.UserTimeKey,SortedSet<TimeSchedule.HoursForTimeSpan>> userWeeklyHours =
-      new TreeMap();
+      new TreeMap<UserTimeKey, SortedSet<HoursForTimeSpan>>();
     ResultSet rset = null;
     try {
       String timeSql = 
@@ -202,7 +216,7 @@ public class TimeScheduleLoader {
       Teams.UserTimeKey currentAssignee = null;
       // set when we don't need to go back any further in time for this assignee
       boolean doneWithCurrent = false;
-      SortedSet<TimeSchedule.HoursForTimeSpan> weeklyHours = new TreeSet();
+      SortedSet<TimeSchedule.HoursForTimeSpan> weeklyHours = new TreeSet<HoursForTimeSpan>();
       while (rset.next()) {
         Long teamId = rset.getLong("team_id");
         if (rset.wasNull()) {
@@ -214,7 +228,7 @@ public class TimeScheduleLoader {
             || currentAssignee.compareTo(nextAssignee) != 0) {
           currentAssignee = nextAssignee;
           doneWithCurrent = false;
-          weeklyHours = new TreeSet();
+          weeklyHours = new TreeSet<HoursForTimeSpan>();
           userWeeklyHours.put(currentAssignee, weeklyHours);
         }
 
@@ -253,11 +267,12 @@ public class TimeScheduleLoader {
 
      Note that this loads all open issues, along with their links to
      other open issues.
+     @see #loadDetails
    */
   private static Map<Teams.AssigneeKey,List<IssueTree>> loadAllDetails
     (Connection conn) throws SQLException {
 
-    Map<Teams.AssigneeKey,List<IssueTree>> allUserDetails = new HashMap();
+    Map<Teams.AssigneeKey,List<IssueTree>> allUserDetails = new HashMap<Teams.AssigneeKey,List<IssueTree>>();
     ResultSet rset = null;
     try {
 
@@ -282,10 +297,9 @@ public class TimeScheduleLoader {
 
       // load helper data: team data
       List<Team> allTeams;
-      Map<Long,Team> idToTeam = new HashMap();
+      Map<Long,Team> idToTeam = new HashMap<Long, Team>();
       {
         org.hibernate.Session sess = TeamHoursUtil.HibernateUtil.currentSession();
-        org.hibernate.Transaction tx = sess.beginTransaction();
         allTeams = sess.createQuery("from Team order by name").list();
         TeamHoursUtil.HibernateUtil.closeSession();
         for (Team team : allTeams) {
@@ -294,7 +308,7 @@ public class TimeScheduleLoader {
       }
 
       // load all open issues
-      Map<String,IssueTree> keyToIssue = new HashMap();
+      Map<String,IssueTree> keyToIssue = new HashMap<String,IssueTree>();
       String openIssueSql =
         "select pkey, summary, assignee, resolution, timeestimate, timespent, duedate,"
         + " priority, project, "
@@ -325,7 +339,7 @@ public class TimeScheduleLoader {
           new Teams.AssigneeKey(tree.getRawAssignedTeamId(),
                                 tree.getRawAssignedPerson());
         if (!allUserDetails.containsKey(assigneeKey)) {
-          allUserDetails.put(assigneeKey, new ArrayList());
+          allUserDetails.put(assigneeKey, new ArrayList<IssueTree>());
         }
         allUserDetails.get(assigneeKey).add(tree);
 
@@ -378,6 +392,8 @@ public class TimeScheduleLoader {
      Note that this only loads the project/issues/users specified,
      though it gets as complete as possible by recursively looking up
      any linked issues that may affect scheduling.
+     
+     @see #loadAllDetails
    */
   private static Map<Teams.AssigneeKey,List<IssueTree>> loadDetails
     (String project, String[] issueKeys, String[] users,
@@ -406,12 +422,12 @@ public class TimeScheduleLoader {
     }
 
 
-    TreeSet<String> allAssignees = new TreeSet();
+    TreeSet<String> allAssignees = new TreeSet<String>();
     for (int i = 0; i < users.length; i++) {
       allAssignees.add(users[i]);
     }
 
-    Map<String,IssueTree> visitedAlready = new HashMap();
+    Map<String,IssueTree> visitedAlready = new HashMap<String,IssueTree>();
 
     if (project.length() > 0) {
       log4jLog.debug("Will look for issues in project: " + project);
@@ -451,7 +467,7 @@ public class TimeScheduleLoader {
     }
 
     // get the map of users to their tasks and load all issues for each
-    Set<String> newAssignees = (Set) allAssignees.clone();
+    Set<String> newAssignees = (Set<String>) allAssignees.clone();
     {
       log4jLog.debug("Will look for unassigned issues.");
       String noAssigneeSql =
@@ -486,20 +502,20 @@ public class TimeScheduleLoader {
             priorities, projectToTeam));
       }
       // -- repeat process for any new assignees not already searched
-      for (Iterator allAssigneeIter = allAssignees.iterator(); allAssigneeIter.hasNext(); ) {
+      for (Iterator<String> allAssigneeIter = allAssignees.iterator(); allAssigneeIter.hasNext(); ) {
         newAssignees.remove(allAssigneeIter.next());
       }
       allAssignees.addAll(newAssignees);
     } while (newAssignees.size() > 0);
 
     // -- now fill in the list of user issues
-    Map<Teams.AssigneeKey,List<IssueTree>> allUserDetails = new HashMap();
+    Map<Teams.AssigneeKey,List<IssueTree>> allUserDetails = new HashMap<Teams.AssigneeKey,List<IssueTree>>();
     for (IssueTree node : visitedAlready.values()) {
       Teams.AssigneeKey assigneeKey = 
         new Teams.AssigneeKey(node.getRawAssignedTeamId(),
                               node.getRawAssignedPerson());
       if (!allUserDetails.containsKey(assigneeKey)) {
-        allUserDetails.put(assigneeKey, new ArrayList());
+        allUserDetails.put(assigneeKey, new ArrayList<IssueTree>());
       }
       allUserDetails.get(assigneeKey).add(node);
     }
@@ -520,9 +536,9 @@ public class TimeScheduleLoader {
      Map<String,IssueTree> visitedAlready,
      Map<String,Integer> priorities, Map<Long,Long> projectToTeam)
     throws SQLException {
-    List<String> assignees = new ArrayList();
+    List<String> assignees = new ArrayList<String>();
     ResultSet rset = null;
-    List<IssueTree> issueList = new ArrayList();
+    List<IssueTree> issueList = new ArrayList<IssueTree>();
     try {
       rset = SimpleSQL.executeQuery(sql, args, conn);
       SQL_SELECT_COUNT++;
@@ -585,11 +601,11 @@ public class TimeScheduleLoader {
      @return Set of (String username for) assignees found in the loaded issues
   */
   private static Set<String> fillTree
-    (IssueTree parent, Map visitedAlready,
+    (IssueTree parent, Map<String,IssueTree> visitedAlready,
      Connection conn, Map<String,Integer> priorities, Map<Long,Long> projectToTeam)
     throws SQLException {
-    return fillTree(parent, visitedAlready, new TreeSet(), new TreeSet(),
-                    new TreeSet(), conn, priorities, projectToTeam);
+    return fillTree(parent, visitedAlready, new TreeSet<String>(), new TreeSet<String>(),
+                    new TreeSet<String>(), conn, priorities, projectToTeam);
   }
   /**
      @param visitedAlready is Map of issue key String to (IssueTree elements for) all trees visited so far
@@ -606,12 +622,12 @@ public class TimeScheduleLoader {
      Connection conn, Map<String,Integer> priorities, Map<Long,Long> projectToTeam)
     throws SQLException {
 
-    Set<String> newAssignees = new TreeSet();
+    Set<String> newAssignees = new TreeSet<String>();
 
     ResultSet rset = null;
-    Set subtasksToFill = new TreeSet();
-    Set dependentsToFill = new TreeSet();
-    Set precursorsToFill = new TreeSet();
+    Set<IssueTree> subtasksToFill = new TreeSet<IssueTree>();
+    Set<IssueTree> dependentsToFill = new TreeSet<IssueTree>();
+    Set<IssueTree> precursorsToFill = new TreeSet<IssueTree>();
     try {
       String linkSql;
       Object[] args;
@@ -744,15 +760,15 @@ public class TimeScheduleLoader {
     }
 
     // now fill all information for children
-    for (Iterator i = subtasksToFill.iterator(); i.hasNext(); ) {
-      IssueTree childTask = (IssueTree) i.next();
+    for (Iterator<IssueTree> i = subtasksToFill.iterator(); i.hasNext(); ) {
+      IssueTree childTask = i.next();
       if (visitedAncestors.contains(childTask.getKey())) {
         log4jLog.warn("Note that " + childTask.getKey() + " is a subtask of itself.  (Ignoring.)");
         i.remove();
       } else {
         if (!childTask.getResolved()) {
           parent.addSubtask(childTask);
-          TreeSet<String> childVisitedAncestors = new TreeSet();
+          TreeSet<String> childVisitedAncestors = new TreeSet<String>();
           childVisitedAncestors.add(parent.getKey());
           childVisitedAncestors.addAll(visitedAncestors);
           Set<String> moreAssignees =
@@ -764,39 +780,39 @@ public class TimeScheduleLoader {
       }
     }
 
-    for (Iterator i = dependentsToFill.iterator(); i.hasNext(); ) {
-      IssueTree childTask = (IssueTree) i.next();
+    for (Iterator<IssueTree> i = dependentsToFill.iterator(); i.hasNext(); ) {
+      IssueTree childTask = i.next();
       if (visitedPrecursors.contains(childTask.getKey())) {
         log4jLog.warn("Note that " + childTask.getKey() + " is a precursor to itself.  (Ignoring.)");
         i.remove();
       } else {
         if (!childTask.getResolved()) {
           parent.addDependent(childTask);
-          TreeSet<String> passVisitedPrecursors = new TreeSet();
+          TreeSet<String> passVisitedPrecursors = new TreeSet<String>();
           passVisitedPrecursors.add(parent.getKey());
           passVisitedPrecursors.addAll(visitedPrecursors);
           Set<String> moreAssignees =
-            fillTree(childTask, visitedAlready, new TreeSet(),
-                     passVisitedPrecursors, new TreeSet(),
+            fillTree(childTask, visitedAlready, new TreeSet<String>(),
+                     passVisitedPrecursors, new TreeSet<String>(),
                      conn, priorities, projectToTeam);
           newAssignees.addAll(moreAssignees);
         }
       }
     }
 
-    for (Iterator i = precursorsToFill.iterator(); i.hasNext(); ) {
-      IssueTree childTask = (IssueTree) i.next();
+    for (Iterator<IssueTree> i = precursorsToFill.iterator(); i.hasNext(); ) {
+      IssueTree childTask = i.next();
       if (visitedDependents.contains(childTask.getKey())) {
         log4jLog.warn("Note that " + childTask.getKey() + " is a dependant of itself.  (Ignoring.)");
         i.remove();
       } else {
         if (!childTask.getResolved()) {
           parent.addPrecursor(childTask);
-          Set<String> passVisitedDependents = new TreeSet();
+          Set<String> passVisitedDependents = new TreeSet<String>();
           passVisitedDependents.add(parent.getKey());
           passVisitedDependents.addAll(visitedDependents);
           Set<String> moreAssignees =
-            fillTree(childTask, visitedAlready, new TreeSet(), new TreeSet(),
+            fillTree(childTask, visitedAlready, new TreeSet<String>(), new TreeSet<String>(),
                      passVisitedDependents, conn, priorities, projectToTeam);
           newAssignees.addAll(moreAssignees);
         }
@@ -856,7 +872,7 @@ public class TimeScheduleLoader {
 
     // clone the hourly data (since it's modified later)
     Map<Teams.UserTimeKey,TimeSchedule.WeeklyWorkHours> weeklyHoursFromKey2 =
-      new HashMap();
+      new HashMap<UserTimeKey, WeeklyWorkHours>();
     for (Teams.UserTimeKey user : newTimeDetails.hours.keySet()) {
       weeklyHoursFromKey2
         .put(user,
@@ -917,12 +933,12 @@ public class TimeScheduleLoader {
       Map<Teams.UserTimeKey,TimeSchedule.WeeklyWorkHours> hoursRange,
       Date startDate) {
 
-    Map<Teams.UserTimeKey,TimeSchedule.WeeklyWorkHours> newHoursRanges = new HashMap();
+    Map<Teams.UserTimeKey,TimeSchedule.WeeklyWorkHours> newHoursRanges = new HashMap<UserTimeKey, WeeklyWorkHours>();
     newHoursRanges.putAll(hoursRange);
 
-    Map<Teams.UserTimeKey,List<IssueTree>> newDetailsByTime = new HashMap();
+    Map<Teams.UserTimeKey,List<IssueTree>> newDetailsByTime = new HashMap<Teams.UserTimeKey,List<IssueTree>>();
 
-    Map<Teams.AssigneeKey,Teams.UserTimeKey> assigneeToAllocatedUsers = new HashMap();
+    Map<Teams.AssigneeKey,Teams.UserTimeKey> assigneeToAllocatedUsers = new HashMap<AssigneeKey, UserTimeKey>();
 
     for (Teams.AssigneeKey assigneeKey : detailsFromAssignee.keySet()) {
       for (IssueTree detail : detailsFromAssignee.get(assigneeKey)) {
@@ -989,7 +1005,7 @@ public class TimeScheduleLoader {
     detail.setTimeAssigneeKey(assignee);
 
     if (!detailMap.containsKey(assignee)) {
-      detailMap.put(assignee, new ArrayList());
+      detailMap.put(assignee, new ArrayList<IssueTree>());
     }
     List<IssueTree> details = detailMap.get(assignee);
     details.add(detail);
@@ -1039,7 +1055,7 @@ public class TimeScheduleLoader {
      (Map<Teams.UserTimeKey,List<TeamHours>> allUserTeamHours) {
 
     Map<Teams.UserTimeKey,SortedSet<TimeSchedule.HoursForTimeSpan>> allUserSpanHours =
-      new HashMap();
+      new HashMap<UserTimeKey, SortedSet<HoursForTimeSpan>>();
     for (Iterator<Teams.UserTimeKey> users = allUserTeamHours.keySet().iterator();
          users.hasNext(); ) {
       Teams.UserTimeKey teamUser = users.next();
@@ -1097,7 +1113,7 @@ public class TimeScheduleLoader {
   protected static Map<String,TimeSchedule.WeeklyWorkHours> weeklyHoursKeyToString
     (Map<Teams.UserTimeKey,TimeSchedule.WeeklyWorkHours> origHours) {
 
-    Map<String,TimeSchedule.WeeklyWorkHours> newHours = new HashMap();
+    Map<String,TimeSchedule.WeeklyWorkHours> newHours = new HashMap<String, WeeklyWorkHours>();
     for (Teams.UserTimeKey userTimeKey : origHours.keySet()) {
       newHours.put(userTimeKey.toString(), origHours.get(userTimeKey));
     }
@@ -1107,7 +1123,7 @@ public class TimeScheduleLoader {
   protected static Map<String,List<IssueTree>> userIssuesKeyToString
     (Map<Teams.UserTimeKey,List<IssueTree>> origIssues) {
 
-    Map<String,List<IssueTree>> newIssues = new HashMap();
+    Map<String,List<IssueTree>> newIssues = new HashMap<String,List<IssueTree>>();
     for (Teams.UserTimeKey assigneeKey : origIssues.keySet()) {
       newIssues.put(assigneeKey.toString(), origIssues.get(assigneeKey));
     }
