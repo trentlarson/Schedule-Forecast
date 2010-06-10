@@ -1,0 +1,57 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<name>Forecast</name>
+	<description>Best guesses for work completion schedule: war deployment</description>
+	<groupId>com.trentlarson.forecast</groupId>
+	<artifactId>forecast-war</artifactId>
+	<packaging>war</packaging>
+	<version>0.1-SNAPSHOT</version>
+	<!--<url>http://10.0.2.13:8090/artifacts/BackOfficeSite</url>-->
+	
+	<!-- Without a license, 'mvn repository:bundle-create' fails.
+	<licenses>
+		<license>
+			<name>Private</name>
+			<distribution>max-repo</distribution>
+		</license>
+	</licenses>
+	-->
+
+	<dependencies>
+
+		<dependency>
+			<groupId>com.trentlarson.forecast</groupId>
+			<artifactId>core</artifactId>
+			<version>0.1-SNAPSHOT</version>
+		</dependency>
+
+		<!-- DB -->
+		<!--
+		<dependency>
+			<groupId>hsqldb</groupId>
+			<artifactId>hsqldb</artifactId>
+			<version>1.8.0.1</version>
+		</dependency>
+		-->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql</artifactId>
+			<version>5.0.7</version>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+    <finalName>forecast</finalName>
+	</build>
+
+	<properties>
+		<java.source.version>1.5</java.source.version>
+		<wicket.version>1.4-rc1</wicket.version>
+	</properties>
+
+</project>

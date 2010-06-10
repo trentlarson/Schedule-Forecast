@@ -5,11 +5,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<name>Forecast</name>
-	<description>Best guesses for work completion schedule.</description>
-	<groupId>com.trentlarson</groupId>
-	<artifactId>forecast</artifactId>
-	<packaging>war</packaging>
-	<version>0.1</version>
+	<description>Best guesses for work completion schedule: core jar library</description>
+	<groupId>com.trentlarson.forecast</groupId>
+	<artifactId>forecast-core</artifactId>
+	<packaging>jar</packaging>
+	<version>0.1-SNAPSHOT</version>
 	<!--<url>http://10.0.2.13:8090/artifacts/BackOfficeSite</url>-->
 	
 	<!-- Without a license, 'mvn repository:bundle-create' fails.
@@ -22,20 +22,6 @@
 	-->
 
 	<dependencies>
-
-		<!-- DB -->
-		<!--
-		<dependency>
-			<groupId>hsqldb</groupId>
-			<artifactId>hsqldb</artifactId>
-			<version>1.8.0.1</version>
-		</dependency>
-		-->
-    <dependency>
-      <groupId>mysql</groupId>
-      <artifactId>mysql</artifactId>
-      <version>5.0.7</version>
-    </dependency>
 
 		<dependency>
 			<groupId>log4j</groupId>
