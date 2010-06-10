@@ -1,0 +1,30 @@
+<atlassian-plugin key="${project.groupId}.${project.artifactId}" name="${project.artifactId}" plugins-version="2">
+
+  <plugin-info>
+    <description>${project.description}</description>
+    <version>${project.version}</version>
+    <vendor name="${project.organization.name}" url="${project.organization.url}" />
+  </plugin-info>
+
+  <!-- sample links
+    <web-section key="my_links_section" name="My Links Main Section" location="my_links_link" weight="10"/>
+    <web-item key="my_links_link" name="Link on My Links Main Section" section="system.top.navigation.bar" weight="47">
+    <label>My Company</label>
+    <link linkId="my_links_link">http://www.atlassian.com</link>
+  </web-item>
+  <web-item key="website_link" name="Company Web Site" section="my_links_link/my_links_section" weight="10">
+    <label>Web Site</label>
+    <link linkId="website_link">http://www.atlassian.com</link>
+  </web-item>
+  <web-item key="documentation_link" name="Documentation Web Site" section="my_links_link/my_links_section" weight="10">
+    <label>Documentation</label>
+    <link linkId="documentation_link">http://confluence.atlassian.com</link>
+  </web-item>
+  -->
+
+  <servlet key="schedule_forecast" class="com.trentlarson.forecast.jira.ScheduleForecastServlet" name="Schedule Forecast Servlet">
+    <!-- Installs it here: /plugins/servlet/schedule-forecast -->
+    <url-pattern>/schedule-forecast</url-pattern>
+  </servlet>
+
+</atlassian-plugin>
