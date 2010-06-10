@@ -6,7 +6,7 @@
 
 	<name>Forecast</name>
 	<description>Best guesses for work completion schedule.</description>
-	<groupId>com.graniterevolution</groupId>
+	<groupId>com.trentlarson</groupId>
 	<artifactId>forecast</artifactId>
 	<packaging>war</packaging>
 	<version>0.1</version>

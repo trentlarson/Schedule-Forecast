@@ -1,4 +1,12 @@
 ________________________________________________________________________________
+2010/06/03
+
+To develop with the Atlassian SDK:
+- Install it.
+- Go to the project home directory (with pom.xml) and run: atlas-run
+
+
+________________________________________________________________________________
 2010/04/09
 
 If you run this and point to a Jira DB, you'll get some reports showing project completion based on the due dates and priorities of the issues.
