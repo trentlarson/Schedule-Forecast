@@ -35,8 +35,8 @@
         <property name="show_sql">true</property>
 
         <!-- Mapping files -->
-        <mapping resource="com/icentris/jira/dao/TeamHours.hbm.xml"/>
-        <mapping resource="com/icentris/jira/dao/Team.hbm.xml"/>
+        <mapping resource="com/trentlarson/forecast/core/dao/TeamHours.hbm.xml"/>
+        <mapping resource="com/trentlarson/forecast/core/dao/Team.hbm.xml"/>
 
     </session-factory>
 

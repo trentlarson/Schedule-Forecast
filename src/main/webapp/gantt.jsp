@@ -2,22 +2,22 @@
   import="java.io.PrintWriter"
   import="java.text.SimpleDateFormat"
   import="java.util.*"
-  import="com.icentris.jira.actions.TimeScheduleAction"
-  import="com.icentris.jira.dao.Team"
-  import="com.icentris.jira.scheduling.IssueDigraph"
-  import="com.icentris.jira.scheduling.IssueTree"
-  import="com.icentris.jira.scheduling.Teams"
-  import="com.icentris.jira.scheduling.TimeSchedule"
-  import="com.icentris.jira.scheduling.TimeScheduleCreatePreferences"
-  import="com.icentris.jira.scheduling.TimeScheduleDisplayPreferences"
-  import="com.icentris.jira.scheduling.TimeScheduleLoader"
-  import="com.icentris.jira.scheduling.TimeScheduleWriter"
-  import="com.icentris.jira.scheduling.TimeScheduleModifyWriter"
-  import="com.icentris.jira.scheduling.TimeCompleteBar"
+  import="com.trentlarson.forecast.core.actions.TimeScheduleAction"
+  import="com.trentlarson.forecast.core.dao.Team"
+  import="com.trentlarson.forecast.core.scheduling.IssueDigraph"
+  import="com.trentlarson.forecast.core.scheduling.IssueTree"
+  import="com.trentlarson.forecast.core.scheduling.Teams"
+  import="com.trentlarson.forecast.core.scheduling.TimeSchedule"
+  import="com.trentlarson.forecast.core.scheduling.TimeScheduleCreatePreferences"
+  import="com.trentlarson.forecast.core.scheduling.TimeScheduleDisplayPreferences"
+  import="com.trentlarson.forecast.core.scheduling.TimeScheduleLoader"
+  import="com.trentlarson.forecast.core.scheduling.TimeScheduleWriter"
+  import="com.trentlarson.forecast.core.scheduling.TimeScheduleModifyWriter"
+  import="com.trentlarson.forecast.core.scheduling.TimeCompleteBar"
 
 import="org.hibernate.*"
 import="org.hibernate.cfg.*"
-import="com.icentris.jira.scheduling.TeamHoursUtil"
+import="com.trentlarson.forecast.core.scheduling.TeamHoursUtil"
 %>
 
 <head>
@@ -156,7 +156,7 @@ try {
   if (show_group.length() > 0) {
     displayUserArray =
       (String[])
-      com.icentris.jira.dao.DAOFactory.getUserDAO().getUsersInGroup(show_group)
+      com.trentlarson.forecast.core.dao.DAOFactory.getUserDAO().getUsersInGroup(show_group)
       .toArray(new String[0]);
   }
   **/
@@ -245,7 +245,7 @@ try {
   }
 
   // Why doesn't this work?
-  //org.apache.log4j.Logger.getLogger(com.icentris.jira.scheduling.TimeScheduleLoader.class).setLevel(org.apache.log4j.Level.DEBUG);
+  //org.apache.log4j.Logger.getLogger(com.trentlarson.forecast.core.scheduling.TimeScheduleLoader.class).setLevel(org.apache.log4j.Level.DEBUG);
 
   IssueDigraph graph;
   if (reload_data) {

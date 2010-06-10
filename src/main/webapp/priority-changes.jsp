@@ -20,7 +20,7 @@
   java.sql.Connection conn = null;
   java.sql.ResultSet rset = null;
   try {
-    conn = com.icentris.jira.helper.ForecastUtil.getConnection();
+    conn = com.trentlarson.forecast.core.helper.ForecastUtil.getConnection();
 
     // load projects
     String projectSql = "select * from project";
@@ -118,7 +118,7 @@ since
   conn = null;
   rset = null;
   try {
-    conn = com.icentris.jira.helper.ForecastUtil.getConnection();
+    conn = com.trentlarson.forecast.core.helper.ForecastUtil.getConnection();
 
     // load helper data - issue types
     String typesSql = "select * from issuetype";

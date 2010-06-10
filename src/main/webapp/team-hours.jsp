@@ -3,11 +3,11 @@
   import="java.text.*"
   import="org.hibernate.*"
   import="org.hibernate.cfg.*"
-  import="com.icentris.jira.dao.Team"
-  import="com.icentris.jira.dao.TeamHours"
-  import="com.icentris.jira.scheduling.TeamHoursUtil"
-  import="com.icentris.jira.scheduling.Teams"
-  import="com.icentris.jira.scheduling.*"
+  import="com.trentlarson.forecast.core.dao.Team"
+  import="com.trentlarson.forecast.core.dao.TeamHours"
+  import="com.trentlarson.forecast.core.scheduling.TeamHoursUtil"
+  import="com.trentlarson.forecast.core.scheduling.Teams"
+  import="com.trentlarson.forecast.core.scheduling.*"
 %>
 
 <head>
@@ -35,7 +35,7 @@ if (CHANGE_HOURS_COMMAND.equals(request.getParameter(COMMAND_PARAM_NAME))) {
   java.sql.Connection conn = null;
   java.sql.ResultSet rset = null;
   try {
-    conn = com.icentris.jira.helper.ForecastUtil.getConnection();
+    conn = com.trentlarson.forecast.core.helper.ForecastUtil.getConnection();
     String eraseSql =
       "delete from team_hours where start_of_week >= ?";
     Object[] args = { new java.sql.Timestamp(TeamHoursUtil.weekCal(firstWeek).getTime().getTime()) };
@@ -67,7 +67,7 @@ if (CHANGE_HOURS_COMMAND.equals(request.getParameter(COMMAND_PARAM_NAME))) {
       Double hours = new Double(hoursStr);
 
       try {
-        conn = com.icentris.jira.helper.ForecastUtil.getConnection();
+        conn = com.trentlarson.forecast.core.helper.ForecastUtil.getConnection();
         String createSql =
           "insert into team_hours values (team_hours_seq.nextval, ?, ?, ?, ?, ?, ?)";
         Object[] args = {
@@ -105,7 +105,7 @@ if (ADD_USER_COMMAND.equals(request.getParameter(COMMAND_PARAM_NAME))) {
 
       java.sql.Connection conn = null;
       try {
-        conn = com.icentris.jira.helper.ForecastUtil.getConnection();
+        conn = com.trentlarson.forecast.core.helper.ForecastUtil.getConnection();
         String createSql =
           "insert into team_hours values (team_hours_seq.nextval, ?, ?, ?, ?, ?, ?)";
         Object[] args = {
@@ -272,7 +272,7 @@ private static Map<Teams.UserTimeKey,SortedSet<TimeSchedule.HoursForTimeSpan>> l
     System.out.println("+++" + teamHours);
 **/
 
-      conn = com.icentris.jira.helper.ForecastUtil.getConnection();
+      conn = com.trentlarson.forecast.core.helper.ForecastUtil.getConnection();
       String timeSql = 
         "select team_id, username, start_of_week, hours_available"
         + " from team_hours"

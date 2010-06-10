@@ -1,7 +1,7 @@
 <%@ page
   import="java.util.*"
 
-  import="com.icentris.jira.actions.TimeScheduleAction"
+  import="com.trentlarson.forecast.core.actions.TimeScheduleAction"
   import="com.icentris.sql.SimpleSQL"
   import="java.sql.Connection"
   import="java.sql.ResultSet"
@@ -25,7 +25,7 @@
       Connection conn = null;
       ResultSet rset = null;
       try {
-        conn = com.icentris.jira.actions.TimeScheduleAction.getConnection();
+        conn = com.trentlarson.forecast.core.actions.TimeScheduleAction.getConnection();
         Set userSet = new TreeSet();
         String sql =
           "select distinct username from team_hours "
