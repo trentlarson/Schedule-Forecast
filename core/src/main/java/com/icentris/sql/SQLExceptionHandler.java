@@ -3,8 +3,6 @@ package com.icentris.sql;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.sql.SQLException;
 
-import sun.rmi.runtime.Log;
-
 /**
  * Since handling all the corner cases when closing out JDBC resources becomes
  * very complex, we created this Exception handler to simplify the task. To
