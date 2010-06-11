@@ -1,16 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
-
 	<name>Forecast</name>
 	<description>Best guesses for work completion schedule: war deployment</description>
+	
+	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.trentlarson.forecast</groupId>
 	<artifactId>forecast-war</artifactId>
 	<packaging>war</packaging>
 	<version>0.1-SNAPSHOT</version>
-	<!--<url>http://10.0.2.13:8090/artifacts/BackOfficeSite</url>-->
+	<!--<url>http://10.0.2.13:8090/artifacts/forecast-war</url>-->
 	
 	<!-- Without a license, 'mvn repository:bundle-create' fails.
 	<licenses>
@@ -46,7 +47,7 @@
 	</dependencies>
 
 	<build>
-    <finalName>forecast</finalName>
+		<finalName>forecast</finalName>
 	</build>
 
 	<properties>
