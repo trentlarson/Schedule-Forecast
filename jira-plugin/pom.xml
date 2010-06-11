@@ -19,6 +19,13 @@
     <packaging>atlassian-plugin</packaging>
 
     <dependencies>
+    
+        <dependency>
+            <groupId>com.trentlarson.forecast</groupId>
+            <artifactId>forecast-core</artifactId>
+            <version>0.1-SNAPSHOT</version>
+        </dependency>
+
         <dependency>
             <groupId>com.atlassian.jira</groupId>
             <artifactId>atlassian-jira</artifactId>
@@ -43,6 +50,29 @@
             <version>2.3</version>
             <scope>provided</scope>
         </dependency>
+        
+        <!-- DB -->
+        <!--
+        <dependency>
+            <groupId>hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <version>1.8.0.1</version>
+        </dependency>
+        -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql</artifactId>
+            <version>5.0.7</version>
+        </dependency>
+
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.14</version>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -56,6 +86,14 @@
                     <productVersion>${jira.version}</productVersion>
                     <productDataVersion>${jira.data.version}</productDataVersion>
                 </configuration>
+				<dependencies>
+					<!-- to avoid the error about commons Log: http://jira.codehaus.org/browse/MOJO-1101 -->
+					<dependency>
+						<groupId>commons-logging</groupId>
+						<artifactId>commons-logging</artifactId>
+						<version>1.0.4</version>
+					</dependency>
+				</dependencies>
             </plugin>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -65,6 +103,7 @@
                 </configuration>
             </plugin>
         </plugins>
+        
     </build>
 
     <properties>
