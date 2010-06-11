@@ -51,4 +51,49 @@ public class TimeScheduleCreatePreferences {
   public double getTimeMultiplier() {
     return timeMultiplier;
   }
+  
+  
+  /**
+   * For our serializing convenience, so we don't muck up the enclosing class with these variabilities.
+   */
+  public static class Pojo {
+    public int timeWithoutEstimate;
+    public Calendar startCal;
+    public Date startDate;
+    public double timeMultiplier;
+    public int getTimeWithoutEstimate() {
+      return timeWithoutEstimate;
+    }
+    public void setTimeWithoutEstimate(int timeWithoutEstimate) {
+      this.timeWithoutEstimate = timeWithoutEstimate;
+    }
+    public Calendar getStartCal() {
+      return startCal;
+    }
+    public void setStartCal(Calendar startCal) {
+      this.startCal = startCal;
+    }
+    public Date getStartDate() {
+      return startDate;
+    }
+    public void setStartDate(Date startDate) {
+      this.startDate = startDate;
+    }
+    public double getTimeMultiplier() {
+      return timeMultiplier;
+    }
+    public void setTimeMultiplier(double timeMultiplier) {
+      this.timeMultiplier = timeMultiplier;
+    }
+    public TimeScheduleCreatePreferences getPrefs() {
+      if (startCal != null) {
+        return new TimeScheduleCreatePreferences(timeWithoutEstimate, startCal, timeMultiplier);
+      } else if (startDate != null) {
+        return new TimeScheduleCreatePreferences(timeWithoutEstimate, startDate, timeMultiplier);
+      } else {
+        return new TimeScheduleCreatePreferences(timeWithoutEstimate, timeMultiplier);
+      }
+    }
+  }
+  
 }

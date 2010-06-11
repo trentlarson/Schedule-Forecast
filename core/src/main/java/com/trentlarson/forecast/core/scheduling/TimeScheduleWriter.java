@@ -71,13 +71,14 @@ public class TimeScheduleWriter {
      @return the finish date for each priority (index in array == priority)
   */
   private static Date[] priorityCompleteDates
-    (List<IssueTree> issues, IssueDigraph graph,
+    (List<String> issueKeys, IssueDigraph graph,
      Date startDate, TimeScheduleDisplayPreferences dPrefs) {
 
     // report when priority levels are done
     Date[] priorityMax = new Date[NUM_PRIORITIES];
     Arrays.fill(priorityMax, startDate);
-    for (IssueTree detail : issues) {
+    for (String issueKey : issueKeys) {
+      IssueTree detail = graph.getIssueTree(issueKey);
       detail.setPriorityCompleteDates(priorityMax, graph, dPrefs);
     }
     return priorityMax;
@@ -212,7 +213,7 @@ public class TimeScheduleWriter {
     } else {
       Set shownAlready = new HashSet();
       for (int i = 0; i < dPrefs.showIssues.size(); i++) {
-        IssueTree tree = (IssueTree) dPrefs.showIssues.get(i);
+        IssueTree tree = graph.getIssueTree(dPrefs.showIssues.get(i));
 
         int maxDist = 0;
 

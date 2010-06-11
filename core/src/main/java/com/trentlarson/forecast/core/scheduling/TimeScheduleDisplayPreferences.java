@@ -19,16 +19,11 @@ public class TimeScheduleDisplayPreferences {
   /** List of users to display, each on one row; may be null */
   public final List<Teams.AssigneeKey> showUsersInOneRow;
   /** List of issue key Strings to display individually; may be empty list, but never null */
-  public final List<IssueTree> showIssues;
+  public final List<String> showIssues;
 
   // NOTE: if you add more fields, then add them to the "cloning" constructor.
 
 
-  public static class NoSuchIssueException extends Exception {
-    public NoSuchIssueException(String message) {
-      super(message);
-    }
-  }
 
 
   /**
@@ -39,7 +34,7 @@ public class TimeScheduleDisplayPreferences {
      boolean hideDetails_, boolean showResolved_, boolean showHierarchically_,
      boolean showChangeTools_,
      List<Teams.AssigneeKey> showUsersInOneRow_,
-     List<IssueTree> showIssues_) {
+     List<String> showIssues_) {
     this.timeGranularity = timeGranularity_;
     this.timeMarker = timeMarker_;
     this.showBlocked = showBlocked_;
@@ -76,10 +71,9 @@ public class TimeScheduleDisplayPreferences {
        false, showChangeTools_);
 
     List<IssueTree> issues = graph.getAssignedUserDetails().get(showUserAndTeam);
-    if (issues == null) {
-      issues = new ArrayList();
+    for (IssueTree issue : issues) {
+      prefs.showIssues.add(issue.getKey());
     }
-    prefs.showIssues.addAll(issues);
 
     return prefs;
   }
@@ -100,7 +94,9 @@ public class TimeScheduleDisplayPreferences {
       if (showUser.equals(userKey.getUsername())) {
         Teams.UserTimeKey timeKey = graph.getAllocatedUser(userKey);
         if (!addedAlready.contains(timeKey)) {
-          prefs.showIssues.addAll(graph.getTimeUserDetails().get(timeKey));
+          for (IssueTree issue : graph.getTimeUserDetails().get(timeKey)) {
+            prefs.showIssues.add(issue.getKey());
+          }
           addedAlready.add(timeKey);
         }
       }
@@ -124,7 +120,9 @@ public class TimeScheduleDisplayPreferences {
       if (showTeamId.equals(userKey.getTeamId())) {
         Teams.UserTimeKey timeKey = graph.getAllocatedUser(userKey);
         if (!addedAlready.contains(timeKey)) {
-          prefs.showIssues.addAll(graph.getTimeUserDetails().get(timeKey));
+          for (IssueTree issue : graph.getTimeUserDetails().get(timeKey)) {
+            prefs.showIssues.add(issue.getKey());
+          }
           addedAlready.add(timeKey);
         }
       }
@@ -147,7 +145,9 @@ public class TimeScheduleDisplayPreferences {
 
     prefs.showUsersInOneRow.addAll(Arrays.asList(showUsersInOneRow_));
     for (int useri = 0; useri < showUsersInOneRow_.length; useri++) {
-      prefs.showIssues.addAll(graph.getAssignedUserDetails().get(showUsersInOneRow_[useri]));
+      for (IssueTree issue : graph.getAssignedUserDetails().get(showUsersInOneRow_[useri])) {
+        prefs.showIssues.add(issue.getKey());
+      }
     }
 
     return prefs;
@@ -157,18 +157,16 @@ public class TimeScheduleDisplayPreferences {
   public static TimeScheduleDisplayPreferences createForIssues
     (int timeGranularity_, int timeMarker_, boolean showBlocked_,
      boolean hideDetails_, boolean showResolved_, String[] issueKeys,
-     boolean showChangeTools_, IssueDigraph graph)
-  throws NoSuchIssueException {
+     boolean showChangeTools_, IssueDigraph graph) {
     TimeScheduleDisplayPreferences prefs =
       new TimeScheduleDisplayPreferences
       (timeGranularity_, timeMarker_, showBlocked_, hideDetails_, showResolved_, 
        true, showChangeTools_);
 
     for (int keyi = 0; keyi < issueKeys.length; keyi++) {
-      if (graph.getIssueSchedule(issueKeys[keyi]) == null) {
-        throw new NoSuchIssueException(issueKeys[keyi]);
+      if (graph.getIssueSchedule(issueKeys[keyi]) != null) {
+        prefs.showIssues.add(issueKeys[keyi]);
       }
-      prefs.showIssues.add(graph.getIssueTree(issueKeys[keyi]));
     }
 
     return prefs;
@@ -189,7 +187,7 @@ public class TimeScheduleDisplayPreferences {
       IssueTree issue = graph.getIssueTree(treeKey);
       if (issue.getDueDate() != null
           && issue.getDueDate().before(dueBefore)) {
-        prefs.showIssues.add(issue);
+        prefs.showIssues.add(issue.getKey());
       }
     }
 
@@ -217,7 +215,7 @@ public class TimeScheduleDisplayPreferences {
       (resolvedOK
        // and 
        // it's one of the items in showIssues
-       && (showIssues.indexOf(issue) > -1
+       && (showIssues.indexOf(issue.getKey()) > -1
            // or we're showing the full hierarchy
            || (showHierarchically)));// && !shownAlready.contains(issue.getKey()))));
     if (log4jLog.isDebugEnabled()) {
@@ -225,12 +223,87 @@ public class TimeScheduleDisplayPreferences {
                      + ": (showResolved = " + showResolved
                      + " || issue is unresolved = " + (!issue.getResolved())
                      + " || issue has unresolved subtasks = " + !issue.allSubtasksResolved()
-                     + ") && (it's an issue to show = " + (showIssues.indexOf(issue) > -1)
+                     + ") && (it's an issue to show = " + (showIssues.indexOf(issue.getKey()) > -1)
                      + " || showHierarchically = " + showHierarchically
                      + ")");
     }
     return displayOK;
   }
+  
+  
+  
+  /**
+   * For our serializing convenience, so we don't muck up the enclosing class with these variabilities.
+   */
+  public static class Pojo {
+    public int timeGranularity;
+    public int timeMarker;
+    public boolean showBlocked;
+    public boolean hideDetails;
+    public boolean showResolved;
+    public boolean showChangeTools;
+    public boolean showHierarchically;
+    public List<Teams.AssigneeKey> showUsersInOneRow = new ArrayList<Teams.AssigneeKey>();
+    public List<String> showIssues = new ArrayList<String>();
+    public int getTimeGranularity() {
+      return timeGranularity;
+    }
+    public void setTimeGranularity(int timeGranularity) {
+      this.timeGranularity = timeGranularity;
+    }
+    public int getTimeMarker() {
+      return timeMarker;
+    }
+    public void setTimeMarker(int timeMarker) {
+      this.timeMarker = timeMarker;
+    }
+    public boolean isShowBlocked() {
+      return showBlocked;
+    }
+    public void setShowBlocked(boolean showBlocked) {
+      this.showBlocked = showBlocked;
+    }
+    public boolean isHideDetails() {
+      return hideDetails;
+    }
+    public void setHideDetails(boolean hideDetails) {
+      this.hideDetails = hideDetails;
+    }
+    public boolean isShowResolved() {
+      return showResolved;
+    }
+    public void setShowResolved(boolean showResolved) {
+      this.showResolved = showResolved;
+    }
+    public boolean isShowChangeTools() {
+      return showChangeTools;
+    }
+    public void setShowChangeTools(boolean showChangeTools) {
+      this.showChangeTools = showChangeTools;
+    }
+    public boolean isShowHierarchically() {
+      return showHierarchically;
+    }
+    public void setShowHierarchically(boolean showHierarchically) {
+      this.showHierarchically = showHierarchically;
+    }
+    public List<Teams.AssigneeKey> getShowUsersInOneRow() {
+      return showUsersInOneRow;
+    }
+    public void setShowUsersInOneRow(List<Teams.AssigneeKey> showUsersInOneRow) {
+      this.showUsersInOneRow = showUsersInOneRow;
+    }
+    public List<String> getShowIssues() {
+      return showIssues;
+    }
+    public void setShowIssues(List<String> showIssues) {
+      this.showIssues = showIssues;
+    }
+    public TimeScheduleDisplayPreferences getPrefs() {
+      return new TimeScheduleDisplayPreferences(timeGranularity, timeMarker, showBlocked, hideDetails, showResolved, showHierarchically, showChangeTools, showUsersInOneRow, showIssues);
+    }
+  }
+  
 }
 
 
