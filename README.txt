@@ -5,6 +5,24 @@ To develop with the Atlassian SDK:
 - Install it.
 - Go to the project home directory (with pom.xml) and run: atlas-run
 
+The servlet part of the plugin will be available here:
+http://localhost:9090/plugins/servlet/schedule-forecast
+
+It takes JSON parameters "cPrefs" and "dPrefs", which you'll have to
+read the code of ScheduleForecastServlet.java to understand.
+
+The servlet works in a v2 approach (installing to
+plugins/installed-plugins), but the JSPs won't work.  To get gantt.jsp
+to work, install the v1 jar (into WEB-INF/lib) and then copy all the
+other required jars (embedded inside it in the META-INF/lib directory)
+into the WEB-INF/lib as well.
+
+
+Places to clean up:
+- allow hibernate, which may have been the thing that locked the JIRA startup
+- ... and then you can allow it in the gantt.jsp
+- split wicket from war project(?)
+
 
 ________________________________________________________________________________
 2010/04/09

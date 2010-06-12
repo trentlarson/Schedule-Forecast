@@ -37,8 +37,9 @@ try {
   }
 
 
-  List<Team> allTeams;
+  List<Team> allTeams = new ArrayList<Team>();
   Map<Long,Team> idToTeam = new HashMap();
+  /** Enable this when I can get Hibernate to play nicely with JIRA on a v1 plugin.
   {
     Session sess = TeamHoursUtil.HibernateUtil.currentSession();
     Transaction tx = sess.beginTransaction();
@@ -48,6 +49,7 @@ try {
       idToTeam.put(team.getId(), team);
     }
   }
+  **/
 
 
 
@@ -549,12 +551,6 @@ Charts below are based on data loaded at <%= graph.getLoadedDate() %>.
 
 
 <%
-
-} catch (TimeScheduleDisplayPreferences.NoSuchIssueException e) {
-  %>
-  <h2>The issue <%= e.getMessage() %> is either resolved or does not exist.</h2>
-  <%
-  session.removeAttribute(ISSUE_KEY_SES_NAME);
 
 } catch (Throwable e) {
   Date errorDate = new Date();
