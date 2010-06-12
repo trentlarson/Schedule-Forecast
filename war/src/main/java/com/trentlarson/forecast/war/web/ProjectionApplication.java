@@ -3,7 +3,7 @@ package com.trentlarson.forecast.war.web;
 import org.apache.wicket.Page;
 import org.apache.wicket.protocol.http.WebApplication;
 
-import com.trentlarson.forecast.core.web.page.TaskPage;
+import com.trentlarson.forecast.war.web.page.TaskPage;
 
 public class ProjectionApplication extends WebApplication {
 
