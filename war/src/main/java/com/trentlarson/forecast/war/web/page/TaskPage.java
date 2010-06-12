@@ -1,4 +1,4 @@
-package com.trentlarson.forecast.core.web.page;
+package com.trentlarson.forecast.war.web.page;
 
 import java.sql.*;
 

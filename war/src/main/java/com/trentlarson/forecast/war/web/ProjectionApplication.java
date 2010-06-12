@@ -1,4 +1,4 @@
-package com.trentlarson.forecast.core.web;
+package com.trentlarson.forecast.war.web;
 
 import org.apache.wicket.Page;
 import org.apache.wicket.protocol.http.WebApplication;
