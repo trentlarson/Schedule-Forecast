@@ -586,7 +586,25 @@ public class TimeScheduleWriter {
           out.write("   <td bgcolor='black'></td>\n");
           incrementTimeMarker(dPrefs.timeMarker, timeMarker);
         }
-
+        
+        // if this is the end of the issue time and there are any successor issues then create those 'rel' links (for a visual pointer if it precedes other issues)
+        String successorRels = "";
+        if ((calStartOfDay.getTime().before(issueEndTime)
+             && calStartOfNextDay.getTime().after(issueEndTime))
+            || calStartOfNextDay.getTime().equals(issueEndTime)) {
+          for (IssueTree issueAfter : detail.getDependents()) {
+              successorRels = "<span rel='" + issueAfter.getKey() + "-start' style='display:block'></span>";
+          }
+        }
+        
+        // if this is the start of the issue time then set the DOM ID (for a visual pointer if it follows a previous issue)
+        String domMarker = "";
+        if (calStartOfDay.getTime().equals(issueStartTime)
+            || (calStartOfDay.getTime().before(issueStartTime)
+                && calStartOfNextDay.getTime().after(issueStartTime))) {
+          domMarker = "<span id='" + detail.getKey() + "-start' style='display:block'></span>";
+        }
+        
         // set color if it's in the period
         String coloring = "";
         if (calStartOfNextDay.getTime().after(issueStartTime)
@@ -622,7 +640,7 @@ public class TimeScheduleWriter {
           }
           coloring = " bgcolor='" + color + "'";
         }
-        out.write("   <td" + coloring + "></td>\n");
+        out.write("   <td" + coloring + ">" + domMarker + successorRels + "</td>\n");
 
         // -- overdue and marker column
         String markerColoring = coloring;

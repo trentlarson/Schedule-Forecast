@@ -11,7 +11,7 @@ public class IssueTree extends TimeSchedule.IssueWorkDetailOriginal implements C
   private Date mustStartOnDateOrig, dueDateOrig;
   private boolean resolved;
   // issues that "cannot be done until" this one
-  private Set<IssueTree> dependents = new TreeSet();
+  private Set<IssueTree> dependents = new TreeSet<IssueTree>();
 
   public IssueTree(String key_, String summary_, String person,
                    Long teamId, String teamName, int est_,
@@ -59,8 +59,8 @@ public class IssueTree extends TimeSchedule.IssueWorkDetailOriginal implements C
   public int getEstimateOrig() { return estimateOrig; }
   public Date getDueDateOrig() { return dueDateOrig; }
   public boolean getResolved() { return resolved; }
-  public Set  getSubtasks() { return subtasks; }
-  public Set  getDependents() { return dependents; }
+  public Set<TimeSchedule.IssueWorkDetail>  getSubtasks() { return subtasks; }
+  public Set<IssueTree>  getDependents() { return dependents; }
 
   /**
      Used by loader to change the time assignment for this issue.
