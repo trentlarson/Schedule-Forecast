@@ -1,17 +1,21 @@
 package com.trentlarson.forecast.core.scheduling;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.Writer;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.*;
 import java.text.SimpleDateFormat;
-
-import com.trentlarson.forecast.core.dao.TeamHours;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Category;
+
+import com.trentlarson.forecast.core.scheduling.TimeSchedule.IssueWorkDetail;
 
 /**
 Assumptions:
@@ -587,23 +591,58 @@ public class TimeScheduleWriter {
           incrementTimeMarker(dPrefs.timeMarker, timeMarker);
         }
         
+        
+        
+        
+        
+        //// Make some markers for lines drawn to link issues together.
+        
         // if this is the end of the issue time and there are any successor issues then create those 'rel' links (for a visual pointer if it precedes other issues)
         String successorRels = "";
         if ((calStartOfDay.getTime().before(issueEndTime)
              && calStartOfNextDay.getTime().after(issueEndTime))
             || calStartOfNextDay.getTime().equals(issueEndTime)) {
           for (IssueTree issueAfter : detail.getDependents()) {
-              successorRels = "<span rel='" + issueAfter.getKey() + "-start' style='display:block'></span>";
+              successorRels += "<span rel='" + issueAfter.getKey() + "-start' type='successor' style='display:block'></span>";
           }
         }
         
-        // if this is the start of the issue time then set the DOM ID (for a visual pointer if it follows a previous issue)
+        // if this is the start of the issue time then set the start-point DOM ID (for a visual pointer if it follows a previous issue)
         String domMarker = "";
         if (calStartOfDay.getTime().equals(issueStartTime)
             || (calStartOfDay.getTime().before(issueStartTime)
                 && calStartOfNextDay.getTime().after(issueStartTime))) {
           domMarker = "<span id='" + detail.getKey() + "-start' style='display:block'></span>";
         }
+        
+        // if this is the middle of the issue time then set the midpoint DOM ID (for a visual pointer if it's a subtask of a master issue)
+        String subtaskRels = "";
+        long halfwayMillis = issueStartTime.getTime() + ((issueEndTime.getTime() - issueStartTime.getTime()) / 2);
+        if (halfwayMillis == calStartOfDay.getTime().getTime()
+            || (calStartOfDay.getTime().getTime() < halfwayMillis
+                && halfwayMillis < calStartOfNextDay.getTime().getTime())) {
+            domMarker += "<span id='" + detail.getKey() + "-middle' style='display:block'></span>";
+            
+            // if this is the middle of the issue time and there are any subtask issues then create those 'rel' links (for a visual pointer if it masters other issues)
+            for (IssueWorkDetail subtask : detail.getSubtasks()) {
+                subtaskRels += "<span rel='" + subtask.getKey() + "-middle' type='subtask' style='display:block'></span>";
+            }
+        }
+        
+        /** alternatively, to display at the start of the issue, change that '-middle' just above to '-start', remove the 'for' loop after it, and...
+        // if this is the start of the issue time and there are any subtask issues then create those 'rel' links (for a visual pointer if it masters other issues)
+        if (calStartOfDay.getTime().equals(issueStartTime)
+                || (calStartOfDay.getTime().before(issueStartTime)
+                    && calStartOfNextDay.getTime().after(issueStartTime))) {
+          for (IssueWorkDetail subtask : detail.getSubtasks()) {
+              subtaskRels += "<span rel='" + subtask.getKey() + "-start' type='subtask' style='display:block'></span>";
+          }
+        }
+        **/
+        
+        
+        
+        
         
         // set color if it's in the period
         String coloring = "";
@@ -640,7 +679,7 @@ public class TimeScheduleWriter {
           }
           coloring = " bgcolor='" + color + "'";
         }
-        out.write("   <td" + coloring + ">" + domMarker + successorRels + "</td>\n");
+        out.write("   <td" + coloring + ">" + domMarker + subtaskRels + successorRels + "</td>\n");
 
         // -- overdue and marker column
         String markerColoring = coloring;

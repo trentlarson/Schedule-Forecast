@@ -25,9 +25,6 @@ import="com.trentlarson.forecast.core.scheduling.TeamHoursUtil"
 <script src='http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js' type='text/javascript'></script>
 <script src='http://eucaly61-java.googlecode.com/files/wz_jsgraphics.js' type='text/javascript'></script>
 <script src='gantt.js' type='text/javascript'></script>
-<script>
-$(document).ready(function(){drawAllLinks('source');});
-</script>
 </head>
 
 
@@ -322,6 +319,7 @@ Charts below are based on data loaded at <%= graph.getLoadedDate() %>.
 <form name="display">
 
 <b>Filters</b>
+<div>
   Issue Key(s) &sup1;
   <input type='text' size='9' name='<%=ISSUE_KEY_REQ_NAME%>' value='<%=session.getAttribute(ISSUE_KEY_SES_NAME)%>'>
   Team
@@ -341,12 +339,14 @@ Charts below are based on data loaded at <%= graph.getLoadedDate() %>.
   <input type='text' size='8' name='<%=SHOW_DUE_BY_REQ_NAME%>' value='<%= TimeScheduleAction.formatShortDate(show_due_by) %>'>
 
 <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &sup1; = space- and/or comma-separated list
+</div>
 
 
 <br>
 <b>Format</b>
+<div>
   <input type='text' size='1' name='<%=TIME_GRANULARITY_REQ_NAME%>' value='<%=session.getAttribute(TIME_GRANULARITY_SES_NAME)%>'>
   Days per slice
   <input type='checkbox' name='<%=SHOW_RESOLVED_REQ_NAME%>' <%= (show_resolved ? "CHECKED" : "") %>>
@@ -360,9 +360,10 @@ Charts below are based on data loaded at <%= graph.getLoadedDate() %>.
   <input type='checkbox' name='<%=SHOW_COMPLETION_REQ_NAME%>' <%= (show_completion ? "CHECKED" : "") %>>
   Show completion measurements
   <input type='submit' value='Change Display'>
-
 </form>
-
+<br/>
+<a href="javascript:drawAllLinks('source');">Show subtask lines.</a>
+<div>
 
 
 <%-- This doesn't work as it probably should.
