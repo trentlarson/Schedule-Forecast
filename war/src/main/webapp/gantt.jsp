@@ -22,6 +22,12 @@ import="com.trentlarson.forecast.core.scheduling.TeamHoursUtil"
 
 <head>
 <title>Current Schedule Chart</title>
+<script src='http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js' type='text/javascript'></script>
+<script src='http://eucaly61-java.googlecode.com/files/wz_jsgraphics.js' type='text/javascript'></script>
+<script src='gantt.js' type='text/javascript'></script>
+<script>
+$(document).ready(function(){drawAllLinks('source');});
+</script>
 </head>
 
 
@@ -396,7 +402,7 @@ Charts below are based on data loaded at <%= graph.getLoadedDate() %>.
 </table>
 
 
-
+<div id="source">
 
 <% if (show_bulk_changer) { %>
   <form action="?" method="post">
@@ -541,6 +547,7 @@ Charts below are based on data loaded at <%= graph.getLoadedDate() %>.
     <input type='submit' value='Preview Issue Changes (Without Committing)'>
   </form>
 
+</div><!-- source -->
 
 <form action="?">
   <input type='hidden' name='<%=SAVE_PRIORITIES_REQ_NAME%>' value='true'>
