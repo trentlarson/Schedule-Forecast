@@ -7,7 +7,12 @@
 
     <session-factory>
 
-<!-- Hibernate
+        <!-- user JNDI to get the settings (ie. driver, URL, username, password)
+        -->
+        <property name="connection.datasource">java:comp/env/jdbc/JiraDS</property>
+        
+        
+        <!-- HSQL
         <property name="connection.driver_class">org.hsqldb.jdbcDriver</property>
         <property name="connection.url">jdbc:hsqldb:file:/tmp/schedule-db</property>
         <property name="connection.username">sa</property>
@@ -15,24 +20,34 @@
 
 
         <property name="dialect">org.hibernate.dialect.HSQLDialect</property>
--->
+        -->
 
-<!-- MySQL
--->
+        <!-- MySQL
         <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
         <property name="connection.url">jdbc:mysql://10.0.2.16:8319/jiradb?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8</property>
         <property name="connection.username">jira</property>
         <property name="connection.password">jirapass</property>
+        
+        <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+        <property name="connection.url">jdbc:mysql://localhost:3306/jiradb_411?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8</property>
+        <property name="connection.username">jira</property>
+        <property name="connection.password">jira</property>
+        -->
 
 
         <property name="dialect">org.hibernate.dialect.MySQLDialect</property>
 
-<!-- JNDI
-        <property name="connection.datasource">java:comp/env/jdbc/JiraDS</property>
-        <property name="dialect">org.hibernate.dialect.Oracle9Dialect</property>
--->
 
+        <!-- Oracle
+        <property name="dialect">org.hibernate.dialect.Oracle9Dialect</property>
+        -->
+
+
+
+        <!-- log SQL statements; just like setting org.hibernate.SQL log level to debug
         <property name="show_sql">true</property>
+         -->
+
 
         <!-- Mapping files -->
         <mapping resource="com/trentlarson/forecast/core/dao/TeamHours.hbm.xml"/>
