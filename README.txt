@@ -34,7 +34,10 @@ To deploy:
 - Create the TEAM and TEAM_HOURS tables; see Team*.hbm.xml
 - Put DB settings in hibernate.cfg.xml
 - Build the war with: mvn package
-- Copy the target/forecast.war file into the war directory, eg. tomcat/webapps
+-- Choose your tool:
+-- For standalone: Copy the target/forecast.war file into the war directory, eg. tomcat/webapps/
+-- For Jira: copy the war/src/main/webapp/gantt.jsp file into someplace under atlassian-jira/
+
 
 Helpful hints for Eclipse:
 - Run this inside the forecast directory: mvn eclipse:eclipse
