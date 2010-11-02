@@ -335,6 +335,7 @@ Charts below are based on data loaded at <%= graph.getLoadedDate() %>.
   <input type='text' size='8' name='<%=SHOW_DUE_BY_REQ_NAME%>' value='<%= TimeScheduleAction.formatShortDate(show_due_by) %>'>
 
 <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &sup1; = space- and/or comma-separated list
 
 
