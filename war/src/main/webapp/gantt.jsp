@@ -425,7 +425,7 @@ Charts below are based on data loaded at <%= graph.getLoadedDate() %>.
       TimeScheduleWriter.writeIssueTable(graph, new PrintWriter(out), graph.getTimeScheduleCreatePreferences(), dPrefs);
     }
 
-/**
+    /** Here's something to guard against running out of memory rendering when someone chooses too many issues.
     if (graph.getIssueSchedules().size() > 0) {
       out.println("<hr><!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->");
       if (graph.getIssueSchedules().size() < 1000) {
@@ -434,7 +434,7 @@ Charts below are based on data loaded at <%= graph.getLoadedDate() %>.
         //out.println("<h2>Sorry!  Jira runs out of memory trying to display too many issues, so we won't display all " + graph.getIssueSchedules().size() + ".  Try restricting your display selection.</h2>");
       }
     }
-**/
+    **/
 
     // print out team graph
 
