@@ -8,7 +8,7 @@ public class IssueTree extends TimeSchedule.IssueWorkDetailOriginal implements C
   private String timePerson, timeTeamName; // (REFACTOR: store a Teams.UserTimeKey instead of separate person & team ID)
   private Long timeTeamId;
   private int spent, estimateOrig, priorityOrig;
-  private Date mustStartOnDateOrig, dueDateOrig;
+  private Date dueDateOrig;
   private boolean resolved;
   // issues that "cannot be done until" this one
   private Set<IssueTree> dependents = new TreeSet<IssueTree>();
