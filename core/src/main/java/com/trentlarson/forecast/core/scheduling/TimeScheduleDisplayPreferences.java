@@ -1,11 +1,17 @@
 package com.trentlarson.forecast.core.scheduling;
 
-import java.util.*;
-import org.apache.log4j.Category;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+
+import org.apache.log4j.Logger;
 
 public class TimeScheduleDisplayPreferences {
 
-  private static final Category log4jLog = Category.getInstance("ic.sched.TimeScheduleDisplayPreferences");
+  private static final Logger log4jLog = Logger.getLogger("ic.sched.TimeScheduleDisplayPreferences");
 
   /** # of days to put in each slice */
   public final int timeGranularity;
@@ -52,7 +58,7 @@ public class TimeScheduleDisplayPreferences {
      boolean showChangeTools_) {
     this(timeGranularity_, timeMarker_, showBlocked_,
          hideDetails_, showResolved_, showHierarchically_, showChangeTools_,
-         new ArrayList(), new ArrayList());
+         new ArrayList<Teams.AssigneeKey>(), new ArrayList<String>());
   }
 
   public boolean showEachUserOnOneRow() {
@@ -89,7 +95,7 @@ public class TimeScheduleDisplayPreferences {
       (timeGranularity_, timeMarker_, showBlocked_, hideDetails_, showResolved_, 
        false, showChangeTools_);
 
-    Set<Teams.UserTimeKey> addedAlready = new TreeSet();
+    Set<Teams.UserTimeKey> addedAlready = new TreeSet<Teams.UserTimeKey>();
     for (Teams.AssigneeKey userKey : graph.getAssignedUserDetails().keySet()) {
       if (showUser.equals(userKey.getUsername())) {
         Teams.UserTimeKey timeKey = graph.getAllocatedUser(userKey);
@@ -115,7 +121,7 @@ public class TimeScheduleDisplayPreferences {
       (timeGranularity_, timeMarker_, showBlocked_, hideDetails_, showResolved_, 
        false, showChangeTools_);
 
-    Set<Teams.UserTimeKey> addedAlready = new TreeSet();
+    Set<Teams.UserTimeKey> addedAlready = new TreeSet<Teams.UserTimeKey>();
     for (Teams.AssigneeKey userKey : graph.getAssignedUserDetails().keySet()) {
       if (showTeamId.equals(userKey.getTeamId())) {
         Teams.UserTimeKey timeKey = graph.getAllocatedUser(userKey);

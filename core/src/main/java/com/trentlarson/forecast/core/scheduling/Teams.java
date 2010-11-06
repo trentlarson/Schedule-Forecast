@@ -13,6 +13,7 @@ public class Teams {
      team with no individual, or 3) a specific individual on a
      specific team.  (It cannot be unassigned to both team and user.)
    */
+  // WARNING: When you specify the generics on one of these comparators, the TimeScheduleTests get an error.
   public static class UserTimeKey implements Comparable {
     private Long teamId;
     private String username;
@@ -150,6 +151,7 @@ public class Teams {
   }
 
 
+  // WARNING: When you specify the generics on one of these comparators, the TimeScheduleTests get an error.
   public static class HoursUserComparator implements Comparator {
     public int compare(Object o1, Object o2) {
       TeamHours t1 = (TeamHours) o1;
@@ -159,6 +161,7 @@ public class Teams {
         .compareTo(t2.getTeamId() + (t2.getUsername() == null ? "" : t2.getUsername()));
     }
   }
+  // WARNING: When you specify the generics on one of these comparators, the TimeScheduleTests get an error.
   public static class HoursDateComparator implements Comparator {
     public int compare(Object o1, Object o2) {
       TeamHours t1 = (TeamHours) o1;

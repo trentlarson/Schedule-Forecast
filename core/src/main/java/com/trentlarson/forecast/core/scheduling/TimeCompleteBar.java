@@ -1,7 +1,7 @@
 package com.trentlarson.forecast.core.scheduling;
 
-import java.util.*;
 import java.text.DecimalFormat;
+import java.util.Iterator;
 
 public class TimeCompleteBar {
 
@@ -28,7 +28,7 @@ public class TimeCompleteBar {
     if (tree.getResolved()) {
       totals.finished = 1;
     }
-    for (Iterator iter = tree.getSubtasks().iterator(); iter.hasNext(); ) {
+    for (Iterator<TimeSchedule.IssueWorkDetail> iter = tree.getSubtasks().iterator(); iter.hasNext(); ) {
       IssueTree subtree = (IssueTree) iter.next();
       TotalAndFinished subtotals = numIssues(subtree);
       totals.total = totals.total + subtotals.total; 

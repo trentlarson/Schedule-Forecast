@@ -13,8 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import com.icentris.sql.SimpleSQL;
 import com.trentlarson.forecast.core.helper.ForecastUtil;
 import com.trentlarson.forecast.core.scheduling.IssueDigraph;
-import com.trentlarson.forecast.core.scheduling.IssueTree;
 import com.trentlarson.forecast.core.scheduling.IssueLoader;
+import com.trentlarson.forecast.core.scheduling.IssueTree;
 import com.trentlarson.forecast.core.scheduling.TimeScheduleCreatePreferences;
 import com.trentlarson.forecast.core.scheduling.TimeScheduleLoader;
 import com.trentlarson.forecast.core.scheduling.TimeScheduleModifyWriter;
@@ -135,9 +135,9 @@ public class TimeScheduleAction {
   public static void modifyPriorities(HttpServletRequest request) {
     IssueDigraph workingGraph = getGraph();
     boolean oneChanged = false;
-    for (Iterator issueIter = workingGraph.getIssueSchedules().keySet().iterator();
+    for (Iterator<String> issueIter = workingGraph.getIssueSchedules().keySet().iterator();
          issueIter.hasNext(); ) {
-      String issueKey = (String) issueIter.next();
+      String issueKey = issueIter.next();
       IssueTree detail = workingGraph.getIssueTree(issueKey);
       if (!detail.getResolved()
           &&
@@ -192,9 +192,9 @@ public class TimeScheduleAction {
   public static void revertPriorities() {
     IssueDigraph workingGraph = getGraph();
     boolean oneChanged = false;
-    for (Iterator issueIter = workingGraph.getIssueSchedules().keySet().iterator();
+    for (Iterator<String> issueIter = workingGraph.getIssueSchedules().keySet().iterator();
          issueIter.hasNext(); ) {
-      String issueKey = (String) issueIter.next();
+      String issueKey = issueIter.next();
       IssueTree detail = workingGraph.getIssueTree(issueKey);
       if (!detail.getResolved()) {
         // change back if the priority has changed
@@ -244,9 +244,9 @@ public class TimeScheduleAction {
       changes.append("<tr><td>Key</td><td>Summary</td><td>Before</td><td>Now</td><td>Before</td><td>Now</td><td>Before</td><td>Now</td></tr>\n");
 
       // loop through and save issue changes
-      for (Iterator issueIter = workingGraph.getIssueSchedules().keySet().iterator();
+      for (Iterator<String> issueIter = workingGraph.getIssueSchedules().keySet().iterator();
            issueIter.hasNext(); ) {
-        String issueKey = (String) issueIter.next();
+        String issueKey = issueIter.next();
         IssueTree detail = workingGraph.getIssueTree(issueKey);
         if (detail.getPriorityOrig() != detail.getPriority()
             || detail.getEstimateOrig() != detail.getEstimate()

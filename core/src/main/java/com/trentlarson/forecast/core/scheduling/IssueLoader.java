@@ -115,12 +115,14 @@ public class IssueLoader {
 
       // load helper data: team data
       List<Team> allTeams;
-      Map<Long,Team> idToTeam = new HashMap<Long, Team>();
       {
+        Map<Long,Team> idToTeam = new HashMap<Long, Team>();
         org.hibernate.Session sess = TeamHoursUtil.HibernateUtil.currentSession();
-        allTeams = sess.createQuery("from Team order by name").list();
+        @SuppressWarnings("unchecked")
+        List<Team> allTeams2 = sess.createQuery("from Team order by name").list();
+        allTeams = allTeams2;
         TeamHoursUtil.HibernateUtil.closeSession();
-        for (Team team : allTeams) {
+        for (Team team : allTeams2) {
           idToTeam.put(team.getId(), team);
         }
       }
@@ -285,6 +287,7 @@ public class IssueLoader {
     }
 
     // get the map of users to their tasks and load all issues for each
+    @SuppressWarnings("unchecked")
     Set<String> newAssignees = (Set<String>) allAssignees.clone();
     {
       log4jLog.debug("Will look for unassigned issues.");

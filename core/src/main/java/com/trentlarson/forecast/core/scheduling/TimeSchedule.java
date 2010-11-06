@@ -1,9 +1,22 @@
 package com.trentlarson.forecast.core.scheduling;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
+
 import org.apache.log4j.Category;
 
 public class TimeSchedule {
@@ -291,7 +304,7 @@ public class TimeSchedule {
   }
 
 
-  public static class IssueSchedule implements Comparable {
+  public static class IssueSchedule implements Comparable<IssueSchedule> {
     private final IssueWorkDetail issue;
     private final Date beginDate; // date work on this task should begin, NOT adjusted by workday hours
     private final Date endDate; // date work on this task should complete, NOT adjusted by workday hours
@@ -310,8 +323,8 @@ public class TimeSchedule {
       this.splitAroundOthers = splitAroundOthers_;
       this.hoursWorked = hoursWorked_;
     }
-    public int compareTo(Object object) {
-      return getBeginDate().compareTo(((IssueSchedule)object).getBeginDate());
+    public int compareTo(IssueSchedule object) {
+      return getBeginDate().compareTo((object).getBeginDate());
     }
     public String toString() {
       return "IssueSchedule " + issue.getKey();
@@ -451,9 +464,9 @@ public class TimeSchedule {
     protected int priority = 0;
     protected Date dueDate = null, mustStartOnDate = null;
     // issues that "must be done before" this one
-    protected final SortedSet<IssueWorkDetail> precursors = new TreeSet();
+    protected final SortedSet<IssueWorkDetail> precursors = new TreeSet<IssueWorkDetail>();
     // issues that "are part of" this one
-    protected final Set<IssueWorkDetail> subtasks = new TreeSet();
+    protected final Set<IssueWorkDetail> subtasks = new TreeSet<IssueWorkDetail>();
 
     /**
        @param issueEstSecondsRaw_ estimate in seconds
@@ -486,7 +499,7 @@ public class TimeSchedule {
     public Set<IssueWorkDetail> getPrecursors() { return precursors; }
     public Set<IssueWorkDetail> getSubtasks() { return subtasks; }
     public Set<IssueWorkDetail> getIssuesToScheduleFirst() {
-      Set<IssueWorkDetail> result = new TreeSet();
+      Set<IssueWorkDetail> result = new TreeSet<IssueWorkDetail>();
       result.addAll(precursors);
       result.addAll(subtasks);
       return result;
@@ -505,7 +518,7 @@ public class TimeSchedule {
      available.  Implementations must use the getStartOfTimeSpan for
      Comparable interface (and 'equals' method).
    */
-  public static interface HoursForTimeSpan extends Comparable {
+  public static interface HoursForTimeSpan extends Comparable<HoursForTimeSpan> {
     public Date getStartOfTimeSpan();
     public double getHoursAvailable();
   }
@@ -526,9 +539,9 @@ public class TimeSchedule {
     public double getHoursAvailable() {
       return hoursAvailable;
     }
-    public int compareTo(Object o) {
+    public int compareTo(HoursForTimeSpan o) {
       return getStartOfTimeSpan()
-        .compareTo(((HoursForTimeSpan)o).getStartOfTimeSpan());
+        .compareTo((o).getStartOfTimeSpan());
     }
     public boolean equals(Object o) {
       if (o instanceof HoursForTimeSpan) {
@@ -550,10 +563,8 @@ public class TimeSchedule {
   /**
      sorts by start date, then priority, then due date
    */
-  public static class DetailPriorityComparator implements Comparator {
-    public int compare(Object o1, Object o2) {
-      IssueWorkDetail d1 = (IssueWorkDetail) o1;
-      IssueWorkDetail d2 = (IssueWorkDetail) o2;
+  public static class DetailPriorityComparator implements Comparator<IssueWorkDetail> {
+    public int compare(IssueWorkDetail d1, IssueWorkDetail d2) {
       // first determinant is whether there's a start date on it
       if (d1.getMustStartOnDate() == null && d2.getMustStartOnDate() != null) {
         return 1;
@@ -884,7 +895,7 @@ public class TimeSchedule {
   (Calendar thisEstBegin, int estSeconds, WeeklyWorkHours weeklyHours) {
 
     Calendar nextWorkChunkBegins = (Calendar) thisEstBegin.clone();
-    List<WorkedHoursAndRates> hoursWorked = new ArrayList();
+    List<WorkedHoursAndRates> hoursWorked = new ArrayList<WorkedHoursAndRates>();
     int estSecsRemaining = estSeconds;
 
     do {
@@ -1012,12 +1023,12 @@ public class TimeSchedule {
      Loop through non-contiguous list looking for all matches so we can
      get an accurate next-begin date.
   */
-  private static Calendar checkWholeContiguousList(Calendar endOfFirstContiguousBlock, ArrayList nonContiguousSchedules) {
+  private static Calendar checkWholeContiguousList(Calendar endOfFirstContiguousBlock, List<IssueSchedule> nonContiguousSchedules) {
     boolean stillFinding;
     do {
       stillFinding = false;
-      for (Iterator issueIter = nonContiguousSchedules.iterator(); issueIter.hasNext(); ) {
-        IssueSchedule schedule = (IssueSchedule) issueIter.next();
+      for (Iterator<IssueSchedule> issueIter = nonContiguousSchedules.iterator(); issueIter.hasNext(); ) {
+        IssueSchedule schedule = issueIter.next();
         if (schedule.getBeginDate().equals(endOfFirstContiguousBlock.getTime())) {
           // it lines up with my block of time, so shift the block
           endOfFirstContiguousBlock = schedule.getNextEstBegin();
@@ -1118,10 +1129,9 @@ public class TimeSchedule {
           Calendar maxEndOfPrecursors = null;
           Set<IssueWorkDetail> allToDoBefore =
             currentDetail.getIssuesToScheduleFirst();
-          for (Iterator preIter = allToDoBefore.iterator();
+          for (Iterator<IssueWorkDetail> preIter = allToDoBefore.iterator();
                preIter.hasNext() && allPrecursorsScheduled; ) {
-            IssueWorkDetail preDetail = (IssueWorkDetail) preIter.next();
-            String preKey = preDetail.getKey();
+            IssueWorkDetail preDetail = preIter.next();
             if (!schedulesForKeys.containsKey(preDetail.getKey())
                 && !preDetail.getResolved()) {
               log4jLog.info("Postponing issue " + currentDetail.getKey() + " until " + preDetail.getKey() + " is scheduled.");
@@ -1165,7 +1175,7 @@ public class TimeSchedule {
             List<IssueSchedule> splitAroundOthers = new ArrayList<IssueSchedule>();
             int issueEstSeconds = (int) (currentDetail.getEstimate() * multiplier);
             NextBeginAndHoursWorked nextAndWorked =
-              new NextBeginAndHoursWorked(nextEstBegin, new ArrayList());
+              new NextBeginAndHoursWorked(nextEstBegin, new ArrayList<WorkedHoursAndRates>());
 
             if (currentDetail.getResolved()) {
               // just mark this done with the current time
@@ -1174,6 +1184,7 @@ public class TimeSchedule {
 
               log4jLog.debug(currentDetail.getKey() + " est * mult: "
                              + (currentDetail.getEstimate() / 3600.0) + "h * " + multiplier);
+              @SuppressWarnings("unchecked")
               ArrayList<IssueSchedule> nonContigsThatMayOverlap =
                 (ArrayList<IssueSchedule>) nonContiguousSchedules.clone();
 
@@ -1253,8 +1264,8 @@ public class TimeSchedule {
   }
 
 
-  protected static Set findAllPrecursorsForAssignee(IssueWorkDetail issue) {
-    return findAllPrecursorsForAssignee(issue, issue.getTimeAssignee(), new TreeSet(), new TreeSet());
+  protected static Set<IssueWorkDetail> findAllPrecursorsForAssignee(IssueWorkDetail issue) {
+    return findAllPrecursorsForAssignee(issue, issue.getTimeAssignee(), new TreeSet<IssueWorkDetail>(), new TreeSet<String>());
   }
   /**
      @param found Set of IssueTree objects, to which issues are
@@ -1274,7 +1285,9 @@ public class TimeSchedule {
       if (pre.getTimeAssignee().equals(assignee)) {
         found.add(pre);
       }
-      findAllPrecursorsForAssignee(pre, assignee, found, (TreeSet) parents.clone());
+      @SuppressWarnings("unchecked")
+      TreeSet<String> copyOfParents = (TreeSet<String>) parents.clone();
+      findAllPrecursorsForAssignee(pre, assignee, found, copyOfParents);
     }
     return found;
   }

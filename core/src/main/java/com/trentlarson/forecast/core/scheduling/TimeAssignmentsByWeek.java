@@ -1,10 +1,14 @@
 package com.trentlarson.forecast.core.scheduling;
 
-import java.util.*;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+
 import com.icentris.sql.SimpleSQL;
 import com.trentlarson.forecast.core.helper.ForecastUtil;
 
@@ -18,8 +22,8 @@ public class TimeAssignmentsByWeek {
     to the first moment of that work day in the next week (inclusive).
 
    */
-  public static List loadWeek(int selectedWeekNum) throws SQLException {
-    List issues = new ArrayList();
+  public static List<IssueInfo> loadWeek(int selectedWeekNum) throws SQLException {
+    List<IssueInfo> issues = new ArrayList<IssueInfo>();
     Connection conn = null;
     ResultSet rset = null;
     try {
@@ -100,10 +104,8 @@ public class TimeAssignmentsByWeek {
     public Boolean getResolved() { return resolved; }
   }
 
-  public static class IssueInfoAssigneeSorter implements Comparator {
-    public int compare(Object o1, Object o2) {
-      IssueInfo ii1 = (IssueInfo) o1;
-      IssueInfo ii2 = (IssueInfo) o2;
+  public static class IssueInfoAssigneeSorter implements Comparator<IssueInfo> {
+    public int compare(IssueInfo ii1, IssueInfo ii2) {
       return
         ii1.getAssignee() == null
         ? (ii2.getAssignee() == null
@@ -115,21 +117,19 @@ public class TimeAssignmentsByWeek {
     }
   }
 
-  public static class IssueInfoPrioritySorter implements Comparator {
-    public int compare(Object o1, Object o2) {
+  public static class IssueInfoPrioritySorter implements Comparator<IssueInfo> {
+    public int compare(IssueInfo ii1, IssueInfo ii2) {
       return
-        ((IssueInfo) o1).getPrioritySeq()
-        .compareTo(((IssueInfo) o2).getPrioritySeq());
+        ((IssueInfo) ii1).getPrioritySeq()
+        .compareTo(((IssueInfo) ii2).getPrioritySeq());
     }
   }
 
   /**
      Is this also in TimeSchedule.java?
    */
-  public static class IssueDueDateSorter implements Comparator {
-    public int compare(Object o1, Object o2) {
-      IssueInfo ii1 = (IssueInfo) o1;
-      IssueInfo ii2 = (IssueInfo) o2;
+  public static class IssueDueDateSorter implements Comparator<IssueInfo> {
+    public int compare(IssueInfo ii1, IssueInfo ii2) {
       return
         ii1.getDueDate() == null
         ? (ii2.getDueDate() == null
@@ -141,10 +141,8 @@ public class TimeAssignmentsByWeek {
     }
   }
 
-  public static class IssueCompanySorter implements Comparator {
-    public int compare(Object o1, Object o2) {
-      IssueInfo ii1 = (IssueInfo) o1;
-      IssueInfo ii2 = (IssueInfo) o2;
+  public static class IssueCompanySorter implements Comparator<IssueInfo> {
+    public int compare(IssueInfo ii1, IssueInfo ii2) {
       return ii1.getCompany().compareTo(ii2.getCompany());
     }
   }

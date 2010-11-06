@@ -19,20 +19,14 @@ package com.trentlarson.forecast.core.helper;
 //import org.ofbiz.core.entity.GenericValue;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-//import java.util.Collection;
 import java.util.Date;
-//import java.util.HashMap;
-//import java.util.Iterator;
 import java.util.List;
-//import java.util.Map;
 import java.util.StringTokenizer;
 
 
@@ -47,7 +41,7 @@ public class ForecastUtil extends ForecastConstants {
     */
 
     public static List<String> parseCommaSeparatedList(String commaSeparatedList) {
-        List<String> list = new ArrayList();
+        List<String> list = new ArrayList<String>();
         if (commaSeparatedList != null) {
           StringTokenizer st = new StringTokenizer(commaSeparatedList, ",");
           while ( st.hasMoreTokens() ) {
