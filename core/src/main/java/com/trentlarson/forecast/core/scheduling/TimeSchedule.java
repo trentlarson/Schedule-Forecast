@@ -35,9 +35,6 @@ public class TimeSchedule {
   private static final java.text.SimpleDateFormat SLASH_TIME = new java.text.SimpleDateFormat("yyyy.MM.dd.HH:mm");
 
 
-  private static final String MULTIPLIER_REQ_NAME = "multiplier";
-  private static final String MULTIPLIER_SES_NAME = "multiplier";
-
   // OK, I'd like to shorten these strings (eg. to just "scheduling.Time"),
   // but then the Jira page to set logging levels doesn't work. Any ideas? TNL
   protected static final Category log4jLog = Category.getInstance("com.trentlarson.forecast.core.scheduling.TimeSchedule");

@@ -27,8 +27,6 @@ public class TimeScheduleAction {
   private static String adjustmentChangedBy = null;
   private static Date adjustmentChangedTime = null;
 
-  private static String GRAPH_SES_NAME = "my time graph";
-
   public static String MULTIPLIER_REQ_NAME = "time_multiplier";
 
 
