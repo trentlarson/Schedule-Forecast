@@ -4,20 +4,20 @@ import java.lang.reflect.UndeclaredThrowableException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.text.ParseException;
-import java.util.*;
+import java.util.Date;
+import java.util.Iterator;
+
 import javax.servlet.http.HttpServletRequest;
+
 import com.icentris.sql.SimpleSQL;
-import com.trentlarson.forecast.core.helper.ForecastConstants;
 import com.trentlarson.forecast.core.helper.ForecastUtil;
 import com.trentlarson.forecast.core.scheduling.IssueDigraph;
 import com.trentlarson.forecast.core.scheduling.IssueTree;
-import com.trentlarson.forecast.core.scheduling.TimeSchedule;
+import com.trentlarson.forecast.core.scheduling.IssueLoader;
 import com.trentlarson.forecast.core.scheduling.TimeScheduleCreatePreferences;
 import com.trentlarson.forecast.core.scheduling.TimeScheduleLoader;
 import com.trentlarson.forecast.core.scheduling.TimeScheduleModifyWriter;
-import com.trentlarson.forecast.core.scheduling.TimeScheduleWriter;
 
 public class TimeScheduleAction {
 
@@ -305,7 +305,7 @@ public class TimeScheduleAction {
 
           // now make the DB changes
           String sql =
-            "update " + TimeScheduleLoader.DB_ISSUE_TABLE + " set priority = (select id from priority where sequence = ?), "
+            "update " + IssueLoader.DB_ISSUE_TABLE + " set priority = (select id from priority where sequence = ?), "
             + " timeestimate = ?, duedate = ? where pkey = ?";
           Timestamp date = null;
           if (detail.getDueDate() != null) {

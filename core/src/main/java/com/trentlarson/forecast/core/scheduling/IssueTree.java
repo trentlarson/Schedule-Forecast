@@ -70,7 +70,7 @@ public class IssueTree extends TimeSchedule.IssueWorkDetailOriginal implements C
     this.timeTeamId = assignee.getTeamId();
     // REFACTOR to pull the real team name (multiple instances in these files)
     this.timeTeamName =
-      TimeScheduleLoader.teamKeyFromIssueKey(assignee.getTeamId(), getKey());
+      IssueLoader.teamKeyFromIssueKey(assignee.getTeamId(), getKey());
     this.timeAssignee = assignee.toString();
   }
 

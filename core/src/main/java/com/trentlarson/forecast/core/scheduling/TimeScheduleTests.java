@@ -17,7 +17,7 @@ public class TimeScheduleTests {
   /**
    * This generates HTML output that can be compared with gantt-test.html
    */
-  public static void main_test(String[] args) throws Exception {
+  public static void main(String[] args) throws Exception {
 
     //log4jLog.setLevel(org.apache.log4j.Level.DEBUG);
     //TimeSchedule.log4jLog.setLevel(org.apache.log4j.Level.DEBUG);
@@ -877,7 +877,7 @@ public class TimeScheduleTests {
 
 
 
-  public static void main(String[] args) throws Exception {
+  public static void main2(String[] args) throws Exception {
     /**
     String DRIVER = "oracle.jdbc.driver.OracleDriver";
     String URL = "jdbc:oracle:thin:@ora2.hq.icentris:1521:icpr1";
@@ -885,7 +885,8 @@ public class TimeScheduleTests {
     String PASSWORD = "";
     */
     String DRIVER = "com.mysql.jdbc.Driver";
-    String URL = "jdbc:mysql://10.0.2.16:8319/jiradb?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8";
+    //String URL = "jdbc:mysql://10.0.2.16:8319/jiradb?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8";
+    String URL = "jdbc:mysql://localhost:3306/jiradb_411?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8";
     String USERNAME = "jira";
     String PASSWORD = "jirapass";
 
