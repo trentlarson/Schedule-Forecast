@@ -1467,9 +1467,9 @@ public class TimeSchedule {
   */
   public static void writeIssueSchedule
     (List<IssueSchedule> fullSchedule,
-     Map<String,WeeklyWorkHours> userWeeklyHours,
      double multiplier,
-     boolean showResolved, java.io.Writer out)
+     boolean showResolved,
+     java.io.Writer out)
     throws java.io.IOException {
 
     out.write("<table border='1'>\n");
@@ -1612,7 +1612,6 @@ public class TimeSchedule {
     final Date startDate = SLASH_DATE.parse("2005/04/04");
 
     Map userDetails = new HashMap();
-    Map userWeeklyHours = new TreeMap<String,SortedSet<HoursForTimeSpan>>();
 
     List details1 = new ArrayList();
     String user = "trent--team_1";
@@ -1649,11 +1648,6 @@ public class TimeSchedule {
     test4.getPrecursors().add(test6);
 
     userDetails.put(user, details1);
-    {
-      SortedSet<HoursForTimeSpan> hours = new TreeSet<HoursForTimeSpan>();
-      hours.add(new HoursForTimeSpanOriginal(startDate, weeklyHours));
-      userWeeklyHours.put(user, hours);
-    }
 
     List details2 = new ArrayList();
     user = "nobody--team_1";
@@ -1663,11 +1657,6 @@ public class TimeSchedule {
         slashFormatter.parse("2005/06/01"), null, 0));
 
     userDetails.put(user, details2);
-    {
-      SortedSet<HoursForTimeSpan> hours = new TreeSet<HoursForTimeSpan>();
-      hours.add(new HoursForTimeSpanOriginal(startDate, weeklyHours));
-      userWeeklyHours.put(user, hours);
-    }
 
     setInitialOrdering(userDetails);
 
@@ -2025,7 +2014,7 @@ out.flush();
           createIssueSchedules
           ((List) userDetails.get(user), userRanges, new HashMap(), multiplier,
            slashFormatter.parse("2005/04/01"));
-        writeIssueSchedule(schedules, userWeeklyHours, multiplier, true, out);
+        writeIssueSchedule(schedules, multiplier, true, out);
       }
     }
 

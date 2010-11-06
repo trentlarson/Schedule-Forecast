@@ -17,8 +17,8 @@ import com.trentlarson.forecast.core.dao.TeamHours;
 public class TimeScheduleTests {
 
   public static void main(String[] args) throws Exception {
-    //unitMain(args);
-    integrationMain(args);
+    unitMain(args);
+    //integrationMain(args);
   }
   
   
@@ -111,11 +111,8 @@ public class TimeScheduleTests {
         (graph.getIssueSchedules().get
          (((TimeSchedule.IssueWorkDetail) userIssueList.get(i)).getKey()));
     }
-    Map range =
-      TimeScheduleLoader.weeklyHoursToRange
-      (TimeScheduleLoader.teamToUserHours(userWeeklyHours));
     TimeSchedule.writeIssueSchedule
-      (schedule, range, sPrefs.getTimeMultiplier(), true, out);
+      (schedule, sPrefs.getTimeMultiplier(), true, out);
 
   }
 
@@ -159,11 +156,8 @@ public class TimeScheduleTests {
         (graph.getIssueSchedules().get
          (((TimeSchedule.IssueWorkDetail) userIssueList.get(i)).getKey()));
     }
-    Map range =
-      TimeScheduleLoader.weeklyHoursToRange
-      (TimeScheduleLoader.teamToUserHours(userWeeklyHours));
     TimeSchedule.writeIssueSchedule
-      (schedule, range, sPrefs.getTimeMultiplier(), true, out);
+      (schedule, sPrefs.getTimeMultiplier(), true, out);
 
   }
     
@@ -240,11 +234,8 @@ public class TimeScheduleTests {
         (graph.getIssueSchedules().get
          (((TimeSchedule.IssueWorkDetail) userIssueList.get(i)).getKey()));
     }
-    Map range =
-      TimeScheduleLoader.weeklyHoursToRange
-      (TimeScheduleLoader.teamToUserHours(userWeeklyHours));
     TimeSchedule.writeIssueSchedule
-      (schedule, range, sPrefs.getTimeMultiplier(), true, out);
+      (schedule, sPrefs.getTimeMultiplier(), true, out);
 
   }
 
@@ -344,11 +335,8 @@ public class TimeScheduleTests {
         (graph.getIssueSchedules().get
          (((TimeSchedule.IssueWorkDetail) userIssueList.get(i)).getKey()));
     }
-    Map range =
-      TimeScheduleLoader.weeklyHoursToRange
-      (TimeScheduleLoader.teamToUserHours(userWeeklyHours));
     TimeSchedule.writeIssueSchedule
-      (schedule, range, sPrefs.getTimeMultiplier(), true, out);
+      (schedule, sPrefs.getTimeMultiplier(), true, out);
 
 
     // print out team table schedule for trent on team 2
@@ -360,11 +348,8 @@ public class TimeScheduleTests {
         (graph.getIssueSchedules().get
          (((TimeSchedule.IssueWorkDetail) userIssueList.get(i)).getKey()));
     }
-    range =
-      TimeScheduleLoader.weeklyHoursToRange
-      (TimeScheduleLoader.teamToUserHours(userWeeklyHours));
     TimeSchedule.writeIssueSchedule
-      (schedule, range, sPrefs.getTimeMultiplier(), true, out);
+      (schedule, sPrefs.getTimeMultiplier(), true, out);
 
     // print out team table schedule for trent on no team
     userKey = new Teams.AssigneeKey(null, "trent");
@@ -375,11 +360,8 @@ public class TimeScheduleTests {
         (graph.getIssueSchedules().get
          (((TimeSchedule.IssueWorkDetail) userIssueList.get(i)).getKey()));
     }
-    range =
-      TimeScheduleLoader.weeklyHoursToRange
-      (TimeScheduleLoader.teamToUserHours(userWeeklyHours));
     TimeSchedule.writeIssueSchedule
-      (schedule, range, sPrefs.getTimeMultiplier(), true, out);
+      (schedule, sPrefs.getTimeMultiplier(), true, out);
   }
 
 
@@ -435,11 +417,8 @@ public class TimeScheduleTests {
           (graph.getIssueSchedules().get
            (((TimeSchedule.IssueWorkDetail) userIssueList.get(i)).getKey()));
       }
-      Map range =
-        TimeScheduleLoader.weeklyHoursToRange
-        (TimeScheduleLoader.teamToUserHours(userWeeklyHours));
       TimeSchedule.writeIssueSchedule
-        (schedule, range, sPrefs.getTimeMultiplier(), true, out);
+        (schedule, sPrefs.getTimeMultiplier(), true, out);
 
       // print out single-user Gantt chart
       out.println("<br><br>");
@@ -635,11 +614,8 @@ public class TimeScheduleTests {
           (graph.getIssueSchedules().get
            (((TimeSchedule.IssueWorkDetail) userIssueList.get(i)).getKey()));
       }
-      Map range =
-        TimeScheduleLoader.weeklyHoursToRange
-        (TimeScheduleLoader.teamToUserHours(userWeeklyHours));
       TimeSchedule.writeIssueSchedule
-        (schedule, range, sPrefs.getTimeMultiplier(), true, out);
+        (schedule, sPrefs.getTimeMultiplier(), true, out);
 
       out.println("<br><br>");
       out.println("Tree for " + userKey + ".<br>");
@@ -802,7 +778,7 @@ public class TimeScheduleTests {
         TimeScheduleLoader.weeklyHoursToRange
         (TimeScheduleLoader.teamToUserHours(userWeeklyHours));
       TimeSchedule.writeIssueSchedule
-        (schedule, range, sPrefs.getTimeMultiplier(), true, out);
+        (schedule, sPrefs.getTimeMultiplier(), true, out);
     }
 
 
@@ -931,17 +907,16 @@ public class TimeScheduleTests {
     {
       String user = "trent";
       System.out.println("Schedule for " + user + ".<br>");
-      List<TimeSchedule.IssueSchedule> schedule = new ArrayList();
-      List userIssueList = (List) graph.getAssignedUserDetails().get(new Teams.AssigneeKey(null, user));
+      List<TimeSchedule.IssueSchedule> schedule = new ArrayList<TimeSchedule.IssueSchedule>();
+      List<IssueTree> userIssueList = (List<IssueTree>) graph.getAssignedUserDetails().get(new Teams.AssigneeKey(null, user));
       for (int i = 0; i < userIssueList.size(); i++) {
         schedule.add
           (graph.getIssueSchedules().get
            (((TimeSchedule.IssueWorkDetail) userIssueList.get(i)).getKey()));
       }
-      Map range = graph.getUserWeeklyHoursAvailable();
       TimeSchedule.writeIssueSchedule
-        (schedule, range, sPrefs.getTimeMultiplier(),
-         true, new PrintWriter(System.out));
+        (schedule, sPrefs.getTimeMultiplier(), true,
+         new PrintWriter(System.out));
     }
 
     TimeScheduleDisplayPreferences dPrefs =
