@@ -16,13 +16,20 @@ import com.trentlarson.forecast.core.dao.TeamHours;
 
 public class TimeScheduleTests {
 
+  public static void main(String[] args) throws Exception {
+    //unitMain(args);
+    integrationMain(args);
+  }
+  
+  
+  
   private static final SimpleDateFormat SLASH_DATE = new SimpleDateFormat("yyyy/MM/dd");
   private static final SimpleDateFormat SLASH_TIME = new SimpleDateFormat("yyyy/MM/dd HH:mm");
 
   /**
    * This generates HTML output that can be compared with gantt-test.html
    */
-  public static void main(String[] args) throws Exception {
+  public static void unitMain(String[] args) throws Exception {
 
     //log4jLog.setLevel(org.apache.log4j.Level.DEBUG);
     //TimeSchedule.log4jLog.setLevel(org.apache.log4j.Level.DEBUG);
@@ -896,7 +903,11 @@ public class TimeScheduleTests {
 
 
 
-  public static void main2(String[] args) throws Exception {
+  /**
+   * This reads from the database set up by jira-test-db.sql
+   * and creates the output found in gantt-test-db.html
+   */
+  public static void integrationMain(String[] args) throws Exception {
     /**
     String DRIVER = "oracle.jdbc.driver.OracleDriver";
     String URL = "jdbc:oracle:thin:@ora2.hq.icentris:1521:icpr1";
@@ -905,7 +916,8 @@ public class TimeScheduleTests {
     */
     String DRIVER = "com.mysql.jdbc.Driver";
     //String URL = "jdbc:mysql://10.0.2.16:8319/jiradb?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8";
-    String URL = "jdbc:mysql://localhost:3306/jiradb_411?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8";
+    //String URL = "jdbc:mysql://localhost:3306/jiradb_411?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8";
+    String URL = "jdbc:mysql://localhost:3306/test_forecast_jira?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8";
     String USERNAME = "jira";
     String PASSWORD = "jirapass";
 
@@ -913,7 +925,7 @@ public class TimeScheduleTests {
     Connection conn = java.sql.DriverManager.getConnection(URL, USERNAME, PASSWORD);
 
     TimeScheduleCreatePreferences sPrefs = new TimeScheduleCreatePreferences(0, new java.util.Date(), 2.0);
-    IssueDigraph graph = TimeScheduleLoader.getGraph("", new String[]{ "FOURU-8985" }, new String[0], sPrefs, conn);
+    IssueDigraph graph = TimeScheduleLoader.getGraph("", new String[]{ "FOURU-1002" }, new String[0], sPrefs, conn);
 
     // print out single-user time schedule
     {
@@ -921,7 +933,6 @@ public class TimeScheduleTests {
       System.out.println("Schedule for " + user + ".<br>");
       List<TimeSchedule.IssueSchedule> schedule = new ArrayList();
       List userIssueList = (List) graph.getAssignedUserDetails().get(new Teams.AssigneeKey(null, user));
-System.err.println("Your List: " + graph.getAssignedUserDetails());
       for (int i = 0; i < userIssueList.size(); i++) {
         schedule.add
           (graph.getIssueSchedules().get
@@ -935,7 +946,7 @@ System.err.println("Your List: " + graph.getAssignedUserDetails());
 
     TimeScheduleDisplayPreferences dPrefs =
       TimeScheduleDisplayPreferences.createForIssues
-      (1, Calendar.MONTH, true, false, false, new String[]{ "FOURU-895" }, false, graph);
+      (1, Calendar.MONTH, true, false, false, new String[]{ "FOURU-1002" }, false, graph);
 
     TimeScheduleWriter.writeIssueTable(graph, new PrintWriter(System.out), sPrefs, dPrefs);
   }
