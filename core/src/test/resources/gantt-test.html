@@ -1,5 +1,7 @@
 <P>
-<H2>Here are the scheduling tests for team tasks.</H2>
+<H1>Here are the scheduling tests for team tasks.</H2>
+<P>
+<H2>... around a daylight-savings time switch.</H2>
 <table border='1'>
 <tr>
 <td>issue</td>
@@ -25,6 +27,8 @@
 600.0 hours (at 8.0/day) 2006.12.03.16:00-2007.03.18.16:00<br>0.0 hours 2007.03.18.00:00-2007.03.19.20:00<br>151.5 hours (at 8.0/day) 2007.03.19.20:00-2007.04.13.19:30</td>
 </tr>
 </table>
+<P>
+<H2>... for tasks without a team or assignee.</H2>
 I'm still debating whether this is a good idea.
 <table border='1'>
 <tr>
@@ -51,6 +55,8 @@ I'm still debating whether this is a good idea.
 8.0 hours (at 8.0/day) 2006.12.03.16:00-2006.12.04.16:00</td>
 </tr>
 </table>
+<P>
+<H2>... for teams with various time availability.</H2>
 <br><br>
 Tree for User is Team 1 (shouldn't be longer than 2 weeks).<br>
 <table cellspacing='0'>
@@ -286,7 +292,7 @@ Tree for User is Team 1 (shouldn't be longer than 2 weeks).<br>
    <td bgcolor='green'></td>
    <td bgcolor='green'></td>
    <td bgcolor='green'></td>
-   <td bgcolor='lightgreen'></td>
+   <td bgcolor='lightgreen'><span id='TEST-203-middle' style='display:block'></span></td>
    <td bgcolor='lightgreen'></td>
    <td bgcolor='lightgreen'></td>
    <td bgcolor='lightgreen'></td>
@@ -329,7 +335,7 @@ Tree for User is Team 1 (shouldn't be longer than 2 weeks).<br>
    <td bgcolor='green'></td>
    <td bgcolor='green'></td>
    <td bgcolor='green'></td>
-   <td bgcolor='green'></td>
+   <td bgcolor='green'><span id='TEST-200-middle' style='display:block'></span></td>
    <td bgcolor='green'></td>
    <td bgcolor='lightgreen'></td>
    <td bgcolor='lightgreen'></td>
@@ -370,7 +376,7 @@ Tree for User is Team 1 (shouldn't be longer than 2 weeks).<br>
    </td>
    <td bgcolor='green'><span id='TEST-202-start' style='display:block'></span></td>
    <td bgcolor='green'></td>
-   <td bgcolor='green'></td>
+   <td bgcolor='green'><span id='TEST-202-middle' style='display:block'></span></td>
    <td bgcolor='green'></td>
    <td bgcolor='green'></td>
    <td bgcolor='green'></td>
@@ -423,7 +429,7 @@ Tree for User is Team 1 (shouldn't be longer than 2 weeks).<br>
    <td bgcolor='green'></td>
    <td bgcolor='lightgreen'></td>
    <td bgcolor='lightgreen'></td>
-   <td bgcolor='lightgreen'></td>
+   <td bgcolor='lightgreen'><span id='TEST-201-middle' style='display:block'></span></td>
    <td bgcolor='lightgreen'></td>
    <td bgcolor='green'></td>
    <td bgcolor='green'></td>
@@ -480,7 +486,7 @@ Tree for User is Team 1 (shouldn't be longer than 2 weeks).<br>
    <td bgcolor='green'></td>
    <td bgcolor='green'></td>
    <td bgcolor='green'></td>
-   <td bgcolor='lightgreen'></td>
+   <td bgcolor='lightgreen'><span id='TEST-204-middle' style='display:block'></span></td>
    <td bgcolor='lightgreen'></td>
    <td bgcolor='lightgreen'></td>
    <td bgcolor='lightgreen'></td>
@@ -567,6 +573,8 @@ Tree for User is Team 1 (shouldn't be longer than 2 weeks).<br>
 56.0 hours (at 8.0/day) 2005.04.12.16:00-2005.04.21.16:00</td>
 </tr>
 </table>
+<P>
+<H2>... for people split across teams.</H2>
 <br><br>
 Trees with hours on teams with hours: {User trent on any Team=WeeklyWorkHours {Mon Apr 04 00:00:00 MDT 2005=8.0, Mon Apr 18 00:00:00 MDT 2005=30.0}, User trent on Team 1=WeeklyWorkHours {Mon Apr 04 00:00:00 MDT 2005=8.0, Mon Apr 18 00:00:00 MDT 2005=16.0}}
 <br><br>
@@ -1045,7 +1053,7 @@ Trees with hours on teams with hours: {User trent on any Team=WeeklyWorkHours {M
    <td bgcolor='green'></td>
    <td bgcolor='green'></td>
    <td bgcolor='green'></td>
-   <td bgcolor='green'></td>
+   <td bgcolor='green'><span id='TEST-207-middle' style='display:block'></span></td>
    <td bgcolor='green'></td>
    <td bgcolor='lightgreen'></td>
    <td bgcolor='lightgreen'></td>
@@ -1150,7 +1158,7 @@ Trees with hours on teams with hours: {User trent on any Team=WeeklyWorkHours {M
    <td bgcolor='green'></td>
    <td bgcolor='green'></td>
    <td bgcolor='green'></td>
-   <td bgcolor='lightgreen'></td>
+   <td bgcolor='lightgreen'><span id='TEST-208-middle' style='display:block'></span></td>
    <td bgcolor='lightgreen'></td>
    <td bgcolor='lightgreen'></td>
    <td bgcolor='lightgreen'></td>
@@ -1251,7 +1259,7 @@ Trees with hours on teams with hours: {User trent on any Team=WeeklyWorkHours {M
    <td bgcolor='green'></td>
    <td bgcolor='green'></td>
    <td bgcolor='green'></td>
-   <td bgcolor='green'></td>
+   <td bgcolor='green'><span id='TEST-209-middle' style='display:block'></span></td>
    <td bgcolor='green'></td>
    <td bgcolor='lightgreen'></td>
    <td bgcolor='lightgreen'></td>
@@ -1350,7 +1358,7 @@ Trees with hours on teams with hours: {User trent on any Team=WeeklyWorkHours {M
    <td bgcolor='green'></td>
    <td bgcolor='green'></td>
    <td bgcolor='green'></td>
-   <td bgcolor='green'></td>
+   <td bgcolor='green'><span id='TEST-210-middle' style='display:block'></span></td>
    <td bgcolor='green'></td>
    <td bgcolor='green'></td>
    <td bgcolor='green'></td>
@@ -1449,7 +1457,7 @@ Trees with hours on teams with hours: {User trent on any Team=WeeklyWorkHours {M
    <td bgcolor='lightgreen'></td>
    <td bgcolor='lightgreen'></td>
    <td bgcolor='lightgreen'></td>
-   <td bgcolor='green'></td>
+   <td bgcolor='green'><span id='TEST-211-middle' style='display:block'></span></td>
    <td bgcolor='green'></td>
    <td bgcolor='green'></td>
    <td bgcolor='green'></td>
@@ -1550,7 +1558,7 @@ Trees with hours on teams with hours: {User trent on any Team=WeeklyWorkHours {M
    <td bgcolor='green'></td>
    <td bgcolor='lightgreen'></td>
    <td bgcolor='lightgreen'></td>
-   <td bgcolor='lightgreen'></td>
+   <td bgcolor='lightgreen'><span id='TEST-212-middle' style='display:block'></span></td>
    <td bgcolor='lightgreen'></td>
    <td bgcolor='green'></td>
    <td bgcolor='green'></td>
@@ -1583,7 +1591,7 @@ Trees with hours on teams with hours: {User trent on any Team=WeeklyWorkHours {M
    <td bgcolor='green'></td>
    <td bgcolor='lightgreen'></td>
    <td bgcolor='lightgreen'></td>
-   <td bgcolor='lightgreen'></td>
+   <td bgcolor='lightgreen'><span id='TEST-205-middle' style='display:block'></span></td>
    <td bgcolor='lightgreen'></td>
    <td bgcolor='green'></td>
    <td bgcolor='green'></td>
@@ -1696,7 +1704,7 @@ Trees with hours on teams with hours: {User trent on any Team=WeeklyWorkHours {M
    <td bgcolor='green'></td>
    <td bgcolor='green'></td>
    <td bgcolor='green'></td>
-   <td bgcolor='green'></td>
+   <td bgcolor='green'><span id='TEST-206-middle' style='display:block'></span></td>
    <td bgcolor='green'></td>
    <td bgcolor='lightgreen'></td>
    <td bgcolor='lightgreen'></td>
@@ -1876,7 +1884,7 @@ Trees with hours on teams with hours: {User trent on any Team=WeeklyWorkHours {M
 </tr>
 </table>
 <P>
-<H2>Here are the scheduling tests for tasks with a starting time.</H2>
+<H2>... for tasks with a starting time.</H2>
 <table border='1'>
 <tr>
 <td>issue</td>
@@ -2155,7 +2163,7 @@ Tree for User trent on Team 1.<br>
    <td></td>
    <td bgcolor='green'><span id='TEST-101-start' style='display:block'></span></td>
    <td bgcolor='green'></td>
-   <td bgcolor='green'></td>
+   <td bgcolor='green'><span id='TEST-101-middle' style='display:block'></span></td>
    <td bgcolor='green'></td>
    <td></td>
    <td></td>
@@ -2202,7 +2210,7 @@ Tree for User trent on Team 1.<br>
    <td bgcolor='lightgreen'></td>
    <td bgcolor='lightgreen'></td>
    <td bgcolor='lightgreen'></td>
-   <td bgcolor='green'></td>
+   <td bgcolor='green'><span id='TEST-100-middle' style='display:block'></span></td>
    <td bgcolor='green'></td>
    <td bgcolor='green'></td>
    <td bgcolor='green'></td>
@@ -2222,8 +2230,8 @@ Tree for User trent on Team 1.<br>
    <td></td>
   </tr>
 </table>
-<p>
-Issue blocked by previous issue with late subtask.
+<P>
+<H2>... for tasks blocked by a previous issue with a late subtask.</H2>
 <br>
 (TEST-22 should be blocked until the 21st.)
 <table cellspacing='0'>
@@ -2478,21 +2486,21 @@ Issue blocked by previous issue with late subtask.
    <td bgcolor='lightgreen'></td>
    <td bgcolor='lightgreen'></td>
    <td bgcolor='lightgreen'></td>
+   <td bgcolor='lightgreen'><span id='TEST-20-middle' style='display:block'></span><span rel='TEST-21-middle' type='subtask' style='display:block'></span></td>
+   <td bgcolor='lightgreen'></td>
+   <td bgcolor='lightgreen'></td>
+   <td bgcolor='lightgreen'></td>
+   <td bgcolor='green'></td>
+   <td bgcolor='green'></td>
    <td bgcolor='lightgreen'></td>
    <td bgcolor='lightgreen'></td>
    <td bgcolor='lightgreen'></td>
    <td bgcolor='lightgreen'></td>
    <td bgcolor='green'></td>
    <td bgcolor='green'></td>
-   <td bgcolor='lightgreen'></td>
-   <td bgcolor='lightgreen'></td>
-   <td bgcolor='lightgreen'></td>
-   <td bgcolor='lightgreen'></td>
    <td bgcolor='green'></td>
    <td bgcolor='green'></td>
-   <td bgcolor='green'></td>
-   <td bgcolor='green'></td>
-   <td bgcolor='green'><span rel='TEST-22-start' style='display:block'></span></td>
+   <td bgcolor='green'><span rel='TEST-22-start' type='successor' style='display:block'></span></td>
    <td bgcolor='green'></td>
    <td></td>
    <td></td>
@@ -2523,7 +2531,7 @@ Issue blocked by previous issue with late subtask.
    <td bgcolor='green'></td>
    <td bgcolor='lightgreen'></td>
    <td bgcolor='lightgreen'></td>
-   <td bgcolor='lightgreen'></td>
+   <td bgcolor='lightgreen'><span id='TEST-21-middle' style='display:block'></span></td>
    <td bgcolor='lightgreen'></td>
    <td bgcolor='green'></td>
    <td bgcolor='green'></td>
@@ -2594,14 +2602,14 @@ Issue blocked by previous issue with late subtask.
    <td></td>
    <td></td>
    <td></td>
-   <td bgcolor='green'><span id='TEST-22-start' style='display:block'></span></td>
+   <td bgcolor='green'><span id='TEST-22-start' style='display:block'></span><span id='TEST-22-middle' style='display:block'></span></td>
    <td bgcolor='green'></td>
    <td></td>
    <td></td>
   </tr>
 </table>
 <P>
-<H2>Here are the scheduling tests for tasks with complicated dependencies.</H2>
+<H2>... for tasks with complicated dependencies.</H2>
 <p>Creating issues without dependencies...<p>
 <table border='1'>
 <tr>
@@ -2925,7 +2933,7 @@ Tree for User ken on Team 1.<br>
    </td>
    <td>
    </td>
-   <td bgcolor='green'><span id='TEST--4-start' style='display:block'></span></td>
+   <td bgcolor='green'><span id='TEST--4-start' style='display:block'></span><span id='TEST--4-middle' style='display:block'></span></td>
    <td bgcolor='green'></td>
    <td></td>
    <td></td>
@@ -2976,7 +2984,7 @@ Tree for User ken on Team 1.<br>
    </td>
    <td></td>
    <td></td>
-   <td bgcolor='green'><span id='TEST--1-start' style='display:block'></span></td>
+   <td bgcolor='green'><span id='TEST--1-start' style='display:block'></span><span id='TEST--1-middle' style='display:block'></span></td>
    <td bgcolor='green'></td>
    <td></td>
    <td></td>
@@ -3027,7 +3035,7 @@ Tree for User ken on Team 1.<br>
    <td></td>
    <td></td>
    <td></td>
-   <td bgcolor='green'><span id='TEST-12-start' style='display:block'></span></td>
+   <td bgcolor='green'><span id='TEST-12-start' style='display:block'></span><span id='TEST-12-middle' style='display:block'></span></td>
    <td bgcolor='green'></td>
    <td></td>
    <td></td>
@@ -3084,7 +3092,7 @@ Tree for User ken on Team 1.<br>
    <td bgcolor='pink'></td>
    <td bgcolor='pink'></td>
    <td bgcolor='pink'></td>
-   <td bgcolor='red'></td>
+   <td bgcolor='red'><span id='TEST-9-middle' style='display:block'></span></td>
    <td bgcolor='red'></td>
    <td bgcolor='red'></td>
    <td bgcolor='red'></td>
@@ -3147,7 +3155,7 @@ Tree for User ken on Team 1.<br>
    <td bgcolor='red'></td>
    <td bgcolor='pink'></td>
    <td bgcolor='pink'></td>
-   <td bgcolor='red'></td>
+   <td bgcolor='red'><span id='TEST-2-middle' style='display:block'></span></td>
    <td bgcolor='red'></td>
    <td bgcolor='red'></td>
    <td bgcolor='red'></td>
@@ -3475,7 +3483,7 @@ Tree for issues 1 and 2.<br>
    </td>
    <td></td>
    <td></td>
-   <td bgcolor='green'><span id='TEST--2-start' style='display:block'></span><span rel='TEST--1-start' style='display:block'></span></td>
+   <td bgcolor='green'><span id='TEST--2-start' style='display:block'></span><span id='TEST--2-middle' style='display:block'></span><span rel='TEST--1-start' type='successor' style='display:block'></span></td>
    <td bgcolor='green'></td>
    <td></td>
    <td></td>
@@ -3532,7 +3540,7 @@ Tree for issues 1 and 2.<br>
    </td>
    <td>
    </td>
-   <td bgcolor='green'><span id='TEST--6-start' style='display:block'></span><span rel='TEST--4-start' style='display:block'></span></td>
+   <td bgcolor='green'><span id='TEST--6-start' style='display:block'></span><span id='TEST--6-middle' style='display:block'></span><span rel='TEST--4-start' type='successor' style='display:block'></span></td>
    <td bgcolor='green'></td>
    <td></td>
    <td></td>
@@ -3593,7 +3601,7 @@ Tree for issues 1 and 2.<br>
    </td>
    <td>
    </td>
-   <td bgcolor='green'><span id='TEST--4-start' style='display:block'></span><span rel='TEST--3-start' style='display:block'></span></td>
+   <td bgcolor='green'><span id='TEST--4-start' style='display:block'></span><span id='TEST--4-middle' style='display:block'></span><span rel='TEST--1-start' type='successor' style='display:block'></span><span rel='TEST--3-start' type='successor' style='display:block'></span></td>
    <td bgcolor='green'></td>
    <td></td>
    <td></td>
@@ -3654,7 +3662,7 @@ Tree for issues 1 and 2.<br>
    </td>
    <td>
    </td>
-   <td bgcolor='green'><span id='TEST--5-start' style='display:block'></span><span rel='TEST--3-start' style='display:block'></span></td>
+   <td bgcolor='green'><span id='TEST--5-start' style='display:block'></span><span id='TEST--5-middle' style='display:block'></span><span rel='TEST--3-start' type='successor' style='display:block'></span></td>
    <td bgcolor='green'></td>
    <td></td>
    <td></td>
@@ -3719,7 +3727,7 @@ Tree for issues 1 and 2.<br>
    </td>
    <td></td>
    <td></td>
-   <td bgcolor='green'><span id='TEST--3-start' style='display:block'></span><span rel='TEST--1-start' style='display:block'></span></td>
+   <td bgcolor='green'><span id='TEST--3-start' style='display:block'></span><span id='TEST--3-middle' style='display:block'></span><span rel='TEST--1-start' type='successor' style='display:block'></span></td>
    <td bgcolor='green'></td>
    <td></td>
    <td></td>
@@ -3780,7 +3788,7 @@ Tree for issues 1 and 2.<br>
    </td>
    <td>
    </td>
-   <td bgcolor='green'><span id='TEST--4-start' style='display:block'></span><span rel='TEST--3-start' style='display:block'></span></td>
+   <td bgcolor='green'><span id='TEST--4-start' style='display:block'></span><span id='TEST--4-middle' style='display:block'></span><span rel='TEST--1-start' type='successor' style='display:block'></span><span rel='TEST--3-start' type='successor' style='display:block'></span></td>
    <td bgcolor='green'></td>
    <td></td>
    <td></td>
@@ -3849,7 +3857,7 @@ Tree for issues 1 and 2.<br>
    <td></td>
    <td></td>
    <td></td>
-   <td bgcolor='green'><span id='TEST--1-start' style='display:block'></span><span rel='TEST-0-start' style='display:block'></span></td>
+   <td bgcolor='green'><span id='TEST--1-start' style='display:block'></span><span id='TEST--1-middle' style='display:block'></span><span rel='TEST-0-start' type='successor' style='display:block'></span></td>
    <td bgcolor='green'></td>
    <td></td>
    <td></td>
@@ -3922,9 +3930,9 @@ Tree for issues 1 and 2.<br>
    <td bgcolor='red'></td>
    <td bgcolor='pink'></td>
    <td bgcolor='pink'></td>
+   <td bgcolor='pink'><span id='TEST-0-middle' style='display:block'></span></td>
    <td bgcolor='pink'></td>
-   <td bgcolor='pink'></td>
-   <td bgcolor='red'><span rel='TEST-14-start' style='display:block'></span></td>
+   <td bgcolor='red'><span rel='TEST-1-start' type='successor' style='display:block'></span><span rel='TEST-12-start' type='successor' style='display:block'></span><span rel='TEST-14-start' type='successor' style='display:block'></span></td>
    <td bgcolor='red'></td>
    <td></td>
    <td></td>
@@ -3993,15 +4001,15 @@ Tree for issues 1 and 2.<br>
    <td bgcolor='pink'></td>
    <td bgcolor='pink'></td>
    <td bgcolor='pink'></td>
+   <td bgcolor='pink'><span id='TEST-1-middle' style='display:block'></span><span rel='TEST-11-middle' type='subtask' style='display:block'></span><span rel='TEST-12-middle' type='subtask' style='display:block'></span></td>
    <td bgcolor='pink'></td>
-   <td bgcolor='pink'></td>
    <td bgcolor='red'></td>
    <td bgcolor='red'></td>
    <td bgcolor='red'></td>
    <td bgcolor='red'></td>
    <td bgcolor='red'></td>
    <td bgcolor='red'></td>
-   <td bgcolor='red'><span rel='TEST-4-start' style='display:block'></span></td>
+   <td bgcolor='red'><span rel='TEST-13-start' type='successor' style='display:block'></span><span rel='TEST-4-start' type='successor' style='display:block'></span></td>
    <td bgcolor='red'></td>
    <td></td>
    <td></td>
@@ -4058,7 +4066,7 @@ Tree for issues 1 and 2.<br>
    <td></td>
    <td></td>
    <td></td>
-   <td bgcolor='black'><span id='TEST-11-start' style='display:block'></span></td>
+   <td bgcolor='black'><span id='TEST-11-start' style='display:block'></span><span id='TEST-11-middle' style='display:block'></span></td>
    <td bgcolor='black'></td>
    <td></td>
    <td></td>
@@ -4141,7 +4149,7 @@ Tree for issues 1 and 2.<br>
    <td></td>
    <td></td>
    <td></td>
-   <td bgcolor='green'><span id='TEST-12-start' style='display:block'></span></td>
+   <td bgcolor='green'><span id='TEST-12-start' style='display:block'></span><span id='TEST-12-middle' style='display:block'></span></td>
    <td bgcolor='green'></td>
    <td></td>
    <td></td>
@@ -4236,7 +4244,7 @@ Tree for issues 1 and 2.<br>
    <td bgcolor='black'></td>
    <td bgcolor='black'></td>
    <td bgcolor='black'></td>
-   <td bgcolor='black'></td>
+   <td bgcolor='black'><span id='TEST-13-middle' style='display:block'></span><span rel='TEST-13-1-middle' type='subtask' style='display:block'></span></td>
    <td bgcolor='black'></td>
    <td bgcolor='black'></td>
    <td bgcolor='black'></td>
@@ -4309,7 +4317,7 @@ Tree for issues 1 and 2.<br>
    <td bgcolor='green'></td>
    <td bgcolor='green'></td>
    <td bgcolor='green'></td>
-   <td bgcolor='lightgreen'></td>
+   <td bgcolor='lightgreen'><span id='TEST-13-1-middle' style='display:block'></span></td>
    <td bgcolor='lightgreen'></td>
    <td bgcolor='lightgreen'></td>
    <td bgcolor='lightgreen'></td>
@@ -4368,7 +4376,7 @@ Tree for issues 1 and 2.<br>
    <td bgcolor='red'></td>
    <td bgcolor='pink'></td>
    <td bgcolor='pink'></td>
-   <td bgcolor='pink'></td>
+   <td bgcolor='pink'><span id='TEST-4-middle' style='display:block'></span></td>
    <td bgcolor='pink'></td>
    <td bgcolor='red'></td>
    <td bgcolor='red'></td>
@@ -4427,7 +4435,7 @@ Tree for issues 1 and 2.<br>
    <td bgcolor='lightgreen'></td>
    <td bgcolor='lightgreen'></td>
    <td bgcolor='red'></td>
-   <td bgcolor='pink'></td>
+   <td bgcolor='pink'><span id='TEST-2-middle' style='display:block'></span><span rel='TEST-12-middle' type='subtask' style='display:block'></span><span rel='TEST-14-middle' type='subtask' style='display:block'></span><span rel='TEST-15-middle' type='subtask' style='display:block'></span></td>
    <td bgcolor='pink'></td>
    <td bgcolor='pink'></td>
    <td bgcolor='pink'></td>
@@ -4447,7 +4455,7 @@ Tree for issues 1 and 2.<br>
    <td bgcolor='red'></td>
    <td bgcolor='red'></td>
    <td bgcolor='red'></td>
-   <td bgcolor='red'><span rel='TEST-13-start' style='display:block'></span></td>
+   <td bgcolor='red'><span rel='TEST-13-start' type='successor' style='display:block'></span></td>
    <td bgcolor='red'></td>
    <td></td>
    <td></td>
@@ -4480,7 +4488,7 @@ Tree for issues 1 and 2.<br>
    <td></td>
    <td></td>
    <td></td>
-   <td bgcolor='green'><span id='TEST-12-start' style='display:block'></span></td>
+   <td bgcolor='green'><span id='TEST-12-start' style='display:block'></span><span id='TEST-12-middle' style='display:block'></span></td>
    <td bgcolor='green'></td>
    <td></td>
    <td></td>
@@ -4551,7 +4559,7 @@ Tree for issues 1 and 2.<br>
    <td bgcolor='green'></td>
    <td bgcolor='lightgreen'></td>
    <td bgcolor='lightgreen'></td>
-   <td bgcolor='lightgreen'></td>
+   <td bgcolor='lightgreen'><span id='TEST-14-middle' style='display:block'></span></td>
    <td bgcolor='lightgreen'></td>
    <td bgcolor='lightgreen'></td>
    <td bgcolor='lightgreen'></td>
@@ -4596,7 +4604,7 @@ Tree for issues 1 and 2.<br>
    <td></td>
    <td></td>
    <td></td>
-   <td bgcolor='green'><span id='TEST-15-start' style='display:block'></span></td>
+   <td bgcolor='green'><span id='TEST-15-start' style='display:block'></span><span id='TEST-15-middle' style='display:block'></span></td>
    <td bgcolor='red'></td>
    <td></td>
    <td></td>
@@ -4691,7 +4699,7 @@ Tree for issues 1 and 2.<br>
    <td bgcolor='black'></td>
    <td bgcolor='black'></td>
    <td bgcolor='black'></td>
-   <td bgcolor='black'></td>
+   <td bgcolor='black'><span id='TEST-13-middle' style='display:block'></span><span rel='TEST-13-1-middle' type='subtask' style='display:block'></span></td>
    <td bgcolor='black'></td>
    <td bgcolor='black'></td>
    <td bgcolor='black'></td>
@@ -4754,7 +4762,7 @@ Tree for issues 1 and 2.<br>
    <td bgcolor='green'></td>
    <td bgcolor='green'></td>
    <td bgcolor='green'></td>
-   <td bgcolor='lightgreen'></td>
+   <td bgcolor='lightgreen'><span id='TEST-13-1-middle' style='display:block'></span></td>
    <td bgcolor='lightgreen'></td>
    <td bgcolor='lightgreen'></td>
    <td bgcolor='lightgreen'></td>
@@ -4889,7 +4897,7 @@ Squished schedule for issues 1 and 2.<br>
    </td>
    <td>
    </td>
-   <td bgcolor='green'><span id='TEST--2-start' style='display:block'></span><span rel='TEST--1-start' style='display:block'></span></td>
+   <td bgcolor='green'><span id='TEST--2-start' style='display:block'></span><span id='TEST--2-middle' style='display:block'></span><span rel='TEST--1-start' type='successor' style='display:block'></span></td>
    <td bgcolor='green'></td>
    <td></td>
    <td></td>
@@ -4914,7 +4922,7 @@ Squished schedule for issues 1 and 2.<br>
    </td>
    <td>
    </td>
-   <td bgcolor='green'><span id='TEST--6-start' style='display:block'></span><span rel='TEST--4-start' style='display:block'></span></td>
+   <td bgcolor='green'><span id='TEST--6-start' style='display:block'></span><span id='TEST--6-middle' style='display:block'></span><span rel='TEST--4-start' type='successor' style='display:block'></span></td>
    <td bgcolor='green'></td>
    <td></td>
    <td></td>
@@ -4941,7 +4949,7 @@ Squished schedule for issues 1 and 2.<br>
    </td>
    <td>
    </td>
-   <td bgcolor='green'><span id='TEST--4-start' style='display:block'></span><span rel='TEST--3-start' style='display:block'></span></td>
+   <td bgcolor='green'><span id='TEST--4-start' style='display:block'></span><span id='TEST--4-middle' style='display:block'></span><span rel='TEST--1-start' type='successor' style='display:block'></span><span rel='TEST--3-start' type='successor' style='display:block'></span></td>
    <td bgcolor='green'></td>
    <td></td>
    <td></td>
@@ -4968,7 +4976,7 @@ Squished schedule for issues 1 and 2.<br>
    </td>
    <td>
    </td>
-   <td bgcolor='green'><span id='TEST--5-start' style='display:block'></span><span rel='TEST--3-start' style='display:block'></span></td>
+   <td bgcolor='green'><span id='TEST--5-start' style='display:block'></span><span id='TEST--5-middle' style='display:block'></span><span rel='TEST--3-start' type='successor' style='display:block'></span></td>
    <td bgcolor='green'></td>
    <td></td>
    <td></td>
@@ -4997,7 +5005,7 @@ Squished schedule for issues 1 and 2.<br>
    </td>
    <td>
    </td>
-   <td bgcolor='green'><span id='TEST--3-start' style='display:block'></span><span rel='TEST--1-start' style='display:block'></span></td>
+   <td bgcolor='green'><span id='TEST--3-start' style='display:block'></span><span id='TEST--3-middle' style='display:block'></span><span rel='TEST--1-start' type='successor' style='display:block'></span></td>
    <td bgcolor='green'></td>
    <td></td>
    <td></td>
@@ -5026,7 +5034,7 @@ Squished schedule for issues 1 and 2.<br>
    </td>
    <td>
    </td>
-   <td bgcolor='green'><span id='TEST--4-start' style='display:block'></span><span rel='TEST--3-start' style='display:block'></span></td>
+   <td bgcolor='green'><span id='TEST--4-start' style='display:block'></span><span id='TEST--4-middle' style='display:block'></span><span rel='TEST--1-start' type='successor' style='display:block'></span><span rel='TEST--3-start' type='successor' style='display:block'></span></td>
    <td bgcolor='green'></td>
    <td></td>
    <td></td>
@@ -5057,7 +5065,7 @@ Squished schedule for issues 1 and 2.<br>
    </td>
    <td>
    </td>
-   <td bgcolor='green'><span id='TEST--1-start' style='display:block'></span><span rel='TEST-0-start' style='display:block'></span></td>
+   <td bgcolor='green'><span id='TEST--1-start' style='display:block'></span><span id='TEST--1-middle' style='display:block'></span><span rel='TEST-0-start' type='successor' style='display:block'></span></td>
    <td bgcolor='green'></td>
    <td></td>
    <td></td>
@@ -5092,7 +5100,7 @@ Squished schedule for issues 1 and 2.<br>
    </td>
    <td bgcolor='red'><span id='TEST-0-start' style='display:block'></span></td>
    <td bgcolor='red'></td>
-   <td bgcolor='red'><span rel='TEST-14-start' style='display:block'></span></td>
+   <td bgcolor='red'><span id='TEST-0-middle' style='display:block'></span><span rel='TEST-1-start' type='successor' style='display:block'></span><span rel='TEST-12-start' type='successor' style='display:block'></span><span rel='TEST-14-start' type='successor' style='display:block'></span></td>
    <td bgcolor='red'></td>
    <td></td>
    <td></td>
@@ -5127,9 +5135,9 @@ Squished schedule for issues 1 and 2.<br>
    </td>
    <td bgcolor='pink'><span id='TEST-1-start' style='display:block'></span></td>
    <td bgcolor='pink'></td>
+   <td bgcolor='red'><span id='TEST-1-middle' style='display:block'></span><span rel='TEST-11-middle' type='subtask' style='display:block'></span><span rel='TEST-12-middle' type='subtask' style='display:block'></span></td>
    <td bgcolor='red'></td>
-   <td bgcolor='red'></td>
-   <td bgcolor='red'><span rel='TEST-4-start' style='display:block'></span></td>
+   <td bgcolor='red'><span rel='TEST-13-start' type='successor' style='display:block'></span><span rel='TEST-4-start' type='successor' style='display:block'></span></td>
    <td bgcolor='red'></td>
    <td></td>
    <td></td>
@@ -5164,7 +5172,7 @@ Squished schedule for issues 1 and 2.<br>
    </td>
    <td>
    </td>
-   <td bgcolor='black'><span id='TEST-11-start' style='display:block'></span></td>
+   <td bgcolor='black'><span id='TEST-11-start' style='display:block'></span><span id='TEST-11-middle' style='display:block'></span></td>
    <td bgcolor='black'></td>
    <td></td>
    <td></td>
@@ -5205,7 +5213,7 @@ Squished schedule for issues 1 and 2.<br>
    </td>
    <td></td>
    <td></td>
-   <td bgcolor='green'><span id='TEST-12-start' style='display:block'></span></td>
+   <td bgcolor='green'><span id='TEST-12-start' style='display:block'></span><span id='TEST-12-middle' style='display:block'></span></td>
    <td bgcolor='green'></td>
    <td></td>
    <td></td>
@@ -5248,7 +5256,7 @@ Squished schedule for issues 1 and 2.<br>
    <td></td>
    <td></td>
    <td></td>
-   <td bgcolor='black'><span id='TEST-13-start' style='display:block'></span></td>
+   <td bgcolor='black'><span id='TEST-13-start' style='display:block'></span><span id='TEST-13-middle' style='display:block'></span><span rel='TEST-13-1-middle' type='subtask' style='display:block'></span></td>
    <td bgcolor='black'></td>
    <td bgcolor='black'></td>
    <td bgcolor='black'></td>
@@ -5289,7 +5297,7 @@ Squished schedule for issues 1 and 2.<br>
    <td></td>
    <td></td>
    <td></td>
-   <td bgcolor='green'><span id='TEST-13-1-start' style='display:block'></span></td>
+   <td bgcolor='green'><span id='TEST-13-1-start' style='display:block'></span><span id='TEST-13-1-middle' style='display:block'></span></td>
    <td bgcolor='green'></td>
    <td bgcolor='green'></td>
    <td bgcolor='green'></td>
@@ -5324,7 +5332,7 @@ Squished schedule for issues 1 and 2.<br>
    <td></td>
    <td bgcolor='red'><span id='TEST-4-start' style='display:block'></span></td>
    <td bgcolor='red'></td>
-   <td bgcolor='red'></td>
+   <td bgcolor='red'><span id='TEST-4-middle' style='display:block'></span></td>
    <td bgcolor='red'></td>
    <td></td>
    <td></td>
@@ -5349,11 +5357,11 @@ Squished schedule for issues 1 and 2.<br>
    <td bgcolor='lightgreen'></td>
    <td bgcolor='lightgreen'></td>
    <td bgcolor='red'></td>
+   <td bgcolor='red'><span id='TEST-2-middle' style='display:block'></span><span rel='TEST-12-middle' type='subtask' style='display:block'></span><span rel='TEST-14-middle' type='subtask' style='display:block'></span><span rel='TEST-15-middle' type='subtask' style='display:block'></span></td>
    <td bgcolor='red'></td>
    <td bgcolor='red'></td>
    <td bgcolor='red'></td>
-   <td bgcolor='red'></td>
-   <td bgcolor='red'><span rel='TEST-13-start' style='display:block'></span></td>
+   <td bgcolor='red'><span rel='TEST-13-start' type='successor' style='display:block'></span></td>
    <td bgcolor='red'></td>
    <td></td>
    <td></td>
@@ -5374,7 +5382,7 @@ Squished schedule for issues 1 and 2.<br>
    </td>
    <td></td>
    <td></td>
-   <td bgcolor='green'><span id='TEST-12-start' style='display:block'></span></td>
+   <td bgcolor='green'><span id='TEST-12-start' style='display:block'></span><span id='TEST-12-middle' style='display:block'></span></td>
    <td bgcolor='green'></td>
    <td></td>
    <td></td>
@@ -5405,7 +5413,7 @@ Squished schedule for issues 1 and 2.<br>
    <td></td>
    <td bgcolor='green'><span id='TEST-14-start' style='display:block'></span></td>
    <td bgcolor='green'></td>
-   <td bgcolor='green'></td>
+   <td bgcolor='green'><span id='TEST-14-middle' style='display:block'></span></td>
    <td bgcolor='green'></td>
    <td bgcolor='green'></td>
    <td bgcolor='green'></td>
@@ -5430,7 +5438,7 @@ Squished schedule for issues 1 and 2.<br>
    </td>
    <td>
    </td>
-   <td bgcolor='green'><span id='TEST-15-start' style='display:block'></span></td>
+   <td bgcolor='green'><span id='TEST-15-start' style='display:block'></span><span id='TEST-15-middle' style='display:block'></span></td>
    <td bgcolor='red'></td>
    <td></td>
    <td></td>
@@ -5465,7 +5473,7 @@ Squished schedule for issues 1 and 2.<br>
    <td></td>
    <td></td>
    <td></td>
-   <td bgcolor='black'><span id='TEST-13-start' style='display:block'></span></td>
+   <td bgcolor='black'><span id='TEST-13-start' style='display:block'></span><span id='TEST-13-middle' style='display:block'></span><span rel='TEST-13-1-middle' type='subtask' style='display:block'></span></td>
    <td bgcolor='black'></td>
    <td bgcolor='black'></td>
    <td bgcolor='black'></td>
@@ -5496,7 +5504,7 @@ Squished schedule for issues 1 and 2.<br>
    <td></td>
    <td></td>
    <td></td>
-   <td bgcolor='green'><span id='TEST-13-1-start' style='display:block'></span></td>
+   <td bgcolor='green'><span id='TEST-13-1-start' style='display:block'></span><span id='TEST-13-1-middle' style='display:block'></span></td>
    <td bgcolor='green'></td>
    <td bgcolor='green'></td>
    <td bgcolor='green'></td>
@@ -5814,7 +5822,7 @@ Tree for issue 1, w/o resolved.<br>
    </td>
    <td></td>
    <td></td>
-   <td bgcolor='green'><span id='TEST--2-start' style='display:block'></span><span rel='TEST--1-start' style='display:block'></span></td>
+   <td bgcolor='green'><span id='TEST--2-start' style='display:block'></span><span id='TEST--2-middle' style='display:block'></span><span rel='TEST--1-start' type='successor' style='display:block'></span></td>
    <td bgcolor='green'></td>
    <td></td>
    <td></td>
@@ -5871,7 +5879,7 @@ Tree for issue 1, w/o resolved.<br>
    </td>
    <td>
    </td>
-   <td bgcolor='green'><span id='TEST--6-start' style='display:block'></span><span rel='TEST--4-start' style='display:block'></span></td>
+   <td bgcolor='green'><span id='TEST--6-start' style='display:block'></span><span id='TEST--6-middle' style='display:block'></span><span rel='TEST--4-start' type='successor' style='display:block'></span></td>
    <td bgcolor='green'></td>
    <td></td>
    <td></td>
@@ -5932,7 +5940,7 @@ Tree for issue 1, w/o resolved.<br>
    </td>
    <td>
    </td>
-   <td bgcolor='green'><span id='TEST--4-start' style='display:block'></span><span rel='TEST--3-start' style='display:block'></span></td>
+   <td bgcolor='green'><span id='TEST--4-start' style='display:block'></span><span id='TEST--4-middle' style='display:block'></span><span rel='TEST--1-start' type='successor' style='display:block'></span><span rel='TEST--3-start' type='successor' style='display:block'></span></td>
    <td bgcolor='green'></td>
    <td></td>
    <td></td>
@@ -5993,7 +6001,7 @@ Tree for issue 1, w/o resolved.<br>
    </td>
    <td>
    </td>
-   <td bgcolor='green'><span id='TEST--5-start' style='display:block'></span><span rel='TEST--3-start' style='display:block'></span></td>
+   <td bgcolor='green'><span id='TEST--5-start' style='display:block'></span><span id='TEST--5-middle' style='display:block'></span><span rel='TEST--3-start' type='successor' style='display:block'></span></td>
    <td bgcolor='green'></td>
    <td></td>
    <td></td>
@@ -6058,7 +6066,7 @@ Tree for issue 1, w/o resolved.<br>
    </td>
    <td></td>
    <td></td>
-   <td bgcolor='green'><span id='TEST--3-start' style='display:block'></span><span rel='TEST--1-start' style='display:block'></span></td>
+   <td bgcolor='green'><span id='TEST--3-start' style='display:block'></span><span id='TEST--3-middle' style='display:block'></span><span rel='TEST--1-start' type='successor' style='display:block'></span></td>
    <td bgcolor='green'></td>
    <td></td>
    <td></td>
@@ -6119,7 +6127,7 @@ Tree for issue 1, w/o resolved.<br>
    </td>
    <td>
    </td>
-   <td bgcolor='green'><span id='TEST--4-start' style='display:block'></span><span rel='TEST--3-start' style='display:block'></span></td>
+   <td bgcolor='green'><span id='TEST--4-start' style='display:block'></span><span id='TEST--4-middle' style='display:block'></span><span rel='TEST--1-start' type='successor' style='display:block'></span><span rel='TEST--3-start' type='successor' style='display:block'></span></td>
    <td bgcolor='green'></td>
    <td></td>
    <td></td>
@@ -6188,7 +6196,7 @@ Tree for issue 1, w/o resolved.<br>
    <td></td>
    <td></td>
    <td></td>
-   <td bgcolor='green'><span id='TEST--1-start' style='display:block'></span><span rel='TEST-0-start' style='display:block'></span></td>
+   <td bgcolor='green'><span id='TEST--1-start' style='display:block'></span><span id='TEST--1-middle' style='display:block'></span><span rel='TEST-0-start' type='successor' style='display:block'></span></td>
    <td bgcolor='green'></td>
    <td></td>
    <td></td>
@@ -6261,9 +6269,9 @@ Tree for issue 1, w/o resolved.<br>
    <td bgcolor='red'></td>
    <td bgcolor='pink'></td>
    <td bgcolor='pink'></td>
+   <td bgcolor='pink'><span id='TEST-0-middle' style='display:block'></span></td>
    <td bgcolor='pink'></td>
-   <td bgcolor='pink'></td>
-   <td bgcolor='red'><span rel='TEST-14-start' style='display:block'></span></td>
+   <td bgcolor='red'><span rel='TEST-1-start' type='successor' style='display:block'></span><span rel='TEST-12-start' type='successor' style='display:block'></span><span rel='TEST-14-start' type='successor' style='display:block'></span></td>
    <td bgcolor='red'></td>
    <td></td>
    <td></td>
@@ -6332,15 +6340,15 @@ Tree for issue 1, w/o resolved.<br>
    <td bgcolor='pink'></td>
    <td bgcolor='pink'></td>
    <td bgcolor='pink'></td>
+   <td bgcolor='pink'><span id='TEST-1-middle' style='display:block'></span><span rel='TEST-11-middle' type='subtask' style='display:block'></span><span rel='TEST-12-middle' type='subtask' style='display:block'></span></td>
    <td bgcolor='pink'></td>
-   <td bgcolor='pink'></td>
    <td bgcolor='red'></td>
    <td bgcolor='red'></td>
    <td bgcolor='red'></td>
    <td bgcolor='red'></td>
    <td bgcolor='red'></td>
    <td bgcolor='red'></td>
-   <td bgcolor='red'><span rel='TEST-4-start' style='display:block'></span></td>
+   <td bgcolor='red'><span rel='TEST-13-start' type='successor' style='display:block'></span><span rel='TEST-4-start' type='successor' style='display:block'></span></td>
    <td bgcolor='red'></td>
    <td></td>
    <td></td>
@@ -6407,7 +6415,7 @@ Tree for issue 1, w/o resolved.<br>
    <td></td>
    <td></td>
    <td></td>
-   <td bgcolor='green'><span id='TEST-12-start' style='display:block'></span></td>
+   <td bgcolor='green'><span id='TEST-12-start' style='display:block'></span><span id='TEST-12-middle' style='display:block'></span></td>
    <td bgcolor='green'></td>
    <td></td>
    <td></td>
@@ -6502,7 +6510,7 @@ Tree for issue 1, w/o resolved.<br>
    <td bgcolor='black'></td>
    <td bgcolor='black'></td>
    <td bgcolor='black'></td>
-   <td bgcolor='black'></td>
+   <td bgcolor='black'><span id='TEST-13-middle' style='display:block'></span><span rel='TEST-13-1-middle' type='subtask' style='display:block'></span></td>
    <td bgcolor='black'></td>
    <td bgcolor='black'></td>
    <td bgcolor='black'></td>
@@ -6575,7 +6583,7 @@ Tree for issue 1, w/o resolved.<br>
    <td bgcolor='green'></td>
    <td bgcolor='green'></td>
    <td bgcolor='green'></td>
-   <td bgcolor='lightgreen'></td>
+   <td bgcolor='lightgreen'><span id='TEST-13-1-middle' style='display:block'></span></td>
    <td bgcolor='lightgreen'></td>
    <td bgcolor='lightgreen'></td>
    <td bgcolor='lightgreen'></td>
@@ -6634,7 +6642,7 @@ Tree for issue 1, w/o resolved.<br>
    <td bgcolor='red'></td>
    <td bgcolor='pink'></td>
    <td bgcolor='pink'></td>
-   <td bgcolor='pink'></td>
+   <td bgcolor='pink'><span id='TEST-4-middle' style='display:block'></span></td>
    <td bgcolor='pink'></td>
    <td bgcolor='red'></td>
    <td bgcolor='red'></td>
@@ -6964,7 +6972,7 @@ Schedule for trent.<br>
    </td>
    <td>
    </td>
-   <td bgcolor='green'><span id='TEST--6-start' style='display:block'></span><span rel='TEST--4-start' style='display:block'></span></td>
+   <td bgcolor='green'><span id='TEST--6-start' style='display:block'></span><span id='TEST--6-middle' style='display:block'></span><span rel='TEST--4-start' type='successor' style='display:block'></span></td>
    <td bgcolor='green'></td>
    <td></td>
    <td></td>
@@ -7023,7 +7031,7 @@ Schedule for trent.<br>
    </td>
    <td>
    </td>
-   <td bgcolor='green'><span id='TEST--5-start' style='display:block'></span><span rel='TEST--3-start' style='display:block'></span></td>
+   <td bgcolor='green'><span id='TEST--5-start' style='display:block'></span><span id='TEST--5-middle' style='display:block'></span><span rel='TEST--3-start' type='successor' style='display:block'></span></td>
    <td bgcolor='green'></td>
    <td></td>
    <td></td>
@@ -7084,7 +7092,7 @@ Schedule for trent.<br>
    </td>
    <td></td>
    <td></td>
-   <td bgcolor='green'><span id='TEST--2-start' style='display:block'></span><span rel='TEST--1-start' style='display:block'></span></td>
+   <td bgcolor='green'><span id='TEST--2-start' style='display:block'></span><span id='TEST--2-middle' style='display:block'></span><span rel='TEST--1-start' type='successor' style='display:block'></span></td>
    <td bgcolor='green'></td>
    <td></td>
    <td></td>
@@ -7145,7 +7153,7 @@ Schedule for trent.<br>
    <td></td>
    <td></td>
    <td></td>
-   <td bgcolor='black'><span id='TEST-11-start' style='display:block'></span></td>
+   <td bgcolor='black'><span id='TEST-11-start' style='display:block'></span><span id='TEST-11-middle' style='display:block'></span></td>
    <td bgcolor='black'></td>
    <td></td>
    <td></td>
@@ -7224,7 +7232,7 @@ Schedule for trent.<br>
    <td bgcolor='red'></td>
    <td bgcolor='pink'></td>
    <td bgcolor='pink'></td>
-   <td bgcolor='pink'></td>
+   <td bgcolor='pink'><span id='TEST-4-middle' style='display:block'></span></td>
    <td bgcolor='pink'></td>
    <td bgcolor='red'></td>
    <td bgcolor='red'></td>
@@ -7281,7 +7289,7 @@ Schedule for trent.<br>
    <td bgcolor='green'></td>
    <td bgcolor='lightgreen'></td>
    <td bgcolor='lightgreen'></td>
-   <td bgcolor='lightgreen'></td>
+   <td bgcolor='lightgreen'><span id='TEST-14-middle' style='display:block'></span></td>
    <td bgcolor='lightgreen'></td>
    <td bgcolor='lightgreen'></td>
    <td bgcolor='lightgreen'></td>
@@ -7322,7 +7330,7 @@ Schedule for trent.<br>
    <td></td>
    <td></td>
    <td></td>
-   <td bgcolor='green'><span id='TEST-15-start' style='display:block'></span></td>
+   <td bgcolor='green'><span id='TEST-15-start' style='display:block'></span><span id='TEST-15-middle' style='display:block'></span></td>
    <td bgcolor='red'></td>
    <td></td>
    <td></td>
@@ -7395,7 +7403,7 @@ Schedule for trent.<br>
    <td bgcolor='lightgreen'></td>
    <td bgcolor='lightgreen'></td>
    <td bgcolor='lightgreen'></td>
-   <td bgcolor='lightgreen'></td>
+   <td bgcolor='lightgreen'><span id='TEST-16-middle' style='display:block'></span></td>
    <td bgcolor='lightgreen'></td>
    <td bgcolor='lightgreen'></td>
    <td bgcolor='red'></td>
@@ -7472,7 +7480,7 @@ Schedule for trent.<br>
    <td bgcolor='green'></td>
    <td bgcolor='green'></td>
    <td bgcolor='green'></td>
-   <td bgcolor='lightgreen'></td>
+   <td bgcolor='lightgreen'><span id='TEST-13-1-middle' style='display:block'></span></td>
    <td bgcolor='lightgreen'></td>
    <td bgcolor='lightgreen'></td>
    <td bgcolor='lightgreen'></td>
@@ -7533,7 +7541,7 @@ Schedule for trent.<br>
    <td bgcolor='black'></td>
    <td bgcolor='black'></td>
    <td bgcolor='black'></td>
-   <td bgcolor='black'></td>
+   <td bgcolor='black'><span id='TEST-13-middle' style='display:block'></span><span rel='TEST-13-1-middle' type='subtask' style='display:block'></span></td>
    <td bgcolor='black'></td>
    <td bgcolor='black'></td>
    <td bgcolor='black'></td>
@@ -7683,9 +7691,9 @@ Tree for User fred on Team 1.<br>
    <td bgcolor='red'></td>
    <td bgcolor='pink'></td>
    <td bgcolor='pink'></td>
+   <td bgcolor='pink'><span id='TEST-0-middle' style='display:block'></span></td>
    <td bgcolor='pink'></td>
-   <td bgcolor='pink'></td>
-   <td bgcolor='red'><span rel='TEST-14-start' style='display:block'></span></td>
+   <td bgcolor='red'><span rel='TEST-1-start' type='successor' style='display:block'></span><span rel='TEST-12-start' type='successor' style='display:block'></span><span rel='TEST-14-start' type='successor' style='display:block'></span></td>
    <td bgcolor='red'></td>
    <td></td>
    <td></td>
@@ -8326,7 +8334,7 @@ Schedule for ken.<br>
    </td>
    <td>
    </td>
-   <td bgcolor='green'><span id='TEST--4-start' style='display:block'></span><span rel='TEST--3-start' style='display:block'></span></td>
+   <td bgcolor='green'><span id='TEST--4-start' style='display:block'></span><span id='TEST--4-middle' style='display:block'></span><span rel='TEST--1-start' type='successor' style='display:block'></span><span rel='TEST--3-start' type='successor' style='display:block'></span></td>
    <td bgcolor='green'></td>
    <td></td>
    <td></td>
@@ -8389,7 +8397,7 @@ Schedule for ken.<br>
    <td></td>
    <td></td>
    <td></td>
-   <td bgcolor='green'><span id='TEST--1-start' style='display:block'></span><span rel='TEST-0-start' style='display:block'></span></td>
+   <td bgcolor='green'><span id='TEST--1-start' style='display:block'></span><span id='TEST--1-middle' style='display:block'></span><span rel='TEST-0-start' type='successor' style='display:block'></span></td>
    <td bgcolor='green'></td>
    <td></td>
    <td></td>
@@ -8458,7 +8466,7 @@ Schedule for ken.<br>
    <td></td>
    <td></td>
    <td></td>
-   <td bgcolor='green'><span id='TEST-12-start' style='display:block'></span></td>
+   <td bgcolor='green'><span id='TEST-12-start' style='display:block'></span><span id='TEST-12-middle' style='display:block'></span></td>
    <td bgcolor='green'></td>
    <td></td>
    <td></td>
@@ -8513,7 +8521,7 @@ Schedule for ken.<br>
    <td bgcolor='red'></td>
    <td bgcolor='pink'></td>
    <td bgcolor='pink'></td>
-   <td bgcolor='pink'></td>
+   <td bgcolor='pink'><span id='TEST-9-middle' style='display:block'></span></td>
    <td bgcolor='pink'></td>
    <td bgcolor='red'></td>
    <td bgcolor='red'></td>
@@ -8586,7 +8594,7 @@ Schedule for ken.<br>
    <td bgcolor='lightgreen'></td>
    <td bgcolor='lightgreen'></td>
    <td bgcolor='red'></td>
-   <td bgcolor='pink'></td>
+   <td bgcolor='pink'><span id='TEST-2-middle' style='display:block'></span><span rel='TEST-12-middle' type='subtask' style='display:block'></span><span rel='TEST-14-middle' type='subtask' style='display:block'></span><span rel='TEST-15-middle' type='subtask' style='display:block'></span></td>
    <td bgcolor='pink'></td>
    <td bgcolor='pink'></td>
    <td bgcolor='pink'></td>
@@ -8606,7 +8614,7 @@ Schedule for ken.<br>
    <td bgcolor='red'></td>
    <td bgcolor='red'></td>
    <td bgcolor='red'></td>
-   <td bgcolor='red'><span rel='TEST-13-start' style='display:block'></span></td>
+   <td bgcolor='red'><span rel='TEST-13-start' type='successor' style='display:block'></span></td>
    <td bgcolor='red'></td>
    <td></td>
    <td></td>
@@ -8702,7 +8710,7 @@ pass (should be 6 branches preceding 0; got 6)
 All branches of TEST-0: 
 [TEST--2>(0)>TEST--1(1), TEST--6>(1)>TEST--3(2), TEST--5>(0)>TEST--3(2), TEST--3>(0)>TEST--1(1), ..>TEST--4>(0)>TEST--1(1), TEST--1>(0)>TEST-0(0)]
 <P>
-<H2>Here are the basic TimeSchedule tests.</H2>
+<H1>Here are the basic TimeSchedule tests.</H2>
 <br>
 pass (first after simple prioritizing is TEST-T2; got TEST-T2)
 <br>
