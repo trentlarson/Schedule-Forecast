@@ -15,7 +15,6 @@ import java.util.TreeSet;
 import org.apache.log4j.Logger;
 
 import com.icentris.sql.SimpleSQL;
-import com.trentlarson.forecast.core.dao.Team;
 
 public class IssueLoader {
 
@@ -113,6 +112,7 @@ public class IssueLoader {
         }
       }
 
+      /** unused
       // load helper data: team data
       List<Team> allTeams;
       {
@@ -126,6 +126,7 @@ public class IssueLoader {
           idToTeam.put(team.getId(), team);
         }
       }
+      **/
 
       // load all open issues
       Map<String,IssueTree> keyToIssue = new HashMap<String,IssueTree>();
