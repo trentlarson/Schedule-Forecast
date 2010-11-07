@@ -916,6 +916,23 @@ public class TimeScheduleTests {
 
     TimeScheduleWriter.writeIssueTable(graph, new PrintWriter(System.out), sPrefs, dPrefs);
     
+    
+    // now let's load and schedule everything
+    
+    graph = TimeScheduleLoader.getEntireGraph(sPrefs, conn);
+    
+    // show that the first team has a lot of work while the second putters around.
+    System.out.println("Gantt for team overloaded and underloaded teams.<br>");
+    dPrefs =
+      TimeScheduleDisplayPreferences.createForTeam
+      (5, 0, true, false, false, new Long(20100), false, graph);
+    TimeScheduleWriter.writeIssueTable(graph, new PrintWriter(System.out), sPrefs, dPrefs);
+
+    dPrefs =
+      TimeScheduleDisplayPreferences.createForTeam
+      (5, 0, true, false, false, new Long(20101), false, graph);
+    TimeScheduleWriter.writeIssueTable(graph, new PrintWriter(System.out), sPrefs, dPrefs);
+    
   }
 
 

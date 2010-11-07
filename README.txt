@@ -1,5 +1,4 @@
 ________________________________________________________________________________
-2010/06/03
 
 To develop with the Atlassian SDK:
 - Install it.
@@ -17,15 +16,8 @@ to work, install the v1 jar (into WEB-INF/lib) and then copy all the
 other required jars (embedded inside it in the META-INF/lib directory)
 into the WEB-INF/lib as well.
 
-
-Places to clean up:
-- allow hibernate, which may have been the thing that locked the JIRA startup
-- ... and then you can allow it in the gantt.jsp
-- split wicket from war project(?)
-
-
 ________________________________________________________________________________
-2010/04/09
+
 
 If you run this and point to a Jira DB, you'll get some reports showing project completion based on the due dates and priorities of the issues.
 
@@ -51,6 +43,27 @@ Helpful hints for Eclipse:
 
 To use:
 - Browse to forecast/gantt.jsp, eg. http://localhost:8080/forecast/gantt.jsp
+
+
+For tests:
+- Run the TimeScheduleTests unit test, eg. in core:
+mvn package; java -classpath target/forecast-core-0.1-SNAPSHOT.jar:lib/commons-logging-1.1.1.jar:lib/hibernate-3.2.6.ga.jar:lib/hsqldb-1.8.0.jar:lib/log4j-1.2.15.jar:lib/mysql-5.0.7.jar com.trentlarson.forecast.core.scheduling.TimeScheduleTests > target/gantt-test-db.html
+- Compare the output with gantt-test.html
+- Redirect the jira-test-db.sql into a test DB, eg: 
+mysql -u jira --password=jirapass  -D test_forecast_jira < ~/dev/scheduling/Schedule-Forecast/core/src/test/resources/jira-test-db.sql 
+- Run the TimeScheduleSetup, eg. in core:
+mvn package; java -classpath target/forecast-core-0.1-SNAPSHOT.jar:lib/commons-logging-1.1.1.jar:lib/hibernate-3.2.6.ga.jar:lib/hsqldb-1.8.0.jar:lib/log4j-1.2.15.jar:lib/mysql-5.0.7.jar com.trentlarson.forecast.core.scheduling.TimeScheduleTestSetup
+- Run the TimeScheduleTests integration test, eg. in core:
+mvn package; java -classpath target/forecast-core-0.1-SNAPSHOT.jar:lib/commons-logging-1.1.1.jar:lib/hibernate-3.2.6.ga.jar:lib/hsqldb-1.8.0.jar:lib/log4j-1.2.15.jar:lib/mysql-5.0.7.jar com.trentlarson.forecast.core.scheduling.TimeScheduleTests > target/gantt-test-db.html
+- Compare the output with gantt-test-db.html
+
+
+________________________________________________________________________________
+
+Places to clean up:
+- allow hibernate, which may have been the thing that locked the JIRA startup
+- ... and then you can allow it in the gantt.jsp
+- split wicket from war project(?)
 
 
 ________________________________________________________________________________
