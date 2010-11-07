@@ -13,12 +13,13 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import com.trentlarson.forecast.core.dao.TeamHours;
+import com.trentlarson.forecast.core.helper.ForecastUtil;
 
 public class TimeScheduleTests {
 
   public static void main(String[] args) throws Exception {
-    unitMain(args);
-    //integrationMain(args);
+    //unitMain(args);
+    integrationMain(args);
   }
   
   
@@ -884,24 +885,12 @@ public class TimeScheduleTests {
    * and creates the output found in gantt-test-db.html
    */
   public static void integrationMain(String[] args) throws Exception {
-    /**
-    String DRIVER = "oracle.jdbc.driver.OracleDriver";
-    String URL = "jdbc:oracle:thin:@ora2.hq.icentris:1521:icpr1";
-    String USERNAME = "jira";
-    String PASSWORD = "";
-    */
-    String DRIVER = "com.mysql.jdbc.Driver";
-    //String URL = "jdbc:mysql://10.0.2.16:8319/jiradb?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8";
-    //String URL = "jdbc:mysql://localhost:3306/jiradb_411?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8";
-    String URL = "jdbc:mysql://localhost:3306/test_forecast_jira?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8";
-    String USERNAME = "jira";
-    String PASSWORD = "jirapass";
 
-    Class.forName(DRIVER);
-    Connection conn = java.sql.DriverManager.getConnection(URL, USERNAME, PASSWORD);
+    Connection conn = ForecastUtil.getConnection();
 
     TimeScheduleCreatePreferences sPrefs = new TimeScheduleCreatePreferences(0, new java.util.Date(), 2.0);
-    IssueDigraph graph = TimeScheduleLoader.getGraph("", new String[]{ "FOURU-1002" }, new String[0], sPrefs, conn);
+    String mainIssueKey = "FOURU-1002";
+    IssueDigraph graph = TimeScheduleLoader.getGraph("", new String[]{ mainIssueKey }, new String[0], sPrefs, conn);
 
     // print out single-user time schedule
     {
@@ -919,11 +908,14 @@ public class TimeScheduleTests {
          new PrintWriter(System.out));
     }
 
+    // print out that issue
+    System.out.println("Gantt for " + mainIssueKey + ".<br>");
     TimeScheduleDisplayPreferences dPrefs =
       TimeScheduleDisplayPreferences.createForIssues
-      (1, Calendar.MONTH, true, false, false, new String[]{ "FOURU-1002" }, false, graph);
+      (5, Calendar.MONTH, true, false, false, new String[]{ mainIssueKey }, false, graph);
 
     TimeScheduleWriter.writeIssueTable(graph, new PrintWriter(System.out), sPrefs, dPrefs);
+    
   }
 
 

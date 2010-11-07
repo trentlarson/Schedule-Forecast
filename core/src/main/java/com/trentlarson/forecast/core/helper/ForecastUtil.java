@@ -19,6 +19,7 @@ package com.trentlarson.forecast.core.helper;
 //import org.ofbiz.core.entity.GenericValue;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.DateFormat;
@@ -608,7 +609,6 @@ public class ForecastUtil extends ForecastConstants {
   public static Connection getConnection() throws SQLException {
 	  
     /** JNDI
-    */
     javax.sql.DataSource dsrc = null;
     try {
       dsrc = (javax.sql.DataSource) new javax.naming.InitialContext().lookup("java:comp/env/jdbc/JiraDS");
@@ -616,6 +616,7 @@ public class ForecastUtil extends ForecastConstants {
       throw new java.lang.reflect.UndeclaredThrowableException(e);
     }
     return dsrc.getConnection();
+    */
 	
 	
     /** HSQL
@@ -629,14 +630,14 @@ public class ForecastUtil extends ForecastConstants {
 	
 	
     /** MySQL
+    */
     try {
       Class.forName("com.mysql.jdbc.Driver");
     } catch (ClassNotFoundException e) {
       throw new java.lang.reflect.UndeclaredThrowableException(e);
     }
     //return DriverManager.getConnection("jdbc:mysql://10.0.2.16:8319/jiradb?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8", "jira", "jirapass");
-    return DriverManager.getConnection("jdbc:mysql://localhost:3306/jiradb_411?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8", "jira", "jira");
-    */
+    return DriverManager.getConnection("jdbc:mysql://localhost:3306/test_forecast_jira?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8", "jira", "jirapass");
     
     
     /** Oracle

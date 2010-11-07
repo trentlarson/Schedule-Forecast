@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 5.1.50, for apple-darwin10.3.0 (i386)
 --
--- Host: localhost    Database: jiradb_411
+-- Host: localhost    Database: test_forecast_jira
 -- ------------------------------------------------------
 -- Server version	5.1.50
 
@@ -39,7 +39,7 @@ CREATE TABLE `component` (
 
 LOCK TABLES `component` WRITE;
 /*!40000 ALTER TABLE `component` DISABLE KEYS */;
-INSERT INTO `component` VALUES ('10024','10010','Linux Admin',NULL,NULL,'jeremy','1'),('10025','10010','Dev - Admin',NULL,NULL,'jeremy','1'),('10033','10010','UI - Back-Office',NULL,NULL,'jeremy','1'),('10021','10010','Dev - Back-Office',NULL,NULL,'jeremy','1'),('10034','10010','UI - Capture Pages',NULL,NULL,'jeremy','1'),('10020','10010','Dev - Replicated Pages',NULL,NULL,'jeremy','1'),('10032','10010','UI - Admin',NULL,NULL,'jeremy','1'),('10031','10010','InfoTrax',NULL,NULL,'jeremy','1'),('10035','10010','UI - Replicated Pages',NULL,NULL,'jeremy','1'),('10040','10021','Max.com',NULL,NULL,NULL,'2'),('10041','10021','Text Mesaging System',NULL,NULL,NULL,'2'),('10042','10021','Philippines',NULL,NULL,NULL,'2'),('10043','10021','Max Living Site',NULL,NULL,NULL,'2'),('10044','10021','Mobile Device Support',NULL,NULL,NULL,'2'),('10045','10021','Email',NULL,NULL,NULL,'2'),('10046','10010','Text messaging System',NULL,NULL,'jeremy','1'),('10047','10010','Mobile Device Support',NULL,NULL,'jeremy','1'),('10060','10021','InHouse','Applications for corporate use only',NULL,'jeff','2'),('10080','10020','Reports',NULL,NULL,NULL,'0'),('10081','10020','Data Mining',NULL,NULL,NULL,'0'),('10022','10010','Dev - Capture Pages',NULL,NULL,'jeremy','1'),('10082','10021','New Zealand',NULL,NULL,NULL,'0'),('10090','10070','Enrollment',NULL,NULL,NULL,'0');
+INSERT INTO `component` VALUES ('10024','10010','Linux Admin',NULL,NULL,'jeremy','1'),('10025','10010','Dev - Admin',NULL,NULL,'jeremy','1'),('10033','10010','UI - Back-Office',NULL,NULL,'jeremy','1'),('10021','10010','Dev - Back-Office',NULL,NULL,'jeremy','1'),('10034','10010','UI - Capture Pages',NULL,NULL,'jeremy','1'),('10020','10010','Dev - Replicated Pages',NULL,NULL,'jeremy','1'),('10032','10010','UI - Admin',NULL,NULL,'jeremy','1'),('10031','10010','InfoTrax',NULL,NULL,'jeremy','1'),('10035','10010','UI - Replicated Pages',NULL,NULL,'jeremy','1'),('10040','10021','Max.com',NULL,NULL,NULL,'2'),('10041','10021','Text Mesaging System',NULL,NULL,NULL,'2'),('10042','10021','Philippines',NULL,NULL,NULL,'2'),('10043','10021','Max Living Site',NULL,NULL,NULL,'2'),('10044','10021','Mobile Device Support',NULL,NULL,NULL,'2'),('10045','10021','Email',NULL,NULL,NULL,'2'),('10046','10010','Text messaging System',NULL,NULL,'jeremy','1'),('10047','10010','Mobile Device Support',NULL,NULL,'jeremy','1'),('10060','10021','InHouse','Applications for corporate use only',NULL,'jeff','2'),('10080','10020','Reports',NULL,NULL,NULL,'0'),('10081','10020','Data Mining',NULL,NULL,NULL,'0'),('10022','10010','Dev - Capture Pages',NULL,NULL,'jeremy','1'),('10082','10021','New Zealand',NULL,NULL,NULL,'0');
 /*!40000 ALTER TABLE `component` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -64,6 +64,15 @@ CREATE TABLE `customfieldvalue` (
   KEY `cfvalue_issue` (`ISSUE`,`CUSTOMFIELD`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `customfieldvalue`
+--
+
+LOCK TABLES `customfieldvalue` WRITE;
+/*!40000 ALTER TABLE `customfieldvalue` DISABLE KEYS */;
+/*!40000 ALTER TABLE `customfieldvalue` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `issuelink`
@@ -116,7 +125,6 @@ LOCK TABLES `issuelinktype` WRITE;
 INSERT INTO `issuelinktype` VALUES ('10002','Sub-Task','is part of master task','has subtask of',NULL),('10004','Sequence','must be completed before starting','cannot start until completing',NULL);
 /*!40000 ALTER TABLE `issuelinktype` ENABLE KEYS */;
 UNLOCK TABLES;
-
 
 --
 -- Table structure for table `jiraissue`
@@ -238,32 +246,8 @@ CREATE TABLE `project` (
 
 LOCK TABLES `project` WRITE;
 /*!40000 ALTER TABLE `project` DISABLE KEYS */;
-INSERT INTO `project` VALUES ('10010','Max4U','jeremy','FOURU');
+INSERT INTO `project` VALUES ('10010','Max4U','jeremy','FOURU'),('10020','Data Warehouse','jeremy','DW'),('10021','Corporate','jeremy','CORP');
 /*!40000 ALTER TABLE `project` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `userbase`
---
-
-DROP TABLE IF EXISTS `userbase`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `userbase` (
-  `ID` decimal(18,0) NOT NULL,
-  `username` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
-  `PASSWORD_HASH` varchar(255) CHARACTER SET utf8 DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `userbase`
---
-
-LOCK TABLES `userbase` WRITE;
-/*!40000 ALTER TABLE `userbase` DISABLE KEYS */;
-INSERT INTO `userbase` VALUES ('10010','trent','GOkmx0nTzU+oqhUMQ3YBEJKh5Q5YK6UBGDt7yi2gNra0Fkfq92ixJJLso7DUfjyXC33IrD+BGWnfKVfAWX+fNg==');
-/*!40000 ALTER TABLE `userbase` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -363,6 +347,30 @@ LOCK TABLES `team_seq` WRITE;
 INSERT INTO `team_seq` VALUES (0);
 /*!40000 ALTER TABLE `team_seq` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `userbase`
+--
+
+DROP TABLE IF EXISTS `userbase`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `userbase` (
+  `ID` decimal(18,0) NOT NULL,
+  `username` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `PASSWORD_HASH` varchar(255) CHARACTER SET utf8 DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `userbase`
+--
+
+LOCK TABLES `userbase` WRITE;
+/*!40000 ALTER TABLE `userbase` DISABLE KEYS */;
+INSERT INTO `userbase` VALUES ('10010','trent','GOkmx0nTzU+oqhUMQ3YBEJKh5Q5YK6UBGDt7yi2gNra0Fkfq92ixJJLso7DUfjyXC33IrD+BGWnfKVfAWX+fNg=='),('10012','jeremy','GOkmx0nTzU+oqhUMQ3YBEJKh5Q5YK6UBGDt7yi2gNra0Fkfq92ixJJLso7DUfjyXC33IrD+BGWnfKVfAWX+fNg==');
+/*!40000 ALTER TABLE `userbase` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -373,4 +381,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2010-11-06 15:50:45
+-- Dump completed on 2010-11-06 16:54:01
