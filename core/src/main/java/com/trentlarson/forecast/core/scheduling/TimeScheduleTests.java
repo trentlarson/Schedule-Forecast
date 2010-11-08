@@ -892,7 +892,7 @@ public class TimeScheduleTests {
 
     Connection conn = ForecastUtil.getConnection();
 
-    TimeScheduleCreatePreferences sPrefs = new TimeScheduleCreatePreferences(0, new java.util.Date(), 2.0);
+    TimeScheduleCreatePreferences sPrefs = new TimeScheduleCreatePreferences(0, new java.util.Date(), 1.0);
     String mainIssueKey = "FOURU-1002";
     IssueDigraph graph = TimeScheduleLoader.getGraph("", new String[]{ mainIssueKey }, new String[0], sPrefs, conn);
 
@@ -916,7 +916,7 @@ public class TimeScheduleTests {
     System.out.println("Gantt for " + mainIssueKey + ".<br>");
     TimeScheduleDisplayPreferences dPrefs =
       TimeScheduleDisplayPreferences.createForIssues
-      (5, Calendar.MONTH, true, false, false, new String[]{ mainIssueKey }, false, graph);
+      (2, Calendar.MONTH, true, false, false, new String[]{ mainIssueKey }, false, graph);
 
     TimeScheduleWriter.writeIssueTable(graph, new PrintWriter(System.out), sPrefs, dPrefs);
     
@@ -930,21 +930,21 @@ public class TimeScheduleTests {
     // Show that the first team has a lot of work while the second putters around.
     System.out.println("Gantt for team overloaded and underloaded teams.<br>");
     System.out.println("Team " + TimeScheduleTestSetup.team1Id + "<br>");
-    dPrefs = TimeScheduleDisplayPreferences.createForTeam(5, 0, true, false, false, TimeScheduleTestSetup.team1Id, false, graph);
+    dPrefs = TimeScheduleDisplayPreferences.createForTeam(2, 0, true, false, false, TimeScheduleTestSetup.team1Id, false, graph);
     TimeScheduleWriter.writeIssueTable(graph, new PrintWriter(System.out), sPrefs, dPrefs);
 
     System.out.println("Team " + TimeScheduleTestSetup.team2Id + "<br>");
-    dPrefs = TimeScheduleDisplayPreferences.createForTeam(5, 0, true, false, false, TimeScheduleTestSetup.team2Id, false, graph);
+    dPrefs = TimeScheduleDisplayPreferences.createForTeam(2, 0, true, false, false, TimeScheduleTestSetup.team2Id, false, graph);
     TimeScheduleWriter.writeIssueTable(graph, new PrintWriter(System.out), sPrefs, dPrefs);
     
     // Show that two teams get work done... in the same way, because we currently only allow one team to work on each project.
     System.out.println("Gantt for balanced teamwork -- BROKEN!<br>");
     System.out.println("Team " + TimeScheduleTestSetup.team3Id + "<br>");
-    dPrefs = TimeScheduleDisplayPreferences.createForTeam(5, 0, true, false, false, TimeScheduleTestSetup.team3Id, false, graph);
+    dPrefs = TimeScheduleDisplayPreferences.createForTeam(2, 0, true, false, false, TimeScheduleTestSetup.team3Id, false, graph);
     TimeScheduleWriter.writeIssueTable(graph, new PrintWriter(System.out), sPrefs, dPrefs);
 
     System.out.println("Team " + TimeScheduleTestSetup.team4Id + "<br>");
-    dPrefs = TimeScheduleDisplayPreferences.createForTeam(5, 0, true, false, false, TimeScheduleTestSetup.team4Id, false, graph);
+    dPrefs = TimeScheduleDisplayPreferences.createForTeam(2, 0, true, false, false, TimeScheduleTestSetup.team4Id, false, graph);
     TimeScheduleWriter.writeIssueTable(graph, new PrintWriter(System.out), sPrefs, dPrefs);
     
   }
