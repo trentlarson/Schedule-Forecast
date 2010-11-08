@@ -11,6 +11,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
+
+import org.apache.commons.logging.LogFactory;
 
 import com.trentlarson.forecast.core.dao.TeamHours;
 import com.trentlarson.forecast.core.helper.ForecastUtil;
@@ -919,18 +923,28 @@ public class TimeScheduleTests {
     
     // now let's load and schedule everything
     
+    //TimeSchedule.log4jLog.setLevel(org.apache.log4j.Level.DEBUG);
+    TimeSchedule.log4jLog.setLevel(org.apache.log4j.Level.INFO);
     graph = TimeScheduleLoader.getEntireGraph(sPrefs, conn);
     
-    // show that the first team has a lot of work while the second putters around.
+    // Show that the first team has a lot of work while the second putters around.
     System.out.println("Gantt for team overloaded and underloaded teams.<br>");
-    dPrefs =
-      TimeScheduleDisplayPreferences.createForTeam
-      (5, 0, true, false, false, new Long(20100), false, graph);
+    System.out.println("Team " + TimeScheduleTestSetup.team1Id + "<br>");
+    dPrefs = TimeScheduleDisplayPreferences.createForTeam(5, 0, true, false, false, TimeScheduleTestSetup.team1Id, false, graph);
     TimeScheduleWriter.writeIssueTable(graph, new PrintWriter(System.out), sPrefs, dPrefs);
 
-    dPrefs =
-      TimeScheduleDisplayPreferences.createForTeam
-      (5, 0, true, false, false, new Long(20101), false, graph);
+    System.out.println("Team " + TimeScheduleTestSetup.team2Id + "<br>");
+    dPrefs = TimeScheduleDisplayPreferences.createForTeam(5, 0, true, false, false, TimeScheduleTestSetup.team2Id, false, graph);
+    TimeScheduleWriter.writeIssueTable(graph, new PrintWriter(System.out), sPrefs, dPrefs);
+    
+    // Show that two teams get work done... in the same way, because we currently only allow one team to work on each project.
+    System.out.println("Gantt for balanced teamwork -- BROKEN!<br>");
+    System.out.println("Team " + TimeScheduleTestSetup.team3Id + "<br>");
+    dPrefs = TimeScheduleDisplayPreferences.createForTeam(5, 0, true, false, false, TimeScheduleTestSetup.team3Id, false, graph);
+    TimeScheduleWriter.writeIssueTable(graph, new PrintWriter(System.out), sPrefs, dPrefs);
+
+    System.out.println("Team " + TimeScheduleTestSetup.team4Id + "<br>");
+    dPrefs = TimeScheduleDisplayPreferences.createForTeam(5, 0, true, false, false, TimeScheduleTestSetup.team4Id, false, graph);
     TimeScheduleWriter.writeIssueTable(graph, new PrintWriter(System.out), sPrefs, dPrefs);
     
   }

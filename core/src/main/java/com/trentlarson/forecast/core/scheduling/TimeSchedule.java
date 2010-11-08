@@ -38,10 +38,10 @@ public class TimeSchedule {
   // OK, I'd like to shorten these strings (eg. to just "scheduling.Time"),
   // but then the Jira page to set logging levels doesn't work. Any ideas? TNL
   protected static final Category log4jLog = Category.getInstance("com.trentlarson.forecast.core.scheduling.TimeSchedule");
-  protected static final Category fnebLog  = Category.getInstance("com.trentlarson.forecast.core.scheduling.TimeSchedule.FNEB");
-  protected static final Category fdiwwLog = Category.getInstance("com.trentlarson.forecast.core.scheduling.TimeSchedule.-FDIWW-");
-  protected static final Category iaaLog   = Category.getInstance("com.trentlarson.forecast.core.scheduling.TimeSchedule.--IAA--");
-  protected static final Category wsbLog   = Category.getInstance("com.trentlarson.forecast.core.scheduling.TimeSchedule.--WSB--");
+  protected static final Category fnebLog  = Category.getInstance("com.trentlarson.forecast.core.scheduling.TimeSchedule.-FNEB--"); // findNextEstBegin
+  protected static final Category fdiwwLog = Category.getInstance("com.trentlarson.forecast.core.scheduling.TimeSchedule.-FDIWW-"); // futureDateInWorkWeek
+  protected static final Category iaaLog   = Category.getInstance("com.trentlarson.forecast.core.scheduling.TimeSchedule.--IAA--"); // injectAndAdjust
+  protected static final Category wsbLog   = Category.getInstance("com.trentlarson.forecast.core.scheduling.TimeSchedule.--WSB--"); // workSecondsBetween
 
 
 
