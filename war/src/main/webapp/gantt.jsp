@@ -525,8 +525,7 @@ Charts below are based on data loaded at <%= graph.getLoadedDate() %>.
             out.write("<p>\n");
             out.write("If that were scheduled back-to-back, which dates could " + oneUser + " hit?  Not the ones below in red!\n");
             out.write("<p>\n");
-            Map range = graph.getUserWeeklyHoursAvailable();
-            TimeSchedule.writeIssueSchedule(schedule, range, time_multiplier, show_resolved, new PrintWriter(out));
+            TimeSchedule.writeIssueSchedule(schedule, time_multiplier, show_resolved, new PrintWriter(out));
           }
         }
       }

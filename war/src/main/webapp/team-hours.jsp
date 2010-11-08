@@ -55,10 +55,10 @@ if (CHANGE_HOURS_COMMAND.equals(request.getParameter(COMMAND_PARAM_NAME))) {
       int weekNumPos = paramName.indexOf(".weekNum-");
 
       String teamIdStr = paramName.substring(teamIdPos + ".teamId-".length(), usernamePos);
-      Long teamId = (teamIdStr.equals("null")) ? null : Long.valueOf(teamIdStr);
+      Long teamId = (teamIdStr.equals("null") || teamIdStr.equals("")) ? null : Long.valueOf(teamIdStr);
 
       String usernameStr = paramName.substring(usernamePos + ".username-".length(), weekNumPos);
-      String username = (usernameStr.equals("null")) ? null : usernameStr;
+      String username = (usernameStr.equals("null") || usernameStr.equals("")) ? null : usernameStr;
 
       String weekNumStr = paramName.substring(weekNumPos + ".weekNum-".length());
       int weekNum = Integer.valueOf(weekNumStr).intValue();
@@ -68,8 +68,10 @@ if (CHANGE_HOURS_COMMAND.equals(request.getParameter(COMMAND_PARAM_NAME))) {
 
       try {
         conn = com.trentlarson.forecast.core.helper.ForecastUtil.getConnection();
-        String createSql =
-          "insert into team_hours values (team_hours_seq.nextval, ?, ?, ?, ?, ?, ?)";
+        // Oracle
+        //String createSql = "insert into team_hours values (team_hours_seq.nextval, ?, ?, ?, ?, ?, ?)";
+        // MySql
+        String createSql = "insert into team_hours values (null, ?, ?, ?, ?, ?, ?)";
         Object[] args = {
           new java.sql.Timestamp(System.currentTimeMillis()),
           new java.sql.Timestamp(System.currentTimeMillis()),
@@ -91,23 +93,25 @@ if (CHANGE_HOURS_COMMAND.equals(request.getParameter(COMMAND_PARAM_NAME))) {
 }
 
 if (ADD_USER_COMMAND.equals(request.getParameter(COMMAND_PARAM_NAME))) {
-  String username = request.getParameter(ADD_USER_NAME_INPUT);
+  String usernameStr = request.getParameter(ADD_USER_NAME_INPUT);
   String teamIdStr = request.getParameter(ADD_USER_TEAM_INPUT);
   Long teamId = null;
   if (!teamIdStr.equals("null")) {
     teamId = Long.valueOf(teamIdStr);
   }
-  if (username.length() == 0) {
+  if (usernameStr.length() == 0) {
     if (teamId == null) {
       throw new IllegalStateException("You cannot make general 'unassigned' hours (ie. without a team).");
     }
   }
-
+      String username = usernameStr.equals("") ? null : usernameStr;
       java.sql.Connection conn = null;
       try {
         conn = com.trentlarson.forecast.core.helper.ForecastUtil.getConnection();
-        String createSql =
-          "insert into team_hours values (team_hours_seq.nextval, ?, ?, ?, ?, ?, ?)";
+        // Oracle
+        //String createSql = "insert into team_hours values (team_hours_seq.nextval, ?, ?, ?, ?, ?, ?)";
+        // MySql
+        String createSql = "insert into team_hours values (null, ?, ?, ?, ?, ?, ?)";
         Object[] args = {
           new java.sql.Timestamp(System.currentTimeMillis()),
           new java.sql.Timestamp(System.currentTimeMillis()),

@@ -24,11 +24,11 @@ If you run this and point to a Jira DB, you'll get some reports showing project 
 To deploy:
 - Get tools: Maven; a J2EE server eg. Tomcat
 - Create the TEAM and TEAM_HOURS tables; see Team*.hbm.xml
-- Put DB settings in hibernate.cfg.xml
+- Put DB settings in hibernate.cfg.xml & ForecastUtil.java
 - Build the war with: mvn package
 -- Choose your tool:
 -- For standalone: Copy the target/forecast.war file into the war directory, eg. tomcat/webapps/
--- For Jira: copy the war/src/main/webapp/gantt.jsp file into someplace under atlassian-jira/
+-- For Jira: copy the forecast jars and the core/lib jars (except logging) into atlassian-jira/WEB-INF/lib, and war/src/main/webapp/gantt.jsp file into someplace you'll remember under atlassian-jira/, eg. secure/views/company
 
 
 Helpful hints for Eclipse:

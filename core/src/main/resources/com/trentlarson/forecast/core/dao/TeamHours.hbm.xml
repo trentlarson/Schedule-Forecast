@@ -35,7 +35,7 @@ CREATE SEQUENCE team_hours_seq INCREMENT BY 1;
 
 MySQL:
 create table team_hours (
- id integer primary key,
+ id integer primary key auto_increment,
  created date,
  updated date,
  team_id integer,
@@ -43,6 +43,7 @@ create table team_hours (
  start_of_week date,
  hours_available decimal
 );
+Not used due to auto_increment:
 CREATE TABLE team_hours_seq (id INTEGER NOT NULL);
 INSERT INTO team_hours_seq VALUES (0);
 

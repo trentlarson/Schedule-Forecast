@@ -57,7 +57,12 @@ public class TeamHoursUtil {
    */
   public static int weekNumber(GregorianCalendar cal) {
     int yearNum = cal.get(Calendar.YEAR) - INITIAL_YEAR;
-    return (yearNum * 52) + cal.get(Calendar.WEEK_OF_YEAR);
+    int weekNum = cal.get(Calendar.WEEK_OF_YEAR);
+    if (cal.before(weekStart(cal))) {
+      // This can happen since we allow a different FIRST_DAY_OF_WORK, eg. if that's Monday then Sunday is part of the week before
+      weekNum = weekNum - 1;
+    }
+    return (yearNum * 52) + weekNum;
   }
 
   /**
