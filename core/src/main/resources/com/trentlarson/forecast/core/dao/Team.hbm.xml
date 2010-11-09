@@ -30,12 +30,13 @@ CREATE SEQUENCE team_seq INCREMENT BY 1;
 
 MySQL:
 create table team (
- id integer primary key,
+ id integer primary key auto_increment,
  created date,
  updated date,
  name varchar(255),
  project_id integer
 );
+Not used due to auto_increment:
 CREATE TABLE team_seq (id INTEGER NOT NULL);
 INSERT INTO team_seq VALUES (0);
 
