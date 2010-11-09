@@ -349,16 +349,20 @@ Charts below are based on data loaded at <%= graph.getLoadedDate() %>.
 <div>
   <input type='text' size='1' name='<%=TIME_GRANULARITY_REQ_NAME%>' value='<%=session.getAttribute(TIME_GRANULARITY_SES_NAME)%>'>
   Days per slice
+  <!-- doesn't seem to work
   <input type='checkbox' name='<%=SHOW_RESOLVED_REQ_NAME%>' <%= (show_resolved ? "CHECKED" : "") %>>
   Show resolved
+  -->
   <input type='checkbox' name='<%=SHOW_USERS_IN_ONE_ROW_REQ_NAME%>' <%= (show_users_in_one_row ? "CHECKED" : "") %>>
   Show users in one row
   <input type='checkbox' name='<%=SHOW_SCHEDULE_REQ_NAME%>' <%= (show_schedule ? "CHECKED" : "") %>>
-  Show detailed schedules
+  Show users' detailed schedules
   <input type='checkbox' name='<%=SHOW_BULK_CHANGER_REQ_NAME%>' <%= (show_bulk_changer ? "CHECKED" : "") %>>
   Show bulk-change tools
+  <!-- ClassCastException: java.lang.String cannot be cast to com.trentlarson.forecast.core.scheduling.IssueTree
   <input type='checkbox' name='<%=SHOW_COMPLETION_REQ_NAME%>' <%= (show_completion ? "CHECKED" : "") %>>
   Show completion measurements
+  -->
   <input type='submit' value='Change Display'>
 </form>
 <br/>
@@ -568,7 +572,7 @@ Charts below are based on data loaded at <%= graph.getLoadedDate() %>.
   <h2>Something went wrong!</h2>
   Report the following information to the Jira developers 
   and include any helpful details about what you were doing,
-  then try clicking <a href="gantt.jsp?reset=true">here</a>.
+  then try clicking <a href="?reset=true">here</a>.
   <p>
   Error time: <%= errorDate %>
   <p>
