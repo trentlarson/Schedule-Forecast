@@ -39,9 +39,8 @@ if (CHANGE_HOURS_COMMAND.equals(request.getParameter(COMMAND_PARAM_NAME))) {
     String eraseSql =
       "delete from team_hours where start_of_week >= ?";
     Object[] args = { new java.sql.Timestamp(TeamHoursUtil.weekCal(firstWeek).getTime().getTime()) };
-    rset = com.icentris.sql.SimpleSQL.executeQuery(eraseSql, args, conn);
+    com.icentris.sql.SimpleSQL.executeUpdate(eraseSql, args, conn);
   } finally {
-    try { rset.close(); } catch (Exception e2) {}
     try { conn.close(); } catch (Exception e2) {}
   }
   
