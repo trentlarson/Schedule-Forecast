@@ -628,6 +628,13 @@ public class TimeScheduleTests {
         (graph, out, sPrefs,
          TimeScheduleDisplayPreferences.createForUser(1, 0, true, false, false, userKey, false, graph));
 
+
+      out.println("<br><br>");
+      out.println("Tree for " + userKey + " allowing modifications.<br>");
+      TimeScheduleWriter.writeIssueTable
+        (graph, out, sPrefs,
+         TimeScheduleDisplayPreferences.createForUser(1, 0, true, false, false, userKey, true, graph));
+
     }
 
 
