@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -26,7 +27,6 @@ public class TimeScheduleWriter {
 
   private static final Category log4jLog = Category.getInstance(TimeScheduleWriter.class);
 
-  private static int NUM_PRIORITIES = 10;
 
   /**
      @return the next date marking the time period given by the
@@ -72,20 +72,34 @@ public class TimeScheduleWriter {
   /**
      @param issues List of IssueTree objects for all issues to be displayed
      @param includeBlocked whether to account for dependent tasks
-     @return the finish date for each priority (index in array == priority)
+     @return the finish date for each priority (index in array == priority - 1)
   */
   private static Date[] priorityCompleteDates
     (List<String> issueKeys, IssueDigraph graph,
      Date startDate, TimeScheduleDisplayPreferences dPrefs) {
 
     // report when priority levels are done
-    Date[] priorityMax = new Date[NUM_PRIORITIES];
-    Arrays.fill(priorityMax, startDate);
+    Map<Integer,Date> maxDateForPriority = new HashMap<Integer,Date>();
     for (String issueKey : issueKeys) {
       IssueTree detail = graph.getIssueTree(issueKey);
-      detail.setPriorityCompleteDates(priorityMax, graph, dPrefs);
+      detail.setPriorityCompleteDates(maxDateForPriority, graph, dPrefs);
     }
-    return priorityMax;
+    // now fit that data into an array
+    int maxKey = 1; // priority numbers are 1-based
+    for (Integer priority : maxDateForPriority.keySet()) {
+      if (priority > maxKey) {
+        maxKey = priority;
+      }
+    }
+    Date[] priorityDates = new Date[maxKey];
+    for (int i = 1; i <= maxKey; i++) { // priority numbers are 1-based
+      if (maxDateForPriority.get(new Integer(i)) == null) {
+        priorityDates[i - 1] = startDate;
+      } else {
+        priorityDates[i - 1] = maxDateForPriority.get(new Integer(i));
+      }
+    }
+    return priorityDates;
   }
 
   // to keep track of branches when displaying precedessors of the selection
@@ -419,7 +433,7 @@ public class TimeScheduleWriter {
     do {
       calStartOfDay.add(Calendar.DAY_OF_YEAR, dPrefs.timeGranularity);
       String priorities = "";
-      for (int i = 0; i <= 9; i++) {
+      for (int i = 0; i < priorityDates.length; i++) {
         if (priorityDates[i] != null
             && priorityDates[i].before(calStartOfDay.getTime())) {
           if (priorities.length() > 0) {

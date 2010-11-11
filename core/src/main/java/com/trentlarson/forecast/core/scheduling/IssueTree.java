@@ -248,28 +248,30 @@ public class IssueTree extends TimeSchedule.IssueWorkDetailOriginal implements C
   }
 
   /**
-     Set the priorityMax record to the maximum of it's previous
+     Set each priority key in maxDateForPriority to the maximum of it's previous
      setting and end dates, looking this priority and all subtasks
      (and dependents if includeBlocked is on).
 
+     @param maxDateForPriority is modified
      @param dPrefs is the preferences for filtering whether to use
      issues (see displayIssue), or null if we want to check all issues
    */
-  protected void setPriorityCompleteDates(Date[] priorityMax, IssueDigraph graph,
+  protected void setPriorityCompleteDates(Map<Integer,Date> maxDateForPriority, IssueDigraph graph,
                                           TimeScheduleDisplayPreferences dPrefs) {
     TimeSchedule.IssueSchedule sched =
       (TimeSchedule.IssueSchedule) graph.getIssueSchedules().get(getKey());
     if (dPrefs == null
         || dPrefs.displayIssue(this)) {
-      if (priorityMax[getPriority() - 1].before(sched.getEndDate())) {
-        priorityMax[getPriority() - 1] = sched.getEndDate();
+      if (maxDateForPriority.get(getPriority()) == null
+          || maxDateForPriority.get(getPriority()).before(sched.getEndDate())) {
+        maxDateForPriority.put(getPriority(), sched.getEndDate());
       }
     }
     for (Iterator i = getSubtasks().iterator(); i.hasNext(); ) {
-      ((IssueTree) i.next()).setPriorityCompleteDates(priorityMax, graph, dPrefs);
+      ((IssueTree) i.next()).setPriorityCompleteDates(maxDateForPriority, graph, dPrefs);
     }
     for (Iterator i = getDependents().iterator(); i.hasNext(); ) {
-      ((IssueTree) i.next()).setPriorityCompleteDates(priorityMax, graph, dPrefs);
+      ((IssueTree) i.next()).setPriorityCompleteDates(maxDateForPriority, graph, dPrefs);
     }
   }
 }

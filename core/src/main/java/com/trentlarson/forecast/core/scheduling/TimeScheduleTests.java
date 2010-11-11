@@ -22,8 +22,8 @@ import com.trentlarson.forecast.core.helper.ForecastUtil;
 public class TimeScheduleTests {
 
   public static void main(String[] args) throws Exception {
-    //unitMain(args);
-    integrationMain(args);
+    unitMain(args);
+    //integrationMain(args);
   }
   
   
