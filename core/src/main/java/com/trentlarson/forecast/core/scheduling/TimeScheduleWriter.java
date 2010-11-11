@@ -439,7 +439,7 @@ public class TimeScheduleWriter {
           if (priorities.length() > 0) {
             priorities += "<br>";
           }
-          priorities += String.valueOf(i);
+          priorities += String.valueOf(i + 1);
           priorityDates[i] = null;
         }
       }
