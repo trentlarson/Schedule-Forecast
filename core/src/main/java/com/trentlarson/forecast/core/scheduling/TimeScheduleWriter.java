@@ -261,7 +261,7 @@ public class TimeScheduleWriter {
               int thisDist = branch.getLongestDistanceFromTarget() - branchNum;
               writeIssueRows
                 (predTree, graph.getUserWeeklyHoursAvailable(),
-                 graph.getIssueSchedules(), maxEndDate,
+                 graph.getIssueSchedules(), maxEndDate, priorityDates.length,
                  maxDist - thisDist, - thisDist,
                  false, out, sPrefs.getStartTime(), dPrefs2, shownAlready, true);
             }
@@ -273,7 +273,7 @@ public class TimeScheduleWriter {
 
         writeIssueRows
           (tree, graph.getUserWeeklyHoursAvailable(),
-           graph.getIssueSchedules(), maxEndDate, maxDist, 0,
+           graph.getIssueSchedules(), maxEndDate, priorityDates.length, maxDist, 0,
            false, out, sPrefs.getStartTime(), dPrefs, shownAlready, false);
       }
     }
@@ -466,7 +466,7 @@ public class TimeScheduleWriter {
     (IssueTree detail,
      Map<Teams.UserTimeKey,TimeSchedule.WeeklyWorkHours> allUserWeeklyHours,
      Map issueSchedules,
-     Date maxEndDate, int indentDepth, int dist,
+     Date maxEndDate, int maxPriority, int indentDepth, int dist,
      boolean isSubtask, Writer out, Date startTime,
      TimeScheduleDisplayPreferences dPrefs, Set shownAlready, boolean stopAtTargetDistance)
     throws IOException {
@@ -512,7 +512,7 @@ public class TimeScheduleWriter {
                   + detail.getTimeAssigneeWithTeamName() + postfix + "\n");
       }
       if (dPrefs.showChangeTools) {
-        TimeScheduleModifyWriter.writeChangeTools(detail, out);
+        TimeScheduleModifyWriter.writeChangeTools(detail, maxPriority, out);
       }
       if (isSubtask) {
         out.write("        </li>\n");
@@ -727,7 +727,7 @@ public class TimeScheduleWriter {
       for (Iterator i = detail.getSubtasks().iterator(); i.hasNext(); ) {
         IssueTree subIssue = (IssueTree) i.next();
         writeIssueRows
-          (subIssue, allUserWeeklyHours, issueSchedules, maxEndDate,
+          (subIssue, allUserWeeklyHours, issueSchedules, maxEndDate, maxPriority,
            indentDepth + 1, dist,
            true, out, startTime, dPrefs, shownAlready, stopAtTargetDistance);
       }
@@ -735,7 +735,7 @@ public class TimeScheduleWriter {
         for (Iterator i = detail.getDependents().iterator(); i.hasNext(); ) {
           IssueTree current = (IssueTree) i.next();
           writeIssueRows
-            (current, allUserWeeklyHours, issueSchedules, maxEndDate,
+            (current, allUserWeeklyHours, issueSchedules, maxEndDate, maxPriority,
              indentDepth + 1, dist + 1,
              false, out, startTime, dPrefs, shownAlready, stopAtTargetDistance);
         }

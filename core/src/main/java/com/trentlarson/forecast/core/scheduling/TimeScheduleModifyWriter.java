@@ -11,26 +11,25 @@ import java.util.GregorianCalendar;
 
 public class TimeScheduleModifyWriter {
 
-  public static final int MAX_PRIORITY = 9;
   public static SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("MM/dd");
   public static DecimalFormat ESTIMATE_FORMATTER = new DecimalFormat("###0.0##");
 
-  protected static void writeChangeTools(IssueTree detail, Writer out)
+  protected static void writeChangeTools(IssueTree detail, int maxPriority, Writer out)
     throws IOException {
 
     if (!detail.getResolved()) {
       out.write("<br>\n");
       out.write("<table>\n");
       out.write("<tr>\n");
-      for (int priority = 0; priority <= MAX_PRIORITY; priority++) {
+      for (int priority = 1; priority <= maxPriority; priority++) {
         out.write("<td>");
         out.write
           ("<input type='radio' name='"
            + makePriorityCheckboxName(detail.getKey())
-           + "' value='" + (priority + 1) + "' "
+           + "' value='" + (priority) + "' "
            + (detail.getPriority() == (priority + 1) ? "CHECKED" : "")
            + ">");
-        if (priority == (int) MAX_PRIORITY / 2) {
+        if (priority == (int) maxPriority / 2) {
           out.write("" + priority);
         }
         out.write("</td>\n");
