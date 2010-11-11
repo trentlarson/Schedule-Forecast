@@ -38,10 +38,12 @@ public class Teams {
       return
           ("" 
            + (getTeamId() == null ? Character.MIN_VALUE : getTeamId())
+           + Character.MAX_VALUE // to make sure all team IDs come first
            + (getUsername() == null ? "" : getUsername()))
           .compareTo
           (""
            + (objKey.getTeamId() == null ? Character.MIN_VALUE : objKey.getTeamId())
+           + Character.MAX_VALUE // to make sure all team IDs come first
            + (objKey.getUsername() == null ? "" : objKey.getUsername()));
     }
     public int hashCode() {
