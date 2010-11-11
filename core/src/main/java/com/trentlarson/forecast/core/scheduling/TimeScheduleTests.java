@@ -320,10 +320,10 @@ public class TimeScheduleTests {
 
     out.println("<br><br>");
     out.println("Trees with hours on teams with hours: " + graph.getUserWeeklyHoursAvailable());
+
     out.println("<br><br>");
-
+    out.println("Graph for trent");
     Teams.AssigneeKey userKey = new Teams.AssigneeKey(1L, "trent");
-
     TimeScheduleWriter.writeIssueTable
       (graph, out, sPrefs,
        TimeScheduleDisplayPreferences
@@ -331,7 +331,9 @@ public class TimeScheduleTests {
 
 
 
-    // print out team table schedule for trent on team 1
+
+    out.println("<br><br>");
+    out.println("Schedule for trent on team 1");
     userKey = new Teams.AssigneeKey(1L, "trent");
     List<TimeSchedule.IssueSchedule> schedule = new ArrayList();
     List<IssueTree> userIssueList = userDetails.get(userKey);
@@ -344,7 +346,8 @@ public class TimeScheduleTests {
       (schedule, sPrefs.getTimeMultiplier(), true, out);
 
 
-    // print out team table schedule for trent on team 2
+    out.println("<br><br>");
+    out.println("Schedule for trent on team 2");
     userKey = new Teams.AssigneeKey(2L, "trent");
     schedule = new ArrayList();
     userIssueList = userDetails.get(userKey);
@@ -356,7 +359,8 @@ public class TimeScheduleTests {
     TimeSchedule.writeIssueSchedule
       (schedule, sPrefs.getTimeMultiplier(), true, out);
 
-    // print out team table schedule for trent on no team
+    out.println("<br><br>");
+    out.println("Schedule for trent on no team");
     userKey = new Teams.AssigneeKey(null, "trent");
     schedule = new ArrayList();
     userIssueList = userDetails.get(userKey);
@@ -367,6 +371,7 @@ public class TimeScheduleTests {
     }
     TimeSchedule.writeIssueSchedule
       (schedule, sPrefs.getTimeMultiplier(), true, out);
+    
   }
 
 
@@ -447,7 +452,7 @@ public class TimeScheduleTests {
     out.println("<P>");
     out.println("<H2>... for tasks blocked by a previous issue with a late subtask.</H2>");
 
-    out.println("<br>");
+    out.println("<br><br>");
     out.println("(TEST-22 should be blocked until the 21st.)");
 
     Date startDate = SLASH_DATE.parse("2005/04/05");
