@@ -265,6 +265,29 @@ public class TimeScheduleTests {
     TimeSchedule.writeIssueSchedule
       (schedule, sPrefs.getTimeMultiplier(), true, out);
 
+    
+    
+    // Now show what happens when we assign an issue to someone.
+    manyIssues[0] =
+      new IssueTree
+      ("TEST-200.1", "5-day issue", "trent", 1L, "1",
+       5 * jira_day, 0 * jira_day, null, null, 5, false);
+
+    userDetails =
+      createUserDetails(manyIssues, userWeeklyHours);
+    sPrefs =
+      new TimeScheduleCreatePreferences(0, SLASH_DATE.parse("2005/04/05"), 1);
+    graph =
+      TimeScheduleLoader.schedulesForUserIssues3
+      (userDetails, userWeeklyHours, sPrefs);
+      
+    out.println("<br><br>");
+    out.println("Tree for " + user + ", which should now be shorter since 'trent' handles one task (TEST-200.1).<br>");
+    TimeScheduleWriter.writeIssueTable
+      (graph, out, sPrefs,
+       TimeScheduleDisplayPreferences
+       .createForUser(1, 0, true, false, false, user, false, graph));
+  
   }
 
   public static void outputSplitTeamTestResults(PrintWriter out) throws Exception {
