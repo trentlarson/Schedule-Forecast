@@ -65,6 +65,8 @@ Places to clean up:
 - ... and then you can allow it in the gantt.jsp
 - split wicket from war project(?)
 
+- I think there's a problem where defaultStartDate is used in the middle of scheduling in TimeSchedule.createIssueSchedules.  It seems like it's being used for later issues and not just the first one.
+- in gantt-test.html, the "ranges of hourly work done" don't seem to match the start and end times
 
 ________________________________________________________________________________
 

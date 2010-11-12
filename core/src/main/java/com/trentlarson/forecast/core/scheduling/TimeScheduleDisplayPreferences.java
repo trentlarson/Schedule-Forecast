@@ -97,7 +97,11 @@ public class TimeScheduleDisplayPreferences {
 
     Set<Teams.UserTimeKey> addedAlready = new TreeSet<Teams.UserTimeKey>();
     for (Teams.AssigneeKey userKey : graph.getAssignedUserDetails().keySet()) {
-      if (showUser.equals(userKey.getUsername())) {
+      if ((showUser == null
+           && userKey.getUsername() == null) 
+          ||
+          (showUser != null
+           && showUser.equals(userKey.getUsername()))) {
         Teams.UserTimeKey timeKey = graph.getAllocatedUser(userKey);
         if (!addedAlready.contains(timeKey)) {
           for (IssueTree issue : graph.getTimeUserDetails().get(timeKey)) {

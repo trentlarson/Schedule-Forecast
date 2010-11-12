@@ -8,23 +8,12 @@ public class Teams {
 
   /**
      This represents an entity that has time allotted for their work.
-
-     It can be 1) a specific individual with no team, or 2) a specific
-     team with no individual, or 3) a specific individual on a
-     specific team.  (It cannot be unassigned to both team and user.)
    */
   // WARNING: When you specify the generics on one of these comparators, the TimeScheduleTests get an error.
   public static class UserTimeKey implements Comparable {
     private Long teamId;
     private String username;
     public UserTimeKey(Long teamId_, String username_) {
-      /**
-      // Technically, this is true; however, since teams are separate
-      // from projects, someone might do this, and so let's not break.
-      if (teamId_ == null && username_ == null) {
-        throw new IllegalStateException("You cannot make a user-time key with neither team nor user.");
-      }
-      **/
       this.teamId = teamId_;
       this.username = username_;
     }
@@ -63,12 +52,18 @@ public class Teams {
     public static String toString(Long teamId, String username, boolean sayNoTeam) {
       return toString(teamId == null ? null : String.valueOf(teamId), username, sayNoTeam);
     }
+    /**
+     * If you change this, also change fromString!
+     */
     public static String toString(String team, String username, boolean sayNoTeam) {
       return
         "User " + (username == null ? "is" : username + " on")
         + " "
         + (team == null ? (sayNoTeam ? "no Team" : "any Team") : "Team " + team);
     }
+    /**
+     * If you change this, also change toString!
+     */
     public static UserTimeKey fromString(String assignee) {
       String username;
       if (assignee.startsWith("User is")) {
@@ -106,8 +101,16 @@ public class Teams {
     public String getUsername() { return username; }
     public int compareTo(Object obj) {
       AssigneeKey objKey = (AssigneeKey) obj;
-      return ("" + getTeamId() + getUsername())
-        .compareTo("" + objKey.getTeamId() + objKey.getUsername());
+      return
+        ("" 
+         + (getTeamId() == null ? Character.MIN_VALUE : getTeamId())
+         + Character.MAX_VALUE // to make sure all team IDs come first
+         + (getUsername() == null ? "" : getUsername()))
+         .compareTo
+         (""
+          + (objKey.getTeamId() == null ? Character.MIN_VALUE : objKey.getTeamId())
+          + Character.MAX_VALUE // to make sure all team IDs come first
+          + (objKey.getUsername() == null ? "" : objKey.getUsername()));
     }
     public int hashCode() {
       // see String.hashCode() in the API for the reasoning behind this

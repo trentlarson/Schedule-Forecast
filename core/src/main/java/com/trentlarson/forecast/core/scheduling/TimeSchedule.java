@@ -23,10 +23,10 @@ public class TimeSchedule {
 
 
   public static final double MAX_WORKHOURS_PER_WORKDAY = 8.0;
-  public static final int WORKDAYS_PER_WEEK = 5;
-  public static final double TYPICAL_INDIVIDUAL_WORKHOURS_PER_WORKWEEK =
-    WORKDAYS_PER_WEEK * MAX_WORKHOURS_PER_WORKDAY;
-  public static final int FIRST_HOUR_OF_WORKDAY = 8;
+  private static final int WORKDAYS_PER_WEEK = 5;
+  public static final double TYPICAL_INDIVIDUAL_WORKHOURS_PER_WORKWEEK = WORKDAYS_PER_WEEK * MAX_WORKHOURS_PER_WORKDAY;
+  
+  private static final int FIRST_HOUR_OF_WORKDAY = 8;
 
   private static final java.text.SimpleDateFormat WEEKDAY_DATE_TIME = new java.text.SimpleDateFormat("EEE MMM dd hh:mm a");
   private static final java.text.SimpleDateFormat WEEKDAY_DATE = new java.text.SimpleDateFormat("EEE MMM dd");
@@ -1055,7 +1055,7 @@ public class TimeSchedule {
     (List<T> issueDetails,
      Map<String,WeeklyWorkHours> userWeeklyHours,
      Map<String,IssueSchedule> schedulesForKeys,
-     double multiplier, Date defaultStartDate) {
+     double multiplier, Date startDate) {
 
     // store each IssueSchedule as it is scheduled
     List<IssueSchedule> allSchedules = new ArrayList<IssueSchedule>();
@@ -1068,8 +1068,9 @@ public class TimeSchedule {
       boolean detailIsScheduled;
       // using MAX_WORKHOURS shouldn't make a difference since start
       // date should be specified at the beginning of the day
-      Calendar endOfFirstContiguousBlock =
-        dateInWorkWeek(defaultStartDate, MAX_WORKHOURS_PER_WORKDAY);
+      Calendar endOfFirstContiguousBlock = 
+        dateInWorkWeek(startDate, MAX_WORKHOURS_PER_WORKDAY);
+      Date defaultStartDate = endOfFirstContiguousBlock.getTime();
       ArrayList<IssueSchedule> nonContiguousSchedules =
         new ArrayList<IssueSchedule>();
       int count = 0;

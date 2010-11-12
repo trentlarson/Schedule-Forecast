@@ -68,9 +68,7 @@ public class IssueTree extends TimeSchedule.IssueWorkDetailOriginal implements C
   protected void setTimeAssigneeKey(Teams.UserTimeKey assignee) {
     this.timePerson = assignee.getUsername();
     this.timeTeamId = assignee.getTeamId();
-    // REFACTOR to pull the real team name (multiple instances in these files)
-    this.timeTeamName =
-      IssueLoader.teamKeyFromIssueKey(assignee.getTeamId(), getKey());
+    this.timeTeamName = IssueLoader.teamKeyFromIssueKey(assignee.getTeamId(), getKey());
     this.timeAssignee = assignee.toString();
   }
 

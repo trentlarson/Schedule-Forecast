@@ -244,7 +244,7 @@ public class TimeScheduleLoader {
                                     sPrefs.getStartTime());
 
     Map<String,List<IssueTree>> assigneeStringToIssues =
-      userIssuesKeyToString(newTimeDetails.timeDetails);
+      createMapFromAssigneeKeyStringToUserIssues(newTimeDetails.timeDetails);
 
     // clone the hourly data (since it's modified later)
     Map<Teams.UserTimeKey,TimeSchedule.WeeklyWorkHours> weeklyHoursFromKey2 =
@@ -256,7 +256,7 @@ public class TimeScheduleLoader {
     }
 
     Map<String,TimeSchedule.WeeklyWorkHours> weeklyHoursFromString =
-      weeklyHoursKeyToString(weeklyHoursFromKey2);
+      createMapFromUserTimeKeyStringToWeeklyHours(weeklyHoursFromKey2);
 
     Map<String,TimeSchedule.IssueSchedule> schedules =
       TimeSchedule.schedulesForUserIssues
@@ -277,11 +277,11 @@ public class TimeScheduleLoader {
     public final Map<Teams.UserTimeKey,List<IssueTree>> timeDetails;
     public final Map<Teams.AssigneeKey,Teams.UserTimeKey> assigneeToAllocatedUsers;
     public final Map<Teams.UserTimeKey,TimeSchedule.WeeklyWorkHours> hours;
-    public UserDetailsAndHours(Map<Teams.UserTimeKey,List<IssueTree>> timeDetails_,
-                               Map<Teams.AssigneeKey,Teams.UserTimeKey> assigneeToAllocatedUsers_,
+    public UserDetailsAndHours(Map<Teams.AssigneeKey,Teams.UserTimeKey> assigneeToAllocatedUsers_,
+                               Map<Teams.UserTimeKey,List<IssueTree>> timeDetails_,
                                Map<Teams.UserTimeKey,TimeSchedule.WeeklyWorkHours> hours_) {
-      this.timeDetails = timeDetails_;
       this.assigneeToAllocatedUsers = assigneeToAllocatedUsers_;
+      this.timeDetails = timeDetails_;
       this.hours = hours_;
     }
   }
@@ -293,15 +293,8 @@ public class TimeScheduleLoader {
      issue.  If the hours don't exist for the user, then we assume
      that there is the default amount of work time available and we
      insert that record; the one exception is: if both the team and
-     the user are set but no time record exists, then a record is
-     created for the user on any team (ie. not only for the user on
-     this team, ie. team is null).
-
-     Note that each element in detailsFromAssignee may be modified to
-     have an assignee that is assigned time (either existing or
-     created with defaults; see previous paragraph).
-
-     Note that hoursRange may be modified.
+     the user are set but no UserTimeKey exists, then a UserTimeKey is
+     created for the user on any team (ie. where team is null).
 
    */
   public static UserDetailsAndHours adjustDetailsForAssignedHours
@@ -309,41 +302,33 @@ public class TimeScheduleLoader {
       Map<Teams.UserTimeKey,TimeSchedule.WeeklyWorkHours> hoursRange,
       Date startDate) {
 
-    Map<Teams.UserTimeKey,TimeSchedule.WeeklyWorkHours> newHoursRanges = new HashMap<UserTimeKey, WeeklyWorkHours>();
-    newHoursRanges.putAll(hoursRange);
-
+    Map<Teams.AssigneeKey,Teams.UserTimeKey> assigneeToAllocatedUsers = new HashMap<Teams.AssigneeKey, UserTimeKey>();
     Map<Teams.UserTimeKey,List<IssueTree>> newDetailsByTime = new HashMap<Teams.UserTimeKey,List<IssueTree>>();
+    Map<Teams.UserTimeKey,TimeSchedule.WeeklyWorkHours> newHoursRanges = new HashMap<Teams.UserTimeKey, WeeklyWorkHours>();
 
-    Map<Teams.AssigneeKey,Teams.UserTimeKey> assigneeToAllocatedUsers = new HashMap<AssigneeKey, UserTimeKey>();
+    newHoursRanges.putAll(hoursRange);
 
     for (Teams.AssigneeKey assigneeKey : detailsFromAssignee.keySet()) {
       for (IssueTree detail : detailsFromAssignee.get(assigneeKey)) {
 
         // create appropriate time-allocation user key for this time assignee
-        Teams.UserTimeKey userKeyForTime =
-          timeKeyIfNotAlreadyExisting(detail.getTimeAssigneeKey(), newHoursRanges);
+        Teams.UserTimeKey userKeyForTime = detail.getTimeAssigneeKey();
+        if (!newHoursRanges.containsKey(userKeyForTime)) {
+          userKeyForTime = new Teams.UserTimeKey(null, userKeyForTime.getUsername());
+          if (log4jLog.isDebugEnabled()) {
+            log4jLog.debug("Changing time assignee of issue " + detail.getKey()
+                + " to " + userKeyForTime
+                + " (from " + detail.getTimeAssigneeKey() + ").");
+          }
+          detail.setTimeAssigneeKey(userKeyForTime);
+        }
 
-        addTimeKeyIfNecessary(userKeyForTime, newHoursRanges, startDate);
-        updateDetailAndLists(userKeyForTime, detail, newDetailsByTime,
-                             assigneeToAllocatedUsers);
+        updateDetailAndLists(userKeyForTime, detail, newDetailsByTime, assigneeToAllocatedUsers, newHoursRanges, startDate);
       }
     }
-    return new UserDetailsAndHours(newDetailsByTime, assigneeToAllocatedUsers,
-                                   newHoursRanges);
+    return new UserDetailsAndHours(assigneeToAllocatedUsers, newDetailsByTime, newHoursRanges);
   }
 
-  protected static Teams.UserTimeKey timeKeyIfNotAlreadyExisting
-  (Teams.UserTimeKey userKey,
-   Map<Teams.UserTimeKey,TimeSchedule.WeeklyWorkHours> userWeeklyHours) {
-
-    if (userKey.getUsername() != null
-        && !userWeeklyHours.containsKey(userKey)) {
-      log4jLog.debug("Hours not allocated for " + userKey.getUsername() + ", so we're creating a time key for them.");
-      return new Teams.UserTimeKey(null, userKey.getUsername());
-    } else {
-      return userKey;
-    }
-  }
 /** remove
   protected static <T extends Object> Teams.AssigneeKey userKeyIfNotAlreadyExisting
   (Teams.AssigneeKey userKey,
@@ -369,22 +354,26 @@ public class TimeScheduleLoader {
     (Teams.UserTimeKey assignee,
      IssueTree detail,
      Map<Teams.UserTimeKey,List<IssueTree>> detailMap,
-     Map<Teams.AssigneeKey,Teams.UserTimeKey> assigneeToAllocatedUsers) {
+     Map<Teams.AssigneeKey,Teams.UserTimeKey> assigneeToAllocatedUsers,
+     Map<Teams.UserTimeKey,TimeSchedule.WeeklyWorkHours> hoursRanges,
+     Date startDate) {
 
-    if (log4jLog.isDebugEnabled()) {
-      if (!assignee.equals(detail.getTimeAssigneeKey())) {
-        log4jLog.debug("Changing time assignee of issue " + detail.getKey()
-                       + " to " + assignee
-                       + " (from " + detail.getTimeAssigneeKey() + ").");
-      }
+    // add key if it doesn't already exist
+    if (!hoursRanges.containsKey(assignee)) {
+      log4jLog.debug("Adding default hours for " + assignee);
+      TimeSchedule.WeeklyWorkHours defaultHours = new TimeSchedule.WeeklyWorkHours();
+      defaultHours.inject(startDate, TimeSchedule.TYPICAL_INDIVIDUAL_WORKHOURS_PER_WORKWEEK);
+      hoursRanges.put(assignee, defaultHours);
     }
-    detail.setTimeAssigneeKey(assignee);
-
-    if (!detailMap.containsKey(assignee)) {
-      detailMap.put(assignee, new ArrayList<IssueTree>());
+    
+    List<IssueTree> detailMapEntry;
+    if (detailMap.containsKey(assignee)) {
+      detailMapEntry = detailMap.get(assignee);
+    } else {
+      detailMapEntry = new ArrayList<IssueTree>();
+      detailMap.put(assignee, detailMapEntry);
     }
-    List<IssueTree> details = detailMap.get(assignee);
-    details.add(detail);
+    detailMapEntry.add(detail);
 
     if (assigneeToAllocatedUsers.containsKey(detail.getRawAssigneeKey())) {
       if (!assigneeToAllocatedUsers
@@ -403,24 +392,7 @@ public class TimeScheduleLoader {
     } else {
       assigneeToAllocatedUsers.put(detail.getRawAssigneeKey(), assignee);
     }
-  }
-
-  /**
-     Check for this key in the hours range, and return the right
-     IssueTree for this scheduling, creating it if it exists.
-  */
-  private static void addTimeKeyIfNecessary
-    (Teams.UserTimeKey userKeyForTime,
-     Map<Teams.UserTimeKey,TimeSchedule.WeeklyWorkHours> hoursRange,
-     Date startDate) {
-    if (!hoursRange.containsKey(userKeyForTime)) {
-      log4jLog.debug("Adding default hours for " + userKeyForTime);
-      TimeSchedule.WeeklyWorkHours defaultHours =
-        new TimeSchedule.WeeklyWorkHours();
-      defaultHours.inject(startDate,
-                          TimeSchedule.TYPICAL_INDIVIDUAL_WORKHOURS_PER_WORKWEEK);
-      hoursRange.put(userKeyForTime, defaultHours);
-    }
+    
   }
 
   /**
@@ -486,7 +458,7 @@ public class TimeScheduleLoader {
     
   }
 
-  protected static Map<String,TimeSchedule.WeeklyWorkHours> weeklyHoursKeyToString
+  protected static Map<String,TimeSchedule.WeeklyWorkHours> createMapFromUserTimeKeyStringToWeeklyHours
     (Map<Teams.UserTimeKey,TimeSchedule.WeeklyWorkHours> origHours) {
 
     Map<String,TimeSchedule.WeeklyWorkHours> newHours = new HashMap<String, WeeklyWorkHours>();
@@ -496,7 +468,7 @@ public class TimeScheduleLoader {
     return newHours;
   }
 
-  protected static Map<String,List<IssueTree>> userIssuesKeyToString
+  protected static Map<String,List<IssueTree>> createMapFromAssigneeKeyStringToUserIssues
     (Map<Teams.UserTimeKey,List<IssueTree>> origIssues) {
 
     Map<String,List<IssueTree>> newIssues = new HashMap<String,List<IssueTree>>();

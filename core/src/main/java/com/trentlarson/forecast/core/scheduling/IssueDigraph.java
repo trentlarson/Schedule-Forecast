@@ -138,7 +138,7 @@ public class IssueDigraph {
        getTimeScheduleCreatePreferences().getStartTime());
 
     Map<String,List<IssueTree>> issuesFromString =
-      TimeScheduleLoader.userIssuesKeyToString(newTimeDetails.timeDetails);
+      TimeScheduleLoader.createMapFromAssigneeKeyStringToUserIssues(newTimeDetails.timeDetails);
 
     // clone the hourly data (since it's modified later)
     Map<Teams.UserTimeKey,TimeSchedule.WeeklyWorkHours> weeklyHoursFromKey2 =
@@ -150,7 +150,7 @@ public class IssueDigraph {
     }
 
     Map<String,TimeSchedule.WeeklyWorkHours> weeklyHoursFromString =
-      TimeScheduleLoader.weeklyHoursKeyToString(weeklyHoursFromKey2);
+      TimeScheduleLoader.createMapFromUserTimeKeyStringToWeeklyHours(weeklyHoursFromKey2);
 
     Map newSchedules =
       TimeSchedule.schedulesForUserIssues

@@ -25,7 +25,7 @@ Assumptions:
  */
 public class TimeScheduleWriter {
 
-  private static final Category log4jLog = Category.getInstance(TimeScheduleWriter.class);
+  public static final Category log4jLog = Category.getInstance(TimeScheduleWriter.class);
 
 
   /**

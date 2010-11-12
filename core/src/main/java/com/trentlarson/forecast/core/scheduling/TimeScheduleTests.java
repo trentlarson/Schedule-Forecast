@@ -22,6 +22,10 @@ import com.trentlarson.forecast.core.helper.ForecastUtil;
 public class TimeScheduleTests {
 
   public static void main(String[] args) throws Exception {
+    
+    //TimeSchedule.log4jLog.setLevel(org.apache.log4j.Level.DEBUG);
+    //TimeScheduleWriter.log4jLog.setLevel(org.apache.log4j.Level.DEBUG);
+
     unitMain(args);
     //integrationMain(args);
   }
@@ -35,9 +39,6 @@ public class TimeScheduleTests {
    * This generates HTML output that can be compared with gantt-test.html
    */
   public static void unitMain(String[] args) throws Exception {
-
-    //log4jLog.setLevel(org.apache.log4j.Level.DEBUG);
-    //TimeSchedule.log4jLog.setLevel(org.apache.log4j.Level.DEBUG);
 
     PrintWriter out = null;
     try {
@@ -54,7 +55,7 @@ public class TimeScheduleTests {
 
       outputDaylightSavingsTestResults(out);
 
-      outputNullTeamAndAssigneeTestResults(out);
+      outputWithoutTeamHoursTestResults(out);
 
       outputVariableTimeTestResults(out);
 
@@ -122,40 +123,67 @@ public class TimeScheduleTests {
   }
 
 
-    
 
-  public static void outputNullTeamAndAssigneeTestResults(PrintWriter out) throws Exception {
+
+  public static void outputWithoutTeamHoursTestResults(PrintWriter out) throws Exception {
 
     out.println("<P>");
-    out.println("<H2>... for tasks without a team or assignee.</H2>");
-
-    out.println("I'm still debating whether this is a good idea.");
+    out.println("<H2>... without any teams defined.</H2>");
 
     IssueTree[] manyIssues = {
-      new IssueTree
-      ("TEST-231", "null team & assignee", null, null, null,
-       8 * 3600, 0, null, null, 5, false)
-    };
+        new IssueTree
+        ("TEST-231", "null team & assignee", null, null, null,
+         8 * 3600, 0, null, null, 5, false)
+      };
+
+    Map<Teams.UserTimeKey,List<TeamHours>> userWeeklyHours = new TreeMap<Teams.UserTimeKey,List<TeamHours>>();
+
+    Map<Teams.AssigneeKey,List<IssueTree>> userDetails = createUserDetails(manyIssues, userWeeklyHours);
+    TimeScheduleCreatePreferences sPrefs = new TimeScheduleCreatePreferences(0, SLASH_DATE.parse("2006/12/03"), 1);
+    IssueDigraph graph = TimeScheduleLoader.schedulesForUserIssues3(userDetails, userWeeklyHours, sPrefs);
+
+    out.println("<br><br>");
+    out.println("Unassigned user gantt chart, even though there are no team hours defined.<br>");
+    TimeScheduleWriter.writeIssueTable
+    (graph, out, sPrefs,
+     TimeScheduleDisplayPreferences
+     .createForUser(1, 0, true, false, false, (String)null, false, graph));
+
+    out.println("<br><br>");
+    out.println("Schedule table, even though there are no team hours defined.<br>");
+    List<TimeSchedule.IssueSchedule> schedule = new ArrayList<TimeSchedule.IssueSchedule>();
+    Teams.AssigneeKey user = new Teams.AssigneeKey(null, null);
+    List<IssueTree> userIssueList = graph.getAssignedUserDetails().get(user);
+    for (int i = 0; i < userIssueList.size(); i++) {
+      schedule.add
+        (graph.getIssueSchedules().get
+         (((TimeSchedule.IssueWorkDetail) userIssueList.get(i)).getKey()));
+    }
+    TimeSchedule.writeIssueSchedule
+      (schedule, sPrefs.getTimeMultiplier(), true, out);
     
-    Map<Teams.UserTimeKey,List<TeamHours>> userWeeklyHours =
-      new TreeMap<Teams.UserTimeKey,List<TeamHours>>();
+    
+    //// Now try it with some team time defined.
+    userWeeklyHours = new TreeMap<Teams.UserTimeKey,List<TeamHours>>();
     List<TeamHours> hourList = new ArrayList();
     hourList.add(new TeamHours(1L, null, null, SLASH_TIME.parse("2006/12/03 00:00"), 40.0));
     userWeeklyHours.put(new Teams.UserTimeKey(null, null), hourList);
 
-    Map<Teams.AssigneeKey,List<IssueTree>> userDetails =
-      createUserDetails(manyIssues, userWeeklyHours);
-    TimeScheduleCreatePreferences sPrefs =
-      new TimeScheduleCreatePreferences(0, SLASH_DATE.parse("2006/12/03"), 1);
-    IssueDigraph graph =
-      TimeScheduleLoader.schedulesForUserIssues3
-      (userDetails, userWeeklyHours, sPrefs);
+    userDetails = createUserDetails(manyIssues, userWeeklyHours);
+    sPrefs = new TimeScheduleCreatePreferences(0, SLASH_DATE.parse("2006/12/03"), 1);
+    graph = TimeScheduleLoader.schedulesForUserIssues3(userDetails, userWeeklyHours, sPrefs);
 
-    Teams.AssigneeKey user = new Teams.AssigneeKey(null, null);
+    out.println("<br><br>");
+    out.println("Unassigned user-team gantt chart, where 40 null-team hours are defined.<br>");
+    TimeScheduleWriter.writeIssueTable
+      (graph, out, sPrefs,
+       TimeScheduleDisplayPreferences
+       .createForUser(1, 0, true, false, false, user, false, graph));
 
-    // print out team table schedule
-    List<TimeSchedule.IssueSchedule> schedule = new ArrayList();
-    List<IssueTree> userIssueList = graph.getAssignedUserDetails().get(user);
+    out.println("<br><br>");
+    out.println("Schedule table, where 40 null-team hours are defined.<br>");
+    schedule = new ArrayList();
+    userIssueList = graph.getAssignedUserDetails().get(user);
     for (int i = 0; i < userIssueList.size(); i++) {
       schedule.add
         (graph.getIssueSchedules().get
@@ -165,7 +193,9 @@ public class TimeScheduleTests {
       (schedule, sPrefs.getTimeMultiplier(), true, out);
 
   }
-    
+
+
+
   /**
      Now we test where a team may have issues to schedule, and it may have more
      (or fewer) than the standard 40 hours per week.
@@ -254,12 +284,12 @@ public class TimeScheduleTests {
 
     IssueTree[] manyIssues = {
       new IssueTree
-      ("TEST-205", "3-day issue", "trent", 1L, "1",
+      ("TEST-205", "3-day issue", "trent", 1L, "Test",
        3 * jira_day, 0 * jira_day,
        null, null, 5, false)
       ,
       new IssueTree
-      ("TEST-206", "3-day issue", "trent", 1L, "1",
+      ("TEST-206", "3-day issue", "trent", 1L, "Test",
        3 * jira_day, 0 * jira_day,
        null, null, 6, false)
       ,
@@ -372,6 +402,20 @@ public class TimeScheduleTests {
     TimeSchedule.writeIssueSchedule
       (schedule, sPrefs.getTimeMultiplier(), true, out);
     
+    /**
+    out.println("<br><br>");
+    out.println("Schedule for unassigned on team 1");
+    userKey = new Teams.AssigneeKey(1L, null);
+    schedule = new ArrayList();
+    userIssueList = userDetails.get(userKey);
+    for (int i = 0; i < userIssueList.size(); i++) {
+      schedule.add
+        (graph.getIssueSchedules().get
+         (((TimeSchedule.IssueWorkDetail) userIssueList.get(i)).getKey()));
+    }
+    TimeSchedule.writeIssueSchedule
+      (schedule, sPrefs.getTimeMultiplier(), true, out);
+    **/
   }
 
 
@@ -935,8 +979,6 @@ public class TimeScheduleTests {
     
     // now let's load and schedule everything
     
-    //TimeSchedule.log4jLog.setLevel(org.apache.log4j.Level.DEBUG);
-    TimeSchedule.log4jLog.setLevel(org.apache.log4j.Level.INFO);
     graph = TimeScheduleLoader.getEntireGraph(sPrefs, conn);
     
     // Show that the first team has a lot of work while the second putters around.

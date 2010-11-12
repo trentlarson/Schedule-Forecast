@@ -644,7 +644,7 @@ public class IssueLoader {
   }
 
   public static String teamKeyFromIssueKey(Long teamId, String issueKey) {
-    // REFACTOR to pull the real team name (multiple instances in these files)
+    // REFACTOR to pull the real team name
     return teamId == null ? null : issueKey.substring(0, issueKey.indexOf("-"));
   }
 
