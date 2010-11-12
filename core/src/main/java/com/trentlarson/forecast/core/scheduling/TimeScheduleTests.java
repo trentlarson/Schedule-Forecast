@@ -133,7 +133,7 @@ public class TimeScheduleTests {
     IssueTree[] manyIssues = {
         new IssueTree
         ("TEST-231", "null team & assignee", null, null, null,
-         8 * 3600, 0, null, null, 5, false)
+         40 * 3600, 0, null, null, 5, false)
       };
 
     Map<Teams.UserTimeKey,List<TeamHours>> userWeeklyHours = new TreeMap<Teams.UserTimeKey,List<TeamHours>>();
@@ -166,7 +166,7 @@ public class TimeScheduleTests {
     //// Now try it with some team time defined.
     userWeeklyHours = new TreeMap<Teams.UserTimeKey,List<TeamHours>>();
     List<TeamHours> hourList = new ArrayList();
-    hourList.add(new TeamHours(1L, null, null, SLASH_TIME.parse("2006/12/03 00:00"), 40.0));
+    hourList.add(new TeamHours(1L, null, null, SLASH_TIME.parse("2006/12/03 00:00"), 80.0));
     userWeeklyHours.put(new Teams.UserTimeKey(null, null), hourList);
 
     userDetails = createUserDetails(manyIssues, userWeeklyHours);
@@ -174,23 +174,11 @@ public class TimeScheduleTests {
     graph = TimeScheduleLoader.schedulesForUserIssues3(userDetails, userWeeklyHours, sPrefs);
 
     out.println("<br><br>");
-    out.println("Unassigned user-team gantt chart, where 40 null-team hours are defined.<br>");
+    out.println("Unassigned user-team gantt chart, where 80 null-team hours are defined.<br>");
     TimeScheduleWriter.writeIssueTable
       (graph, out, sPrefs,
        TimeScheduleDisplayPreferences
        .createForUser(1, 0, true, false, false, user, false, graph));
-
-    out.println("<br><br>");
-    out.println("Schedule table, where 40 null-team hours are defined.<br>");
-    schedule = new ArrayList();
-    userIssueList = graph.getAssignedUserDetails().get(user);
-    for (int i = 0; i < userIssueList.size(); i++) {
-      schedule.add
-        (graph.getIssueSchedules().get
-         (((TimeSchedule.IssueWorkDetail) userIssueList.get(i)).getKey()));
-    }
-    TimeSchedule.writeIssueSchedule
-      (schedule, sPrefs.getTimeMultiplier(), true, out);
 
   }
 
@@ -225,14 +213,19 @@ public class TimeScheduleTests {
        SLASH_DATE.parse("2005/04/11"), null, 6, false)
       ,
       new IssueTree
-      ("TEST-203", "7-day issue", null, 1L, "1",
-       7 * jira_day, 0 * jira_day,
+      ("TEST-203", "14-day issue", null, 1L, "1",
+       14 * jira_day, 0 * jira_day,
        null, null, 3, false)
       ,
       new IssueTree
-      ("TEST-204", "7-day issue", null, 1L, "1",
-       7 * jira_day, 0 * jira_day,
+      ("TEST-204", "9-day issue", null, 1L, "1",
+       9 * jira_day, 0 * jira_day,
        null, null, 6, false)
+      ,
+      new IssueTree
+      ("TEST-204.1", "8-day issue", null, 1L, "1",
+       8 * jira_day, 0 * jira_day,
+       null, null, 7, false)
     };
 
     
@@ -255,7 +248,7 @@ public class TimeScheduleTests {
     // print out team Gantt chart
     Teams.AssigneeKey user = new Teams.AssigneeKey(1L, null);
     out.println("<br><br>");
-    out.println("Tree for " + user + " (shouldn't be longer than 2 weeks).<br>");
+    out.println("Tree for " + user + ", which should not be longer than 3 weeks.<br>");
     TimeScheduleWriter.writeIssueTable
       (graph, out, sPrefs,
        TimeScheduleDisplayPreferences
