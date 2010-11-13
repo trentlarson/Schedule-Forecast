@@ -3,9 +3,9 @@ package com.trentlarson.forecast.core.scheduling;
 import java.util.*;
 
 public class IssueTree extends TimeSchedule.IssueWorkDetailOriginal implements Comparable {
-  private String rawPerson, rawTeamName; // (REFACTOR: store a Teams.AssigneeKey instead of separate person & team ID)
+  private String rawPerson; // (REFACTOR: store a Teams.AssigneeKey instead of separate person & team ID)
   private Long rawTeamId;
-  private String timePerson, timeTeamName; // (REFACTOR: store a Teams.UserTimeKey instead of separate person & team ID)
+  private String timePerson; // (REFACTOR: store a Teams.UserTimeKey instead of separate person & team ID)
   private Long timeTeamId;
   private int spent, estimateOrig, priorityOrig;
   private Date dueDateOrig;
@@ -13,19 +13,16 @@ public class IssueTree extends TimeSchedule.IssueWorkDetailOriginal implements C
   // issues that "cannot be done until" this one
   private Set<IssueTree> dependents = new TreeSet<IssueTree>();
 
-  public IssueTree(String key_, String summary_, String person,
-                   Long teamId, String teamName, int est_,
-                   int spent_, Date dueDate_, Date mustStartOnDate_, int priority_,
+  public IssueTree(String key_, String summary_, String person, Long teamId, 
+                   int est_, int spent_, Date dueDate_, Date mustStartOnDate_, int priority_,
                    boolean resolved_) {
     super(key_,
           new Teams.UserTimeKey(teamId, person).toString(),
           summary_, est_, dueDate_,
           mustStartOnDate_, priority_);
     this.rawPerson = person;
-    this.rawTeamName = teamName;
     this.rawTeamId = teamId;
     this.timePerson = person;
-    this.timeTeamName = teamName;
     this.timeTeamId = teamId;
     this.spent = spent_;
     this.estimateOrig = est_;
@@ -38,10 +35,8 @@ public class IssueTree extends TimeSchedule.IssueWorkDetailOriginal implements C
   }
 
   public String getRawAssignedPerson() { return rawPerson; }
-  public String getRawAssignedTeamName() { return rawTeamName; }
   public Long getRawAssignedTeamId() { return rawTeamId; }
   public String getAssignedTimePerson() { return timePerson; }
-  public String getAssignedTimeTeamName() { return timeTeamName; }
   public Long getAssignedTimeTeamId() { return timeTeamId; }
 
   public Teams.AssigneeKey getRawAssigneeKey() {
@@ -49,9 +44,6 @@ public class IssueTree extends TimeSchedule.IssueWorkDetailOriginal implements C
   }
   public Teams.UserTimeKey getTimeAssigneeKey() {
     return new Teams.UserTimeKey(timeTeamId, timePerson);
-  }
-  public String getTimeAssigneeWithTeamName() {
-    return Teams.UserTimeKey.toString(timeTeamName, timePerson, false);
   }
 
   public int  getTimeSpent() { return spent; }
@@ -68,7 +60,6 @@ public class IssueTree extends TimeSchedule.IssueWorkDetailOriginal implements C
   protected void setTimeAssigneeKey(Teams.UserTimeKey assignee) {
     this.timePerson = assignee.getUsername();
     this.timeTeamId = assignee.getTeamId();
-    this.timeTeamName = IssueLoader.teamKeyFromIssueKey(assignee.getTeamId(), getKey());
     this.timeAssignee = assignee.toString();
   }
 

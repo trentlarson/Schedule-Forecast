@@ -636,6 +636,7 @@ public class ForecastUtil extends ForecastConstants {
       throw new java.lang.reflect.UndeclaredThrowableException(e);
     }
     //return DriverManager.getConnection("jdbc:mysql://10.0.2.16:8319/jiradb?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8", "jira", "jirapass");
+    //return DriverManager.getConnection("jdbc:mysql://localhost:3306/test_forecast_jira?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8", "jira", "jirapass");
     return DriverManager.getConnection("jdbc:mysql://localhost:3306/test_forecast_jira?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8", "jira", "jirapass");
     */
     

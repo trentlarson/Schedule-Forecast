@@ -146,7 +146,6 @@ public class IssueLoader {
               rset.getString("summary"),
               rset.getString("assignee"),
               teamId,
-              teamKeyFromIssueKey(teamId, rset.getString("pkey")),
               rset.getInt("timeestimate"),
               rset.getInt("timespent"),
               rset.getDate("dueDate"),
@@ -373,7 +372,6 @@ public class IssueLoader {
               rset.getString("summary"),
               rset.getString("assignee"),
               teamId,
-              teamKeyFromIssueKey(teamId, rset.getString("pkey")),
               rset.getInt("timeestimate"),
               rset.getInt("timespent"),
               rset.getDate("dueDate"),
@@ -484,7 +482,6 @@ public class IssueLoader {
                   rset.getString("summary"),
                   rset.getString("assignee"),
                   teamId,
-                  teamKeyFromIssueKey(teamId, rset.getString("pkey")),
                   rset.getInt("timeestimate"),
                   rset.getInt("timespent"),
                   rset.getDate("duedate"),
@@ -524,7 +521,6 @@ public class IssueLoader {
                   rset.getString("summary"),
                   rset.getString("assignee"),
                   teamId,
-                  teamKeyFromIssueKey(teamId, rset.getString("pkey")),
                   rset.getInt("timeestimate"),
                   rset.getInt("timespent"),
                   rset.getDate("duedate"),
@@ -564,7 +560,6 @@ public class IssueLoader {
                   rset.getString("summary"),
                   rset.getString("assignee"),
                   teamId,
-                  teamKeyFromIssueKey(teamId, rset.getString("pkey")),
                   rset.getInt("timeestimate"),
                   rset.getInt("timespent"),
                   rset.getDate("duedate"),
@@ -641,11 +636,6 @@ public class IssueLoader {
       }
     }
     return newAssignees;
-  }
-
-  public static String teamKeyFromIssueKey(Long teamId, String issueKey) {
-    // REFACTOR to pull the real team name
-    return teamId == null ? null : issueKey.substring(0, issueKey.indexOf("-"));
   }
 
 

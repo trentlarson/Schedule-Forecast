@@ -11,10 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
-
-import org.apache.commons.logging.LogFactory;
 
 import com.trentlarson.forecast.core.dao.TeamHours;
 import com.trentlarson.forecast.core.helper.ForecastUtil;
@@ -25,9 +21,17 @@ public class TimeScheduleTests {
     
     //TimeSchedule.log4jLog.setLevel(org.apache.log4j.Level.DEBUG);
     //TimeScheduleWriter.log4jLog.setLevel(org.apache.log4j.Level.DEBUG);
+    
+    PrintWriter out = null;
+    try {
+      out = new PrintWriter(System.out);
 
-    unitMain(args);
-    //integrationMain(args);
+      unitMain(out);
+      //integrationMain(out);
+      //integrationMain2(out);
+    } finally {
+      out.close();
+    }
   }
   
   
@@ -38,42 +42,32 @@ public class TimeScheduleTests {
   /**
    * This generates HTML output that can be compared with gantt-test.html
    */
-  public static void unitMain(String[] args) throws Exception {
+  public static void unitMain(PrintWriter out) throws Exception {
 
-    PrintWriter out = null;
-    try {
-      out = new PrintWriter(System.out);
-      if (args.length > 0) {
-        out = new PrintWriter(args[0]);
-      }
+    out.println("<P>");
+    out.println("<H1>Here are the scheduling tests for team tasks.</H2>");
 
-      out.println("<P>");
-      out.println("<H1>Here are the scheduling tests for team tasks.</H2>");
+    // another test: allow start/end times outside 0-8 AM range
+    // another test: I believe the lighter colors don't work for teams
 
-      // another test: allow start/end times outside 0-8 AM range
-      // another test: I believe the lighter colors don't work for teams
+    outputDaylightSavingsTestResults(out);
 
-      outputDaylightSavingsTestResults(out);
+    outputWithoutTeamHoursTestResults(out);
 
-      outputWithoutTeamHoursTestResults(out);
+    outputVariableTimeTestResults(out);
 
-      outputVariableTimeTestResults(out);
+    outputSplitTeamTestResults(out);
 
-      outputSplitTeamTestResults(out);
+    outputStartTimeTestResults(out);
 
-      outputStartTimeTestResults(out);
+    outputBlockedSubtaskTestResults(out);
 
-      outputBlockedSubtaskTestResults(out);
+    outputManyBlockedTestResults(out);
 
-      outputManyBlockedTestResults(out);
+    out.println("<P>");
+    out.println("<H1>Here are the basic TimeSchedule tests.</H2>");
+    TimeSchedule.outputTestResults(out);
 
-      out.println("<P>");
-      out.println("<H1>Here are the basic TimeSchedule tests.</H2>");
-      TimeSchedule.outputTestResults(out);
-
-    } finally {
-      try { out.close(); } catch (Exception e) {}
-    }
   }
 
   /**
@@ -87,7 +81,7 @@ public class TimeScheduleTests {
     String username = "matt";
     IssueTree[] manyIssues = {
       new IssueTree
-      ("TEST-230", "~18-week issue", username, 1L, "1",
+      ("TEST-230", "~18-week issue", username, 1L,
        (int) (751.5 * 3600), 0, null, null, 5, false)
     };
     
@@ -132,7 +126,7 @@ public class TimeScheduleTests {
 
     IssueTree[] manyIssues = {
         new IssueTree
-        ("TEST-231", "null team & assignee", null, null, null,
+        ("TEST-231", "null team & assignee", null, null,
          40 * 3600, 0, null, null, 5, false)
       };
 
@@ -183,7 +177,7 @@ public class TimeScheduleTests {
   }
 
 
-
+  
   /**
      Now we test where a team may have issues to schedule, and it may have more
      (or fewer) than the standard 40 hours per week.
@@ -198,32 +192,32 @@ public class TimeScheduleTests {
 
     IssueTree[] manyIssues = {
       new IssueTree
-      ("TEST-200", "5-day issue", null, 1L, "1",
+      ("TEST-200", "5-day issue", null, 1L,
        5 * jira_day, 0 * jira_day,
        null, null, 5, false)
       ,
       new IssueTree
-      ("TEST-201", "3-day issue", null, 1L, "1",
+      ("TEST-201", "3-day issue", null, 1L,
        3 * jira_day, 0 * jira_day,
        null, null, 6, false)
       ,
       new IssueTree
-      ("TEST-202", "3 days again", null, 1L, "1",
+      ("TEST-202", "3 days again", null, 1L,
        3 * jira_day, 0 * jira_day,
        SLASH_DATE.parse("2005/04/11"), null, 6, false)
       ,
       new IssueTree
-      ("TEST-203", "14-day issue", null, 1L, "1",
+      ("TEST-203", "14-day issue", null, 1L,
        14 * jira_day, 0 * jira_day,
        null, null, 3, false)
       ,
       new IssueTree
-      ("TEST-204", "9-day issue", null, 1L, "1",
+      ("TEST-204", "9-day issue", null, 1L,
        9 * jira_day, 0 * jira_day,
        null, null, 6, false)
       ,
       new IssueTree
-      ("TEST-204.1", "8-day issue", null, 1L, "1",
+      ("TEST-204.1", "8-day issue", null, 1L,
        8 * jira_day, 0 * jira_day,
        null, null, 7, false)
     };
@@ -270,7 +264,7 @@ public class TimeScheduleTests {
     // Now show what happens when we assign an issue to someone.
     manyIssues[0] =
       new IssueTree
-      ("TEST-200.1", "5-day issue", "trent", 1L, "1",
+      ("TEST-200.1", "5-day issue", "trent", 1L,
        5 * jira_day, 0 * jira_day, null, null, 5, false);
 
     userDetails =
@@ -280,7 +274,8 @@ public class TimeScheduleTests {
     graph =
       TimeScheduleLoader.schedulesForUserIssues3
       (userDetails, userWeeklyHours, sPrefs);
-      
+    
+    user = new Teams.AssigneeKey(1L, null);
     out.println("<br><br>");
     out.println("Tree for " + user + ", which should now be shorter since 'trent' handles one task (TEST-200.1).<br>");
     TimeScheduleWriter.writeIssueTable
@@ -300,42 +295,42 @@ public class TimeScheduleTests {
 
     IssueTree[] manyIssues = {
       new IssueTree
-      ("TEST-205", "3-day issue", "trent", 1L, "Test",
+      ("TEST-205", "3-day issue", "trent", 1L,
        3 * jira_day, 0 * jira_day,
        null, null, 5, false)
       ,
       new IssueTree
-      ("TEST-206", "3-day issue", "trent", 1L, "Test",
+      ("TEST-206", "3-day issue", "trent", 1L,
        3 * jira_day, 0 * jira_day,
        null, null, 6, false)
       ,
       new IssueTree
-      ("TEST-207", "3-day issue", "trent", 2L, null,
+      ("TEST-207", "3-day issue", "trent", 2L,
        3 * jira_day, 0 * jira_day,
        null, null, 4, false)
       ,
       new IssueTree
-      ("TEST-208", "3-day issue", "trent", null, null,
+      ("TEST-208", "3-day issue", "trent", null,
        3 * jira_day, 0 * jira_day,
        null, null, 5, false)
       ,
       new IssueTree
-      ("TEST-209", "3-day issue", "trent", null, null,
+      ("TEST-209", "3-day issue", "trent", null,
        3 * jira_day, 0 * jira_day,
        null, null, 6, false)
       ,
       new IssueTree
-      ("TEST-210", "3-day issue", "trent", null, null,
+      ("TEST-210", "3-day issue", "trent", null,
        3 * jira_day, 0 * jira_day,
        null, null, 7, false)
       ,
       new IssueTree
-      ("TEST-211", "3-day issue", "trent", null, null,
+      ("TEST-211", "3-day issue", "trent", null,
        3 * jira_day, 0 * jira_day,
        null, null, 8, false)
       ,
       new IssueTree
-      ("TEST-212", "3-day issue", "trent", null, null,
+      ("TEST-212", "3-day issue", "trent", null,
        3 * jira_day, 0 * jira_day,
        null, null, 9, false)
     };
@@ -448,14 +443,14 @@ public class TimeScheduleTests {
     IssueTree[] manyIssues =
       {
         new IssueTree
-        ("TEST-100", "one week", "trent", 1L, "1",
+        ("TEST-100", "one week", "trent", 1L,
          5 * jira_day, 0 * jira_day,
          null, null, 3, false)
         ,
         // This one has lower priority, but it should be scheduled first because
         // it has a start time.
         new IssueTree
-        ("TEST-101", "one day", "trent", 1L, "1",
+        ("TEST-101", "one day", "trent", 1L,
          1 * jira_day, 0 * jira_day,
          null, SLASH_DATE.parse("2005/04/11"), 6, false)
       };
@@ -519,15 +514,15 @@ public class TimeScheduleTests {
 
     IssueTree issue20 =
       new IssueTree
-      ("TEST-20", "sub issue", "trent", 1L, "1", 16 * 3600, 0,
+      ("TEST-20", "sub issue", "trent", 1L, 16 * 3600, 0,
        null, null, 3, false);
     IssueTree issue21 =
       new IssueTree
-      ("TEST-21", "some issue", "brent", 1L, "1", 32 * 3600, 0,
+      ("TEST-21", "some issue", "brent", 1L, 32 * 3600, 0,
        null, null, 2, false);
     IssueTree issue22 =
       new IssueTree
-      ("TEST-22", "some issue", "ken", 1L, "1", 1 * 3600, 0,
+      ("TEST-22", "some issue", "ken", 1L, 1 * 3600, 0,
        null, null, 2, false);
 
     issue20.addSubtask(issue21);
@@ -564,77 +559,77 @@ public class TimeScheduleTests {
 
     IssueTree issue_6 =
       new IssueTree
-      ("TEST--6", "Ancestor test issue", "trent", 1L, "1",
+      ("TEST--6", "Ancestor test issue", "trent", 1L,
        0 * 3600, 0 * 3600, null, null, 1, false);
     IssueTree issue_5 =
       new IssueTree
-      ("TEST--5", "Ancestor test issue", "trent", 1L, "1",
+      ("TEST--5", "Ancestor test issue", "trent", 1L,
        4 * 3600, 0 * 3600, null, null, 1, false);
     IssueTree issue_4 =
       new IssueTree
-      ("TEST--4", "Ancestor test issue", "ken", 1L, "1",
+      ("TEST--4", "Ancestor test issue", "ken", 1L,
        4 * 3600, 0 * 3600, null, null, 1, false);
     IssueTree issue_3 =
       new IssueTree
-      ("TEST--3", "Ancestor test issue", "brent", 1L, "1",
+      ("TEST--3", "Ancestor test issue", "brent", 1L,
        4 * 3600, 0 * 3600, null, null, 1, false);
     IssueTree issue_2 =
       new IssueTree
-      ("TEST--2", "Ancestor test issue", "trent", 1L, "1",
+      ("TEST--2", "Ancestor test issue", "trent", 1L,
        4 * 3600, 0 * 3600, null, null, 1, false);
     IssueTree issue_1 =
       new IssueTree
-      ("TEST--1", "Ancestor test issue", "ken", 1L, "1",
+      ("TEST--1", "Ancestor test issue", "ken", 1L,
        4 * 3600, 0 * 3600, null, null, 1, false);
     IssueTree issue0 =
       new IssueTree
-      ("TEST-0", "Grandparent test issue", "fred", 1L, "1",
+      ("TEST-0", "Grandparent test issue", "fred", 1L,
        8 * 3600, 0 * 3600,
        SLASH_DATE.parse("2005/01/01"), null, 1, false);
     IssueTree issue1 =
       new IssueTree
-      ("TEST-1", "Parent test issue", "brent", 1L, "1",
+      ("TEST-1", "Parent test issue", "brent", 1L,
        10 * 3600, 0 * 3600,
        SLASH_DATE.parse("2005/04/01"), null, 1, false);
     IssueTree issue2 =
       new IssueTree
-      ("TEST-2", "issue", "ken", 1L, "1", 24 * 3600, 1 * 3600,
+      ("TEST-2", "issue", "ken", 1L, 24 * 3600, 1 * 3600,
        SLASH_DATE.parse("2005/04/16"), null, 8, false);
     IssueTree issue4 =
       new IssueTree
-      ("TEST-4", "top", "trent", 1L, "1", 8 * 3600, 1 * 3600,
+      ("TEST-4", "top", "trent", 1L, 8 * 3600, 1 * 3600,
        SLASH_DATE.parse("2005/04/13"), null, 4, false);
     IssueTree issue9 =
       new IssueTree
-      ("TEST-9", "issue", "ken", 1L, "1", 20 * 3600, 1 * 3600,
+      ("TEST-9", "issue", "ken", 1L, 20 * 3600, 1 * 3600,
        SLASH_DATE.parse("2005/04/05"), null, 3, false);
     IssueTree issue11 =
       new IssueTree
-      ("TEST-11", "sub issue", "trent", 1L, "1", 4 * 3600, 1 * 3600,
+      ("TEST-11", "sub issue", "trent", 1L, 4 * 3600, 1 * 3600,
        SLASH_DATE.parse("2005/04/15"), null, 3, true);
     IssueTree issue12 =
       new IssueTree
-      ("TEST-12", "sub issue", "ken", 1L, "1", 3 * 3600, 1 * 3600,
+      ("TEST-12", "sub issue", "ken", 1L, 3 * 3600, 1 * 3600,
        SLASH_DATE.parse("2005/06/01"), null, 2, false);
     IssueTree issue13 =
       new IssueTree
-      ("TEST-13", "after TEST-1,2", "trent", 1L, "1", 10 * 3600, 1 * 3600,
+      ("TEST-13", "after TEST-1,2", "trent", 1L, 10 * 3600, 1 * 3600,
        null, null, 2, true);
     IssueTree issue13_1 =
       new IssueTree
-      ("TEST-13-1", "sub of TEST-13", "trent", 1L, "1", 10 * 3600, 1 * 3600,
+      ("TEST-13-1", "sub of TEST-13", "trent", 1L, 10 * 3600, 1 * 3600,
        null, null, 9, false);
     IssueTree issue14 =
       new IssueTree
-      ("TEST-14", "dependant issue", "trent", 1L, "1", 16 * 3600, 1 * 3600,
+      ("TEST-14", "dependant issue", "trent", 1L, 16 * 3600, 1 * 3600,
        SLASH_DATE.parse("2005/06/01"), null, 4, false);
     IssueTree issue15 =
       new IssueTree
-      ("TEST-15", "dependant issue", "trent", 1L, "1", 4 * 3600, 1 * 3600,
+      ("TEST-15", "dependant issue", "trent", 1L, 4 * 3600, 1 * 3600,
        SLASH_DATE.parse("2005/04/07"), null, 5, false);
     IssueTree issue16 =
       new IssueTree
-      ("TEST-16", "some issue", "trent", 1L, "1", 12 * 3600, 1 * 3600,
+      ("TEST-16", "some issue", "trent", 1L, 12 * 3600, 1 * 3600,
        SLASH_DATE.parse("2005/04/15"), null, 6, false);
 
     IssueTree[] manyIssues = {
@@ -960,7 +955,7 @@ public class TimeScheduleTests {
    * This reads from the database set up by jira-test-db.sql
    * and creates the output found in gantt-test-db.html
    */
-  public static void integrationMain(String[] args) throws Exception {
+  public static void integrationMain(PrintWriter out) throws Exception {
 
     Connection conn = ForecastUtil.getConnection();
 
@@ -971,7 +966,7 @@ public class TimeScheduleTests {
     // print out single-user time schedule
     {
       String user = "trent";
-      System.out.println("Schedule for " + user + ".<br>");
+      out.println("Schedule for " + user + ".<br>");
       List<TimeSchedule.IssueSchedule> schedule = new ArrayList<TimeSchedule.IssueSchedule>();
       List<IssueTree> userIssueList = (List<IssueTree>) graph.getAssignedUserDetails().get(new Teams.AssigneeKey(null, user));
       for (int i = 0; i < userIssueList.size(); i++) {
@@ -980,17 +975,16 @@ public class TimeScheduleTests {
            (((TimeSchedule.IssueWorkDetail) userIssueList.get(i)).getKey()));
       }
       TimeSchedule.writeIssueSchedule
-        (schedule, sPrefs.getTimeMultiplier(), true,
-         new PrintWriter(System.out));
+        (schedule, sPrefs.getTimeMultiplier(), true, out);
     }
 
     // print out that issue
-    System.out.println("Gantt for " + mainIssueKey + ".<br>");
+    out.println("Gantt for " + mainIssueKey + ".<br>");
     TimeScheduleDisplayPreferences dPrefs =
       TimeScheduleDisplayPreferences.createForIssues
       (2, Calendar.MONTH, true, false, false, new String[]{ mainIssueKey }, false, graph);
 
-    TimeScheduleWriter.writeIssueTable(graph, new PrintWriter(System.out), sPrefs, dPrefs);
+    TimeScheduleWriter.writeIssueTable(graph, out, sPrefs, dPrefs);
     
     
     // now let's load and schedule everything
@@ -998,27 +992,45 @@ public class TimeScheduleTests {
     graph = TimeScheduleLoader.getEntireGraph(sPrefs, conn);
     
     // Show that the first team has a lot of work while the second putters around.
-    System.out.println("Gantt for team overloaded and underloaded teams.<br>");
-    System.out.println("Team " + TimeScheduleTestSetup.team1Id + "<br>");
+    out.println("Gantt for team overloaded and underloaded teams.<br>");
+    out.println("Team " + TimeScheduleTestSetup.team1Id + "<br>");
     dPrefs = TimeScheduleDisplayPreferences.createForTeam(2, 0, true, false, false, TimeScheduleTestSetup.team1Id, false, graph);
-    TimeScheduleWriter.writeIssueTable(graph, new PrintWriter(System.out), sPrefs, dPrefs);
+    TimeScheduleWriter.writeIssueTable(graph, out, sPrefs, dPrefs);
 
-    System.out.println("Team " + TimeScheduleTestSetup.team2Id + "<br>");
+    out.println("Team " + TimeScheduleTestSetup.team2Id + "<br>");
     dPrefs = TimeScheduleDisplayPreferences.createForTeam(2, 0, true, false, false, TimeScheduleTestSetup.team2Id, false, graph);
-    TimeScheduleWriter.writeIssueTable(graph, new PrintWriter(System.out), sPrefs, dPrefs);
+    TimeScheduleWriter.writeIssueTable(graph, out, sPrefs, dPrefs);
     
     // Show that two teams get work done... in the same way, because we currently only allow one team to work on each project.
-    System.out.println("Gantt for balanced teamwork -- BROKEN!<br>");
-    System.out.println("Team " + TimeScheduleTestSetup.team3Id + "<br>");
+    out.println("Gantt for balanced teamwork -- BROKEN!<br>");
+    out.println("Team " + TimeScheduleTestSetup.team3Id + "<br>");
     dPrefs = TimeScheduleDisplayPreferences.createForTeam(2, 0, true, false, false, TimeScheduleTestSetup.team3Id, false, graph);
-    TimeScheduleWriter.writeIssueTable(graph, new PrintWriter(System.out), sPrefs, dPrefs);
+    TimeScheduleWriter.writeIssueTable(graph, out, sPrefs, dPrefs);
 
-    System.out.println("Team " + TimeScheduleTestSetup.team4Id + "<br>");
+    out.println("Team " + TimeScheduleTestSetup.team4Id + "<br>");
     dPrefs = TimeScheduleDisplayPreferences.createForTeam(2, 0, true, false, false, TimeScheduleTestSetup.team4Id, false, graph);
-    TimeScheduleWriter.writeIssueTable(graph, new PrintWriter(System.out), sPrefs, dPrefs);
+    TimeScheduleWriter.writeIssueTable(graph, out, sPrefs, dPrefs);
     
   }
 
 
+  public static void integrationMain2(PrintWriter out) throws Exception {
+    
+    Connection conn = ForecastUtil.getConnection();
+    
+    TimeScheduleCreatePreferences sPrefs = new TimeScheduleCreatePreferences(0, new java.util.Date(), 1.0);
+    String mainIssueKey = "MAR-10";
+    IssueDigraph graph = TimeScheduleLoader.getGraph("", new String[]{ mainIssueKey }, new String[0], sPrefs, conn);
+
+    // print out that issue
+    out.println("Gantt for " + mainIssueKey + ".<br>");
+    TimeScheduleDisplayPreferences dPrefs =
+      TimeScheduleDisplayPreferences.createForIssues
+      (2, Calendar.MONTH, true, false, false, new String[]{ mainIssueKey }, false, graph);
+
+    out.println("assignee details: " + graph.getAssignedUserDetails());
+    TimeScheduleWriter.writeIssueTable(graph, out, sPrefs, dPrefs);
+
+  }
 
 }

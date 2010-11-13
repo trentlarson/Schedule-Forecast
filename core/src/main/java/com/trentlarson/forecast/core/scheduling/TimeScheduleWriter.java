@@ -509,7 +509,7 @@ public class TimeScheduleWriter {
       if (!dPrefs.hideDetails) {
         out.write("        <br>\n");
         out.write("        " + detail.getSummary() + " -- "
-                  + detail.getTimeAssigneeWithTeamName() + postfix + "\n");
+                  + detail.getTimeAssigneeKey().toString() + postfix + "\n");
       }
       if (dPrefs.showChangeTools) {
         TimeScheduleModifyWriter.writeChangeTools(detail, maxPriority, out);
