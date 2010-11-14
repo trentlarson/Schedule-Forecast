@@ -96,7 +96,7 @@ public class TimeScheduleLoader {
     }
 
     // now load all issues
-    return getGraphThrows("", new String[0], userArray, sPrefs, conn);
+    return getGraphThrows(null, new String[0], userArray, sPrefs, conn);
   }
 
   private static long TIMER_START = 0L;
@@ -114,7 +114,7 @@ public class TimeScheduleLoader {
     // load user data
     Map<Teams.AssigneeKey,List<IssueTree>> allUserDetails =
       IssueLoader.loadDetails(project, issueKeys, users, conn);
-      //loadAllDetails(conn);
+      //IssueLoader.loadAllDetails(conn); // looks like it doesn't find all dependent tasks
 
     log4jLog.info("Loaded issues in " + ((System.currentTimeMillis() - TIMER_START) / 1000.0) + " seconds.");
 

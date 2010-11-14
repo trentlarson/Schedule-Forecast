@@ -169,7 +169,7 @@ public class IssueLoader {
       // load subtask data
       String subtaskSql =
         "select a.pkey as super_key, b.pkey as sub_key"
-        + " from issuelink, issue a, issue b"
+        + " from issuelink, " + DB_ISSUE_TABLE + " a, " + DB_ISSUE_TABLE + " b"
         + " where linktype = '" + LINK_SUBTASK + "'"
         + " and source = a.id and b.id = destination"
         + " and a.resolution is null and b.resolution is null";
@@ -184,7 +184,7 @@ public class IssueLoader {
       // load blocking data
       String blockedSql =
         "select a.pkey as pre_key, b.pkey as post_key"
-        + " from issuelink, issue a, issue b"
+        + " from issuelink, " + DB_ISSUE_TABLE + " a, " + DB_ISSUE_TABLE + " b"
         + " where linktype = '" + LINK_DEPENDENCY + "'"
         + " and source = a.id and b.id = destination"
         + " and a.resolution is null and b.resolution is null";
@@ -249,7 +249,8 @@ public class IssueLoader {
 
     Map<String,IssueTree> visitedAlready = new HashMap<String,IssueTree>();
 
-    if (project.length() > 0) {
+    if (project != null
+        && project.length() > 0) {
       log4jLog.debug("Will look for issues in project: " + project);
       String projectSql =
         "select issueb.pkey, summary, assignee, resolution, timeestimate, timespent,"
@@ -441,7 +442,6 @@ public class IssueLoader {
       Set<String> visitedPrecursors, Set<String> visitedDependents,
       Connection conn, Map<String,Integer> priorities, Map<Long,Long> projectToTeam)
       throws SQLException {
-
     Set<String> newAssignees = new TreeSet<String>();
 
     ResultSet rset = null;
@@ -582,6 +582,8 @@ public class IssueLoader {
       if (visitedAncestors.contains(childTask.getKey())) {
         log4jLog.warn("Note that " + childTask.getKey() + " is a subtask of itself.  (Ignoring.)");
         i.remove();
+      } else if (visitedAlready.containsKey(childTask.getKey())) { // since it may have been added during this loop
+        parent.addSubtask(childTask);
       } else {
         if (!childTask.getResolved()) {
           parent.addSubtask(childTask);
@@ -602,6 +604,8 @@ public class IssueLoader {
       if (visitedPrecursors.contains(childTask.getKey())) {
         log4jLog.warn("Note that " + childTask.getKey() + " is a precursor to itself.  (Ignoring.)");
         i.remove();
+      } else if (visitedAlready.containsKey(childTask.getKey())) { // since it may have been added during one of these loops
+        parent.addDependent(childTask);
       } else {
         if (!childTask.getResolved()) {
           parent.addDependent(childTask);
@@ -622,6 +626,8 @@ public class IssueLoader {
       if (visitedDependents.contains(childTask.getKey())) {
         log4jLog.warn("Note that " + childTask.getKey() + " is a dependant of itself.  (Ignoring.)");
         i.remove();
+      } else if (visitedAlready.containsKey(childTask.getKey())) { // since it may have been added during one of these loops
+        parent.addPrecursor(childTask);
       } else {
         if (!childTask.getResolved()) {
           parent.addPrecursor(childTask);

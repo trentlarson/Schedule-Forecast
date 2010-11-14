@@ -28,7 +28,7 @@ public class TimeScheduleTests {
 
       unitMain(out);
       //integrationMain(out);
-      //integrationMain2(out);
+      //testIntegrationMain2(out);
     } finally {
       out.close();
     }
@@ -177,7 +177,6 @@ public class TimeScheduleTests {
   }
 
 
-  
   /**
      Now we test where a team may have issues to schedule, and it may have more
      (or fewer) than the standard 40 hours per week.
@@ -1014,7 +1013,7 @@ public class TimeScheduleTests {
   }
 
 
-  public static void integrationMain2(PrintWriter out) throws Exception {
+  public static void testIntegrationMain2(PrintWriter out) throws Exception {
     
     Connection conn = ForecastUtil.getConnection();
     
@@ -1028,7 +1027,6 @@ public class TimeScheduleTests {
       TimeScheduleDisplayPreferences.createForIssues
       (2, Calendar.MONTH, true, false, false, new String[]{ mainIssueKey }, false, graph);
 
-    out.println("assignee details: " + graph.getAssignedUserDetails());
     TimeScheduleWriter.writeIssueTable(graph, out, sPrefs, dPrefs);
 
   }

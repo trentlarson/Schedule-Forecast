@@ -1694,7 +1694,6 @@ public class TimeSchedule {
                 + " (there are the right number of seconds in half a half a work day;"
                 + " wanted " + (dailyHours / 4 * 3600)
                 + " got " + workSecondsBetween(friMorn, friNoon, dailyHours / 2.0) + ")");
-out.flush();
     Calendar satEve = (Calendar) friEve.clone();
     satEve.add(Calendar.DATE, 1);
     out.println("<br>");

@@ -490,8 +490,8 @@ public class TimeScheduleWriter {
         || schedule.getAdjustedBeginCal().getTime().after(issueStartTime)
         || schedule.getAdjustedEndCal().getTime().before(issueEndTime);
 
-      TimeSchedule.WeeklyWorkHours userWeeklyHours = 
-        allUserWeeklyHours.get(Teams.UserTimeKey.fromString(detail.getTimeAssignee()));
+     TimeSchedule.WeeklyWorkHours userWeeklyHours = 
+        allUserWeeklyHours.get(detail.getTimeAssigneeKey());
 
       out.write("  <tr>\n");
 
