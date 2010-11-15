@@ -229,6 +229,7 @@ public class TimeScheduleWriter {
            sPrefs.getStartTime(), dPrefs);
       }
     } else {
+      
       Set shownAlready = new HashSet();
       for (int i = 0; i < dPrefs.showIssues.size(); i++) {
         IssueTree tree = graph.getIssueTree(dPrefs.showIssues.get(i));
@@ -490,8 +491,12 @@ public class TimeScheduleWriter {
         || schedule.getAdjustedBeginCal().getTime().after(issueStartTime)
         || schedule.getAdjustedEndCal().getTime().before(issueEndTime);
 
-     TimeSchedule.WeeklyWorkHours userWeeklyHours = 
+      TimeSchedule.WeeklyWorkHours userWeeklyHours = 
         allUserWeeklyHours.get(detail.getTimeAssigneeKey());
+      if (log4jLog.isDebugEnabled()
+          && detail.getKey().equals(IssueLoader.ISSUE_TO_WATCH)) {
+        log4jLog.debug("About to render time info for " + IssueLoader.ISSUE_TO_WATCH + " with hash " + detail.hashCode() + "; assignee " + detail.getTimeAssigneeKey() + " has hours " + userWeeklyHours);
+      }
 
       out.write("  <tr>\n");
 

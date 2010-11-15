@@ -19,6 +19,8 @@ public class TimeScheduleTests {
 
   public static void main(String[] args) throws Exception {
     
+    //IssueLoader.log4jLog.setLevel(org.apache.log4j.Level.DEBUG);
+    //TimeScheduleLoader.log4jLog.setLevel(org.apache.log4j.Level.DEBUG);
     //TimeSchedule.log4jLog.setLevel(org.apache.log4j.Level.DEBUG);
     //TimeScheduleWriter.log4jLog.setLevel(org.apache.log4j.Level.DEBUG);
     
@@ -26,9 +28,9 @@ public class TimeScheduleTests {
     try {
       out = new PrintWriter(System.out);
 
-      unitMain(out);
+      //unitMain(out);
       //integrationMain(out);
-      //testIntegrationMain2(out);
+      testIntegrationDynamicLoadAssigneeProblem(out);
     } finally {
       out.close();
     }
@@ -1013,16 +1015,21 @@ public class TimeScheduleTests {
   }
 
 
-  public static void testIntegrationMain2(PrintWriter out) throws Exception {
+  public static void testIntegrationDynamicLoadAssigneeProblem(PrintWriter out) throws Exception {
     
     Connection conn = ForecastUtil.getConnection();
     
     TimeScheduleCreatePreferences sPrefs = new TimeScheduleCreatePreferences(0, new java.util.Date(), 1.0);
-    String mainIssueKey = "MAR-10";
-    IssueDigraph graph = TimeScheduleLoader.getGraph("", new String[]{ mainIssueKey }, new String[0], sPrefs, conn);
+    String mainIssueKey = "MP-5";
+    IssueDigraph graph = TimeScheduleLoader.getGraph(null, new String[]{ mainIssueKey }, new String[0], sPrefs, conn);
 
     // print out that issue
-    out.println("Gantt for " + mainIssueKey + ".<br>");
+    /**
+     * This will break when it tries to render time-assignment for MAR-10.  It has something to do with multiple objects being 
+     * loaded with the same key, and while the assignee for one is fixed, the assignee for another is not, so the renderer attempts 
+     * to find the time assignment for a non-existent entity, eg. "User john on Team 10" instead of "User john on any Team"
+     */
+    out.println("Gantt for " + mainIssueKey + ".  See code commentary for more info.<br>");
     TimeScheduleDisplayPreferences dPrefs =
       TimeScheduleDisplayPreferences.createForIssues
       (2, Calendar.MONTH, true, false, false, new String[]{ mainIssueKey }, false, graph);

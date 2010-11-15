@@ -18,9 +18,9 @@ import com.icentris.sql.SimpleSQL;
 
 public class IssueLoader {
 
-  private static final Logger log4jLog = Logger.getLogger("com.trentlarson.forecast.core.scheduling.IssueLoader");
-  private static final Logger issueSqlLog  = Logger.getLogger("com.trentlarson.forecast.core.scheduling.TimeScheduleLoader.IssueSQL");
-
+  protected static final Logger log4jLog = Logger.getLogger("com.trentlarson.forecast.core.scheduling.IssueLoader");
+  protected static final Logger issueSqlLog  = Logger.getLogger("com.trentlarson.forecast.core.scheduling.TimeScheduleLoader.IssueSQL");
+  public static final String ISSUE_TO_WATCH = null; // set to some issue pkey (and enable log4jLog debugging) to print out info as that issue is loaded and analyzed
 
 
   // The source is the supertask and the destination is the subtask.
@@ -93,40 +93,7 @@ public class IssueLoader {
     ResultSet rset = null;
     try {
 
-      // load helper data: priority numbers
-      Map<String,Integer> priorities = new HashMap<String,Integer>();
-      String prioritySql = "select id, sequence from priority";
-      rset = SimpleSQL.executeQuery(prioritySql, new String[0], conn);
-      while (rset.next()) {
-        priorities.put(rset.getString("id"), new Integer(rset.getInt("sequence")));
-      }
-
-      // load helper data: project IDs
-      Map<Long,Long> projectToTeam = new HashMap<Long,Long>();
-      String projectTeamSql = "select project_id, id from team";
-      rset = SimpleSQL.executeQuery(projectTeamSql, new String[0], conn);
-      while (rset.next()) {
-        if (rset.getString("project_id") != null) {
-          projectToTeam.put(new Long(rset.getLong("project_id")),
-              new Long(rset.getLong("id")));
-        }
-      }
-
-      /** unused
-      // load helper data: team data
-      List<Team> allTeams;
-      {
-        Map<Long,Team> idToTeam = new HashMap<Long, Team>();
-        org.hibernate.Session sess = TeamHoursUtil.HibernateUtil.currentSession();
-        @SuppressWarnings("unchecked")
-        List<Team> allTeams2 = sess.createQuery("from Team order by name").list();
-        allTeams = allTeams2;
-        TeamHoursUtil.HibernateUtil.closeSession();
-        for (Team team : allTeams2) {
-          idToTeam.put(team.getId(), team);
-        }
-      }
-      **/
+      ConfigData config = new ConfigData(conn);
 
       // load all open issues
       Map<String,IssueTree> keyToIssue = new HashMap<String,IssueTree>();
@@ -139,7 +106,7 @@ public class IssueLoader {
         + " where (resolution is null or resolution = 0)";
       rset = SimpleSQL.executeQuery(openIssueSql, new Object[0], conn);
       while (rset.next()) {
-        Long teamId = projectToTeam.get(Long.valueOf(rset.getLong("project")));
+        Long teamId = config.projectToTeam.get(Long.valueOf(rset.getLong("project")));
         IssueTree tree =
           new IssueTree
           (rset.getString("pkey"),
@@ -150,7 +117,7 @@ public class IssueLoader {
               rset.getInt("timespent"),
               rset.getDate("dueDate"),
               rset.getDate("earliest_start_date"),
-              priorities.get(rset.getString("priority")).intValue(),
+              config.priorities.get(rset.getString("priority")).intValue(),
               rset.getInt("resolution") != 0);
         keyToIssue.put(tree.getKey(), tree);
 
@@ -221,26 +188,7 @@ public class IssueLoader {
 
     SQL_SELECT_COUNT = 0;
 
-    ResultSet rset = null;
-
-    // first load some helper data
-    Map<String,Integer> priorities = new HashMap<String,Integer>();
-    String prioritySql = "select id, sequence from priority";
-    rset = SimpleSQL.executeQuery(prioritySql, new String[0], conn);
-    while (rset.next()) {
-      priorities.put(rset.getString("id"), new Integer(rset.getInt("sequence")));
-    }
-
-    Map<Long,Long> projectToTeam = new HashMap<Long,Long>();
-    String projectTeamSql = "select project_id, id from team";
-    rset = SimpleSQL.executeQuery(projectTeamSql, new String[0], conn);
-    while (rset.next()) {
-      if (rset.getString("project_id") != null) {
-        projectToTeam.put(new Long(rset.getLong("project_id")),
-            new Long(rset.getLong("id")));
-      }
-    }
-
+    ConfigData config = new ConfigData(conn);
 
     TreeSet<String> allAssignees = new TreeSet<String>();
     for (int i = 0; i < users.length; i++) {
@@ -262,7 +210,7 @@ public class IssueLoader {
         + " and issueb.project = project.id and issue.resolution is null";
       allAssignees.addAll
       (loadTopLevelIssues(projectSql, new Object[]{ project }, conn,
-          visitedAlready, priorities, projectToTeam));
+          visitedAlready, config.priorities, config.projectToTeam));
     }
 
 
@@ -284,7 +232,7 @@ public class IssueLoader {
       args = issueKeys;
       allAssignees.addAll
       (loadTopLevelIssues(linkSql, args, conn, visitedAlready,
-          priorities, projectToTeam));
+          config.priorities, config.projectToTeam));
     }
 
     // get the map of users to their tasks and load all issues for each
@@ -303,7 +251,7 @@ public class IssueLoader {
       newAssignees.addAll
       (loadTopLevelIssues
           (noAssigneeSql, new String[0], conn, visitedAlready,
-              priorities, projectToTeam));
+              config.priorities, config.projectToTeam));
     }
     do {
       log4jLog.debug("Will look for issues assigned to: " + newAssignees);
@@ -321,7 +269,7 @@ public class IssueLoader {
         newAssignees.addAll
         (loadTopLevelIssues
             (hasAssigneeSql, args, conn, visitedAlready, 
-                priorities, projectToTeam));
+                config.priorities, config.projectToTeam));
       }
       // -- repeat process for any new assignees not already searched
       for (Iterator<String> allAssigneeIter = allAssignees.iterator(); allAssigneeIter.hasNext(); ) {
@@ -346,7 +294,32 @@ public class IssueLoader {
 
     return allUserDetails;
   }
-
+  
+  
+  private static class ConfigData {
+    public final Map<String,Integer> priorities = new HashMap<String,Integer>();
+    Map<Long,Long> projectToTeam = new HashMap<Long,Long>();
+    public ConfigData(Connection conn) throws SQLException {
+      
+      String prioritySql = "select id, sequence from priority";
+      ResultSet rset = SimpleSQL.executeQuery(prioritySql, new String[0], conn);
+      while (rset.next()) {
+        priorities.put(rset.getString("id"), new Integer(rset.getInt("sequence")));
+      }
+      
+      String projectTeamSql = "select project_id, id from team";
+      rset = SimpleSQL.executeQuery(projectTeamSql, new String[0], conn);
+      while (rset.next()) {
+        if (rset.getString("project_id") != null) {
+          projectToTeam.put(new Long(rset.getLong("project_id")),
+              new Long(rset.getLong("id")));
+        }
+      }
+    }
+    
+  }
+  
+  
   /**
   @param visitedAlready Map of key String to IssueTree elements
   visited; this is modified to include all loaded issues
@@ -453,6 +426,10 @@ public class IssueLoader {
       Object[] args;
 
       visitedAlready.put(parent.getKey(), parent);
+      if (log4jLog.isDebugEnabled()
+          && parent.getKey().equals(ISSUE_TO_WATCH)) {
+        log4jLog.debug("Added " + ISSUE_TO_WATCH + " to visitedAlready.");
+      }
       if (parent.getRawAssignedPerson() != null) {
         newAssignees.add(parent.getRawAssignedPerson());
       }
@@ -472,9 +449,21 @@ public class IssueLoader {
         rset = SimpleSQL.executeQuery(linkSql, args, conn);
         SQL_SELECT_COUNT++;
         while (rset.next()) {
+          if (log4jLog.isDebugEnabled()
+              && rset.getString("pkey").equals(ISSUE_TO_WATCH)) {
+            log4jLog.debug("Loading " + ISSUE_TO_WATCH + "...");
+          }
           if (visitedAlready.containsKey(rset.getString("pkey"))) {
+            if (log4jLog.isDebugEnabled()
+                && rset.getString("pkey").equals(ISSUE_TO_WATCH)) {
+              log4jLog.debug("... already in visitedAlready, so adding " + ISSUE_TO_WATCH + " to parent subtasks.");
+            }
             parent.addSubtask(visitedAlready.get(rset.getString("pkey")));
           } else {
+            if (log4jLog.isDebugEnabled()
+                && rset.getString("pkey").equals(ISSUE_TO_WATCH)) {
+              log4jLog.debug("... not in visitedAlready, so adding " + ISSUE_TO_WATCH + " to subtasksToFill.");
+            }
             Long teamId = projectToTeam.get(Long.valueOf(rset.getLong("project")));
             IssueTree tree = 
               new IssueTree
@@ -511,9 +500,21 @@ public class IssueLoader {
         rset = SimpleSQL.executeQuery(linkSql, args, conn);
         SQL_SELECT_COUNT++;
         while (rset.next()) {
+          if (log4jLog.isDebugEnabled()
+              && rset.getString("pkey").equals(ISSUE_TO_WATCH)) {
+            log4jLog.debug("Loading " + ISSUE_TO_WATCH + "...");
+          }
           if (visitedAlready.containsKey(rset.getString("pkey"))) {
+            if (log4jLog.isDebugEnabled()
+                && rset.getString("pkey").equals(ISSUE_TO_WATCH)) {
+              log4jLog.debug("... already in visitedAlready, so adding " + ISSUE_TO_WATCH + " to parent dependents.");
+            }
             parent.addDependent(visitedAlready.get(rset.getString("pkey")));
           } else {
+            if (log4jLog.isDebugEnabled()
+                && rset.getString("pkey").equals(ISSUE_TO_WATCH)) {
+              log4jLog.debug("... not in visitedAlready, so adding " + ISSUE_TO_WATCH + " to dependentsToFill.");
+            }
             Long teamId = projectToTeam.get(Long.valueOf(rset.getLong("project")));
             IssueTree tree =
               new IssueTree
@@ -550,9 +551,21 @@ public class IssueLoader {
         rset = SimpleSQL.executeQuery(linkSql, args, conn);
         SQL_SELECT_COUNT++;
         while (rset.next()) {
+          if (log4jLog.isDebugEnabled()
+              && rset.getString("pkey").equals(ISSUE_TO_WATCH)) {
+            log4jLog.debug("Loading " + ISSUE_TO_WATCH + "...");
+          }
           if (visitedAlready.containsKey(rset.getString("pkey"))) {
+            if (log4jLog.isDebugEnabled()
+                && rset.getString("pkey").equals(ISSUE_TO_WATCH)) {
+              log4jLog.debug("... already in visitedAlready, so adding " + ISSUE_TO_WATCH + " to parent precursors.");
+            }
             parent.addPrecursor(visitedAlready.get(rset.getString("pkey")));
           } else {
+            if (log4jLog.isDebugEnabled()
+                && rset.getString("pkey").equals(ISSUE_TO_WATCH)) {
+              log4jLog.debug("... not in visitedAlready, so adding " + ISSUE_TO_WATCH + " to precursorsToFill.");
+            }
             Long teamId = projectToTeam.get(Long.valueOf(rset.getLong("project")));
             IssueTree tree =
               new IssueTree
@@ -579,12 +592,28 @@ public class IssueLoader {
     // now fill all information for children
     for (Iterator<IssueTree> i = subtasksToFill.iterator(); i.hasNext(); ) {
       IssueTree childTask = i.next();
+      if (log4jLog.isDebugEnabled()
+          && childTask.getKey().equals(ISSUE_TO_WATCH)) {
+        log4jLog.debug("Checking on " + ISSUE_TO_WATCH + " as a subtask...");
+      }
       if (visitedAncestors.contains(childTask.getKey())) {
+        if (log4jLog.isDebugEnabled()
+            && childTask.getKey().equals(ISSUE_TO_WATCH)) {
+          log4jLog.debug(ISSUE_TO_WATCH + " is in visitedAncestors, so ignoring it.");
+        }
         log4jLog.warn("Note that " + childTask.getKey() + " is a subtask of itself.  (Ignoring.)");
         i.remove();
       } else if (visitedAlready.containsKey(childTask.getKey())) { // since it may have been added during this loop
+        if (log4jLog.isDebugEnabled()
+            && childTask.getKey().equals(ISSUE_TO_WATCH)) {
+          log4jLog.debug(ISSUE_TO_WATCH + " it's in visitedAlready, so ignoring it.");
+        }
         parent.addSubtask(childTask);
       } else {
+        if (log4jLog.isDebugEnabled()
+            && childTask.getKey().equals(ISSUE_TO_WATCH)) {
+          log4jLog.debug("Going to recurse on " + ISSUE_TO_WATCH + " as a subtask? " + (!childTask.getResolved()));
+        }
         if (!childTask.getResolved()) {
           parent.addSubtask(childTask);
           TreeSet<String> childVisitedAncestors = new TreeSet<String>();
@@ -607,6 +636,10 @@ public class IssueLoader {
       } else if (visitedAlready.containsKey(childTask.getKey())) { // since it may have been added during one of these loops
         parent.addDependent(childTask);
       } else {
+        if (log4jLog.isDebugEnabled()
+            && childTask.getKey().equals(ISSUE_TO_WATCH)) {
+          log4jLog.debug("Going to recurse on " + ISSUE_TO_WATCH + " as a dependent? " + (!childTask.getResolved()));
+        }
         if (!childTask.getResolved()) {
           parent.addDependent(childTask);
           TreeSet<String> passVisitedPrecursors = new TreeSet<String>();
@@ -630,6 +663,10 @@ public class IssueLoader {
         parent.addPrecursor(childTask);
       } else {
         if (!childTask.getResolved()) {
+          if (log4jLog.isDebugEnabled()
+              && childTask.getKey().equals(ISSUE_TO_WATCH)) {
+            log4jLog.debug("Going to recurse on " + ISSUE_TO_WATCH + " as a precursor? " + (!childTask.getResolved()));
+          }
           parent.addPrecursor(childTask);
           Set<String> passVisitedDependents = new TreeSet<String>();
           passVisitedDependents.add(parent.getKey());

@@ -18,7 +18,6 @@ import org.apache.log4j.Logger;
 
 import com.icentris.sql.SimpleSQL;
 import com.trentlarson.forecast.core.dao.TeamHours;
-import com.trentlarson.forecast.core.scheduling.Teams.AssigneeKey;
 import com.trentlarson.forecast.core.scheduling.Teams.UserTimeKey;
 import com.trentlarson.forecast.core.scheduling.TimeSchedule.HoursForTimeSpan;
 import com.trentlarson.forecast.core.scheduling.TimeSchedule.WeeklyWorkHours;
@@ -35,7 +34,7 @@ public class TimeScheduleLoader {
   // If I use the class, then other loggers below don't show in the "Logging and Profiling" screen.  Why?
   //private static final Category log4jLog = Category.getInstance(TimeScheduleLoader.class);
   //private static final Category log4jLog = Category.getInstance("com.trentlarson.forecast.core.scheduling.TimeScheduleLoader");
-  private static final Logger log4jLog = Logger.getLogger("com.trentlarson.forecast.core.scheduling.TimeScheduleLoader");
+  protected static final Logger log4jLog = Logger.getLogger("com.trentlarson.forecast.core.scheduling.TimeScheduleLoader");
 
 
 
@@ -113,8 +112,8 @@ public class TimeScheduleLoader {
 
     // load user data
     Map<Teams.AssigneeKey,List<IssueTree>> allUserDetails =
-      IssueLoader.loadDetails(project, issueKeys, users, conn);
-      //IssueLoader.loadAllDetails(conn); // looks like it doesn't find all dependent tasks
+      //IssueLoader.loadDetails(project, issueKeys, users, conn); // Problem: load a DB with jiradb_412.dynamic-load-assignee-problem.sql and run TimeScheduleTests.testIntegrationDynamicLoadAssigneeProblem
+      IssueLoader.loadAllDetails(conn); // looks like it doesn't find all dependent tasks(?)
 
     log4jLog.info("Loaded issues in " + ((System.currentTimeMillis() - TIMER_START) / 1000.0) + " seconds.");
 
@@ -284,6 +283,9 @@ public class TimeScheduleLoader {
       this.timeDetails = timeDetails_;
       this.hours = hours_;
     }
+    public String toString() {
+      return "UserDetailsAndHours with:<br> assigneeToAllocatedUsers=" + assigneeToAllocatedUsers + ",<br> timeDetails=" + timeDetails + ",<br> hours=" + hours;
+    }
   }
 
   /**
@@ -317,6 +319,7 @@ public class TimeScheduleLoader {
           userKeyForTime = new Teams.UserTimeKey(null, userKeyForTime.getUsername());
           if (log4jLog.isDebugEnabled()) {
             log4jLog.debug("Changing time assignee of issue " + detail.getKey()
+                + " with hash " + detail.hashCode()
                 + " to " + userKeyForTime
                 + " (from " + detail.getTimeAssigneeKey() + ").");
           }

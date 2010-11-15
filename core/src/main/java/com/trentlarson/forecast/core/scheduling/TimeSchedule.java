@@ -853,7 +853,7 @@ public class TimeSchedule {
     }
     nextEstBegin.add(Calendar.SECOND, numEstSecsOnLastDay);
     if (fdiwwLog.isDebugEnabled()) {
-      fdiwwLog.info("added " + thisEstBegin.getTime() + " + "
+      fdiwwLog.debug("added " + thisEstBegin.getTime() + " + "
                     + (secondsToAdd / 3600.0) + " hours"
                     + " (ie. " + numEstDays + " days, "
                     + (numEstSecsOnLastDay / 3600.0) + " last-day hours)"
@@ -1090,7 +1090,7 @@ public class TimeSchedule {
           }
         }
       } while (detailIter.hasNext() && detailIsScheduled);
-      log4jLog.info
+      log4jLog.debug
         ("There are " + (issueDetails.size() - count) + " left"
          + " (" + count + "/" + issueDetails.size() + " done)"
          + " for " + currentDetail.getTimeAssignee()
@@ -1132,7 +1132,7 @@ public class TimeSchedule {
             IssueWorkDetail preDetail = preIter.next();
             if (!schedulesForKeys.containsKey(preDetail.getKey())
                 && !preDetail.getResolved()) {
-              log4jLog.info("Postponing issue " + currentDetail.getKey() + " until " + preDetail.getKey() + " is scheduled.");
+              log4jLog.debug("Postponing issue " + currentDetail.getKey() + " until " + preDetail.getKey() + " is scheduled.");
               allPrecursorsScheduled = false;
             } else if (!preDetail.getResolved()) {
               IssueSchedule schedule = schedulesForKeys.get(preDetail.getKey());
@@ -1224,7 +1224,7 @@ public class TimeSchedule {
                (Calendar) nextEstBegin.clone(),
                splitAroundOthers,
                nextAndWorked.hoursWorked);
-            log4jLog.info(currentDetail.getKey() + " times: " 
+            log4jLog.debug(currentDetail.getKey() + " times: " 
                            + schedule.getAdjustedBeginCal().getTime()
                            + " - " + schedule.getAdjustedEndCal().getTime());
             allSchedules.add(schedule);
@@ -1314,7 +1314,7 @@ public class TimeSchedule {
           }
         }
         if (maxPosOfPres > pos) {
-          log4jLog.info("Due to dependency, shifting " + issue.getKey() + " from " + pos + " to " + maxPosOfPres);
+          log4jLog.debug("Due to dependency, shifting " + issue.getKey() + " from " + pos + " to " + maxPosOfPres);
           oneUserDetails.remove(pos);
           oneUserDetails.add(maxPosOfPres, issue);
           pos--;
@@ -1381,7 +1381,7 @@ public class TimeSchedule {
             }
           }
         }
-        log4jLog.info("Finished " + finished + " on this iteration.");
+        log4jLog.debug("Finished " + finished + " on this iteration.");
 
       } while (stillUnfinished != null && finished > 0);
 
@@ -1447,7 +1447,7 @@ public class TimeSchedule {
              issueSchedules.containsKey
                ((assigneeDetails.get(firstUnscheduledPos)).getKey());
              firstUnscheduledPos++);
-        log4jLog.info("To avoid deadlock, shifting " + precursor.getKey() + " from " + assigneeDetails.indexOf(precursor) + " to " + firstUnscheduledPos);
+        log4jLog.debug("To avoid deadlock, shifting " + precursor.getKey() + " from " + assigneeDetails.indexOf(precursor) + " to " + firstUnscheduledPos);
         assigneeDetails.remove(precursor);
         assigneeDetails.add(firstUnscheduledPos, precursor);
         if (visitedPrecursorKeys.add(precursor.getKey())) {
