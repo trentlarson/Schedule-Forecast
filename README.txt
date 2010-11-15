@@ -29,6 +29,7 @@ To deploy:
 -- Choose your tool:
 -- For standalone: Copy the target/forecast.war file into the war directory, eg. tomcat/webapps/
 -- For Jira: copy the forecast jars and the core/lib jars (except logging) into atlassian-jira/WEB-INF/lib, and war/src/main/webapp/gantt.jsp file into someplace you'll remember under atlassian-jira/, eg. secure/views/company
+- You'll want to change the time-per-day to match this plugin, under Administration -> Time Tracking (see timeestimate SQL below)
 
 
 Helpful hints for Eclipse:
@@ -67,6 +68,15 @@ Places to clean up:
 
 - I think there's a problem where defaultStartDate is used in the middle of scheduling in TimeSchedule.createIssueSchedules.  It seems like it's being used for later issues and not just the first one.
 - in gantt-test.html, the "ranges of hourly work done" don't seem to match the start and end times
+
+________________________________________________________________________________
+Sample SQL to adjust timeestimate fields if you've already set a bunch of estimates on 24x7 tracking:
+
+  update jiraissue set timeestimate = 
+    ((timeestimate div (7*24*3600))*(5*8*3600))
+    + (((timeestimate mod (7*24*3600)) div (24*3600))*(8*3600))
+    + (((timeestimate mod (7*24*3600)) mod (24*3600))
+  where timeestimate div (24*3600) > 0;
 
 ________________________________________________________________________________
 
