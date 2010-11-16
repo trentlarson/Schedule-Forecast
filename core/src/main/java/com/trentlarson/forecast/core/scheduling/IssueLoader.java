@@ -23,9 +23,9 @@ public class IssueLoader {
   public static final String ISSUE_TO_WATCH = null; // set to some issue pkey (and enable log4jLog debugging) to print out info as that issue is loaded and analyzed
 
 
-  // The source is the supertask and the destination is the subtask.
+  // The source (outward) is the supertask (parent) and the destination (inward) is the subtask (child).
   public static final String LINK_SUBTASK="10002";
-  // The source is the dependent and the destination is the predecessor.
+  // The source (outward) is the predecessor (must be done before starting dependent) and the destination (inward) is the dependent (cannot start until the predecessor).
   public static final String LINK_DEPENDENCY="10004";
   public static final String CUSTOM_START_DATE="10180";
   /**
