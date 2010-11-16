@@ -28,6 +28,7 @@ public class TimeScheduleAction {
   private static Date adjustmentChangedTime = null;
 
   public static String MULTIPLIER_REQ_NAME = "time_multiplier";
+  public static String ISSUE_KEY_REQ_NAME = "issueKey";
 
 
 

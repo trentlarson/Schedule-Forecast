@@ -59,8 +59,8 @@ try {
 
   // check and/or update the scheduling multiplier
   double time_multiplier = 1.0;
-  if (request.getParameter(TimeScheduleAction.MULTIPLIER_REQ_NAME) != null) {
-    time_multiplier = Double.parseDouble(request.getParameter(TimeScheduleAction.MULTIPLIER_REQ_NAME));
+  if (request.getParameter(MULTIPLIER_REQ_NAME) != null) {
+    time_multiplier = Double.parseDouble(request.getParameter(MULTIPLIER_REQ_NAME));
   }
 
   // check and/or update the time for issues without estimates
@@ -268,7 +268,7 @@ try {
   <tr>
     <td>
 
-<h1 style="text-align:center">Reload Data</h1>
+<h1 style="text-align:center">Schedule Forecast</h1>
 
 
 <h3>Reload Data</h3>
@@ -294,7 +294,7 @@ Charts below are based on data loaded at <%= graph.getLoadedDate() %>.
 <!--
 <form name="reschedule">
   Multiply all estimates by
-  <input type='text' size='3' name='<%=TimeScheduleAction.MULTIPLIER_REQ_NAME%>' value='<%=time_multiplier%>'>
+  <input type='text' size='3' name='<%=MULTIPLIER_REQ_NAME%>' value='<%=time_multiplier%>'>
   <input type='hidden' name='<%=RESCHEDULE_REQ_NAME%>' value='true'>
   <input type='submit' value='Reschedule'>
 </form>
@@ -602,7 +602,8 @@ Charts below are based on data loaded at <%= graph.getLoadedDate() %>.
     TIME_GRANULARITY_SES_NAME
   };
 
-  public static String ISSUE_KEY_REQ_NAME = "issueKey";
+  public static String MULTIPLIER_REQ_NAME = TimeScheduleAction.MULTIPLIER_REQ_NAME;
+  public static String ISSUE_KEY_REQ_NAME = TimeScheduleAction.ISSUE_KEY_REQ_NAME;
   public static String SHOW_TEAM_REQ_NAME = "show_team";
   public static String SHOW_USER_REQ_NAME = "show_user";
   public static String SHOW_GROUP_REQ_NAME = "show_group";

@@ -16,6 +16,7 @@ import java.util.Set;
 
 import org.apache.log4j.Category;
 
+import com.trentlarson.forecast.core.actions.TimeScheduleAction;
 import com.trentlarson.forecast.core.scheduling.TimeSchedule.IssueWorkDetail;
 
 /**
@@ -616,33 +617,39 @@ public class TimeScheduleWriter {
         
         //// Make some markers for lines drawn to link issues together.
         
-        // if this is the end of the issue time and there are any successor issues then create those 'rel' links (for a visual pointer if it precedes other issues)
+        // if this is the end of the issue time...
         String successorRels = "";
         if ((calStartOfDay.getTime().before(issueEndTime)
              && calStartOfNextDay.getTime().after(issueEndTime))
             || calStartOfNextDay.getTime().equals(issueEndTime)) {
+          // for each of the successor issues, create 'rel' links (for a visual pointer if it precedes other issues)
           for (IssueTree issueAfter : detail.getDependents()) {
               successorRels += "<span rel='" + issueAfter.getKey() + "-start' type='successor' style='display:block'></span>";
           }
         }
         
-        // if this is the start of the issue time then set the start-point DOM ID (for a visual pointer if it follows a previous issue)
+        // if this is the start of the issue time...
         String domMarker = "";
+        String focusIssueLink = "";
         if (calStartOfDay.getTime().equals(issueStartTime)
             || (calStartOfDay.getTime().before(issueStartTime)
                 && calStartOfNextDay.getTime().after(issueStartTime))) {
+          // set the start-point DOM ID (for a visual pointer if it follows a previous issue)
           domMarker = "<span id='" + detail.getKey() + "-start' style='display:block'></span>";
+          String title = detail.getKey() + ": " + detail.getSummary() + " -- " + detail.getTimeAssigneeKey().toString();
+          focusIssueLink = "<a href='?" + TimeScheduleAction.ISSUE_KEY_REQ_NAME + "=" + detail.getKey() + "' style='color:black' title='" + title + "'>?</a>";
         }
         
-        // if this is the middle of the issue time then set the midpoint DOM ID (for a visual pointer if it's a subtask of a master issue)
+        // if this is the middle of the issue time...
         String subtaskRels = "";
         long halfwayMillis = issueStartTime.getTime() + ((issueEndTime.getTime() - issueStartTime.getTime()) / 2);
         if (halfwayMillis == calStartOfDay.getTime().getTime()
             || (calStartOfDay.getTime().getTime() < halfwayMillis
                 && halfwayMillis < calStartOfNextDay.getTime().getTime())) {
+            // set the midpoint DOM ID (for a visual pointer if it's a subtask of a master issue)
             domMarker += "<span id='" + detail.getKey() + "-middle' style='display:block'></span>";
             
-            // if this is the middle of the issue time and there are any subtask issues then create those 'rel' links (for a visual pointer if it masters other issues)
+            // for each of the subtask issues, create 'rel' links (for a visual pointer if it masters other issues)
             for (IssueWorkDetail subtask : detail.getSubtasks()) {
                 subtaskRels += "<span rel='" + subtask.getKey() + "-middle' type='subtask' style='display:block'></span>";
             }
@@ -698,7 +705,7 @@ public class TimeScheduleWriter {
           }
           coloring = " bgcolor='" + color + "'";
         }
-        out.write("   <td" + coloring + ">" + domMarker + subtaskRels + successorRels + "</td>\n");
+        out.write("   <td" + coloring + ">" + focusIssueLink + domMarker + subtaskRels + successorRels + "</td>\n");
 
         // -- overdue and marker column
         String markerColoring = coloring;
