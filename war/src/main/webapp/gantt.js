@@ -1,7 +1,7 @@
 
 
 
-function drawAllLinks(elemName) {
+function drawSuccessorLinks(elemName) {
   jg = new jsGraphics(elemName);
   outerElems = $('#' + elemName);
   outerElems.each(function() {
@@ -26,6 +26,19 @@ function drawAllLinks(elemName) {
                destElem.offset().top + destElem.height() / 2);
           }
         }
+      }
+    })
+  })
+  jg.paint();
+}
+
+function drawSubtaskLinks(elemName) {
+  jg = new jsGraphics(elemName);
+  outerElems = $('#' + elemName);
+  outerElems.each(function() {
+    $('span', this).each(function(){
+      var sourceElem=$(this);
+      if(sourceElem.attr('rel')) {
         if (sourceElem.attr('type') == 'subtask') {
           var destElem=$('#'+sourceElem.attr('rel'));
           if(destElem.length) {

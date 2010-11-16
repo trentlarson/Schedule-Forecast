@@ -362,7 +362,8 @@ Charts below are based on data loaded at <%= graph.getLoadedDate() %>.
   <input type='submit' value='Change Display'>
 </form>
 <br/>
-<a href="javascript:drawAllLinks('source');">Show subtask lines.</a>
+<a href="javascript:drawSubtaskLinks('source');">Show subtask lines.</a>
+<a href="javascript:drawSuccessorLinks('source');">Show successor lines.</a>
 <div>
 
 
