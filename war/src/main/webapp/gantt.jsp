@@ -42,7 +42,6 @@ try {
 
   List<Team> allTeams = new ArrayList<Team>();
   Map<Long,Team> idToTeam = new HashMap();
-  /** Enable this when I can get Hibernate to play nicely with JIRA on a v1 plugin.
   {
     Session sess = TeamHoursUtil.HibernateUtil.currentSession();
     Transaction tx = sess.beginTransaction();
@@ -52,7 +51,6 @@ try {
       idToTeam.put(team.getId(), team);
     }
   }
-  **/
 
 
 
@@ -270,9 +268,10 @@ try {
   <tr>
     <td>
 
+<h1 style="text-align:center">Reload Data</h1>
 
 
-<h2>Reload Data</h2>
+<h3>Reload Data</h3>
 <form name="loader">
 Charts below are based on data loaded at <%= graph.getLoadedDate() %>.
   <input type='hidden' name='<%=RELOAD_DATA_REQ_NAME%>' value='true'>
@@ -310,11 +309,8 @@ Charts below are based on data loaded at <%= graph.getLoadedDate() %>.
 
 
 
-<!--
-<h2>Schedule</h2>
--->
 
-<h2>Change Display</h2>
+<h3>Change Display</h3>
 
 <form name="display">
 
