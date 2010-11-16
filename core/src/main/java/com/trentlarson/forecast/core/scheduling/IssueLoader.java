@@ -25,7 +25,7 @@ public class IssueLoader {
 
   // The source (outward) is the supertask (parent) and the destination (inward) is the subtask (child).
   public static final String LINK_SUBTASK="10002";
-  // The source (outward) is the predecessor (must be done before starting dependent) and the destination (inward) is the dependent (cannot start until the predecessor).
+  // The source (outward) is the dependent (cannot start until the predecessor is completed) and the destination (inward) is the predecessor (must be completed before starting dependent).
   public static final String LINK_DEPENDENCY="10004";
   public static final String CUSTOM_START_DATE="10180";
   /**
@@ -150,7 +150,7 @@ public class IssueLoader {
 
       // load blocking data
       String blockedSql =
-        "select a.pkey as pre_key, b.pkey as post_key"
+        "select a.pkey as post_key, b.pkey as pre_key"
         + " from issuelink, " + DB_ISSUE_TABLE + " a, " + DB_ISSUE_TABLE + " b"
         + " where linktype = '" + LINK_DEPENDENCY + "'"
         + " and source = a.id and b.id = destination"
@@ -493,7 +493,7 @@ public class IssueLoader {
           + " from issuelink, " + DB_ISSUE_TABLE + " a, " + DB_ISSUE_TABLE + " issueb"
           + " " + DB_START_DATE_JOIN
           + " where linktype = '" + LINK_DEPENDENCY + "'"
-          + " and a.pkey = ? and destination = a.id and issueb.id = source";
+          + " and a.pkey = ? and destination = issueb.id and a.id = source";
         // + " and (issueb.resolution is null or issueb.resolution = 0)"
         args = new Object[]{ parent.getKey() };
         issueSqlLog.debug("Selecting dependent issues with SQL: \n " + linkSql + "\n... with args: \n" + Arrays.asList(args));
@@ -544,7 +544,7 @@ public class IssueLoader {
           + " from issuelink, " + DB_ISSUE_TABLE + " a, " + DB_ISSUE_TABLE + " issueb"
           + " " + DB_START_DATE_JOIN
           + " where linktype = '" + LINK_DEPENDENCY + "'"
-          + " and a.pkey = ? and source = a.id and issueb.id = destination";
+          + " and a.pkey = ? and source = issueb.id and a.id = destination";
         // + " and (issueb.resolution is null or issueb.resolution = 0)"
         args = new Object[]{ parent.getKey() };
         issueSqlLog.debug("Selecting precursor issues with SQL: \n " + linkSql + "\n... with args: \n" + Arrays.asList(args));
