@@ -8,8 +8,8 @@
     <session-factory>
 
         <!-- user JNDI to get the settings (ie. driver, URL, username, password)
-        <property name="connection.datasource">java:comp/env/jdbc/JiraDS</property>
         -->
+        <property name="connection.datasource">java:comp/env/jdbc/JiraDS</property>
         
         
         <!-- HSQL
@@ -27,12 +27,12 @@
         <property name="connection.url">jdbc:mysql://10.0.2.16:8319/jiradb?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8</property>
         <property name="connection.username">jira</property>
         <property name="connection.password">jirapass</property>
-        -->
         
         <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
         <property name="connection.url">jdbc:mysql://localhost:3306/jirdb_412?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8</property>
         <property name="connection.username">jira</property>
         <property name="connection.password">jirapass</property>
+        -->
 
 
         <property name="dialect">org.hibernate.dialect.MySQLDialect</property>
