@@ -69,6 +69,10 @@ Places to clean up:
 - I think there's a problem where defaultStartDate is used in the middle of scheduling in TimeSchedule.createIssueSchedules.  It seems like it's being used for later issues and not just the first one.
 - in gantt-test.html, the "ranges of hourly work done" don't seem to match the start and end times
 
+To duplicate the error with efficient loading:
+- Load your DB with jira-test-render-error.sql (an admin user is trent/jirapass)
+- Run TimeScheduleTests.testIntegrationDynamicLoadAssigneeProblem
+
 ________________________________________________________________________________
 Sample SQL to adjust timeestimate fields if you've already set a bunch of estimates on 24x7 tracking:
 

@@ -1015,6 +1015,9 @@ public class TimeScheduleTests {
   }
 
 
+  /**
+   * See README.txt for usage.
+   */
   public static void testIntegrationDynamicLoadAssigneeProblem(PrintWriter out) throws Exception {
     
     Connection conn = ForecastUtil.getConnection();

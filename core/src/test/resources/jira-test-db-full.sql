@@ -1,3 +1,6 @@
+--
+-- See README.txt for usage.
+--
 -- MySQL dump 10.13  Distrib 5.1.50, for apple-darwin10.3.0 (i386)
 --
 -- Host: localhost    Database: test_forecast_jira
