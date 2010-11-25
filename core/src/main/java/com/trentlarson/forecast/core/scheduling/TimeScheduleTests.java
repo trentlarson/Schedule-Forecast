@@ -547,6 +547,12 @@ public class TimeScheduleTests {
                         new String[]{"TEST-22"},
                         false, graph));
 
+    TimeScheduleWriter.writeIssueTable
+      (graph, out, sPrefs,
+       TimeScheduleDisplayPreferences
+       .createForIssues(1, 0, true, false, false,
+           new String[]{"TEST-22"},
+           false, graph));
   }
 
   public static void outputManyBlockedTestResults(PrintWriter out) throws Exception {
@@ -758,7 +764,7 @@ public class TimeScheduleTests {
       (userDetails, userWeeklyHours, sPrefs);
 
 
-    List branches1 = TimeScheduleWriter.findPredecessorBranches(issue1);
+    List branches1 = TimeScheduleSearch.findPredecessorBranches(issue1);
     out.println("<br><br>");
     out.println("All branches of TEST-1: ");
     out.println(branches1);
@@ -908,7 +914,7 @@ public class TimeScheduleTests {
        + " (" + issue4.getKey() + " should start on the 14th; got " +
        + acal.get(Calendar.DATE) + ")");
 
-    List branches0 = TimeScheduleWriter.findPredecessorBranches(issue0);
+    List branches0 = TimeScheduleSearch.findPredecessorBranches(issue0);
     out.println
       ((branches0.size() == 6 ? "pass" : "fail")
        + " (should be 6 branches preceding 0; got " + branches0.size() + ")");
