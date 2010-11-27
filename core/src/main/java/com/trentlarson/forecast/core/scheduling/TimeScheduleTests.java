@@ -547,6 +547,8 @@ public class TimeScheduleTests {
                         new String[]{"TEST-22"},
                         false, graph));
 
+    out.println(TimeScheduleSearch.criticalPathFor(issue22, graph).toString());
+    
   }
 
   public static void outputManyBlockedTestResults(PrintWriter out) throws Exception {

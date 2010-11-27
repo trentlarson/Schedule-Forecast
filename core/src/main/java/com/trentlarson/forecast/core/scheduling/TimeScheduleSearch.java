@@ -1,6 +1,7 @@
 package com.trentlarson.forecast.core.scheduling;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -99,4 +100,108 @@ public class TimeScheduleSearch {
   }
 
 
+
+  /**
+   * 
+   * An issue, along with the reasons it is scheduled at this particular time.
+   * 
+   */
+  protected static class CriticalPath {
+    public final IssueTree issue;
+    public boolean becauseOfstartDate = false;
+    /** Any issues that immediately precede this one in priority scheduling. */
+    public final List<CriticalPath> previousPriority = new ArrayList<CriticalPath>();
+    /** Any issues that immediately precede this one in scheduling and are subtasks. */
+    public final List<CriticalPath> subtasks = new ArrayList<CriticalPath>();
+    /** Any issues that immediately precede this one in scheduling and are predecessors. */
+    public final List<CriticalPath> precursors = new ArrayList<CriticalPath>();
+    
+    public CriticalPath(IssueTree _issue) {
+      this.issue = _issue;
+    }
+    public String toString() {
+      String result = "Critical Path for issue " + issue.getKey() + ":";
+      boolean hasPath = false;
+      if (becauseOfstartDate) {
+        result += " has start date";
+        hasPath = true;
+      }
+      if (previousPriority.size() > 0) {
+        if (hasPath) {
+          result += " &";
+        }
+        result += " follows in priority " + previousPriority;
+        hasPath = true;
+      }
+      if (subtasks.size() > 0) {
+        if (hasPath) {
+          result += " &";
+        }
+        result += " follows subtask(s) " + subtasks;
+        hasPath = true;
+      }
+      if (precursors.size() > 0) {
+        if (hasPath) {
+          result += " &";
+        }
+        result += " follows precursor(s) " + precursors;
+        hasPath = true;
+      }
+      if (!hasPath) {
+        result += " none";
+      }
+      return result;
+    }
+  }
+  
+  /**
+   * 
+   * @param issueKey
+   * @param graph
+   * @return never null
+   */
+  public static CriticalPath criticalPathFor(IssueTree issue, IssueDigraph graph) {
+    // approach: check other user tasks, predecessors, and dependents and see which end immediately before this one.
+    
+    CriticalPath result = new CriticalPath(issue);
+    
+    TimeSchedule.IssueSchedule<IssueTree> schedule = graph.getIssueSchedule(issue.getKey());
+    
+    // check start date
+    if (issue.getMustStartOnDate() != null
+        && issue.getMustStartOnDate().equals(schedule.getBeginDate())) {
+      result.becauseOfstartDate = true;
+    }
+    
+    Date issueBeginDate = schedule.getAdjustedBeginCal().getTime();
+    
+    // check for ones assigned to this user/team that are immediately preceding
+    Teams.UserTimeKey userTimeKey = issue.getTimeAssigneeKey();
+    List<IssueTree> issueList = graph.getTimeUserDetails().get(userTimeKey);
+    int issueIndex = issueList.indexOf(issue);
+    for (int previousIndex = issueIndex - 1;
+         previousIndex > -1 
+         && graph.getIssueSchedule(issueList.get(previousIndex).getKey()).getAdjustedNextBeginDate().equals(issueBeginDate);
+         previousIndex--){
+      result.previousPriority.add(criticalPathFor(issueList.get(previousIndex), graph));
+    }
+      
+    // check for subtasks that are immediately preceding
+    for (IssueTree subtask : issue.getSubtasks()) {
+      if (graph.getIssueSchedule(subtask.getKey()).getAdjustedNextBeginDate().equals(issueBeginDate)) {
+        result.subtasks.add(criticalPathFor(subtask, graph));
+      }
+    }
+    
+    // check for precursors that are immediately preceding
+    for (IssueTree precursor : issue.getPrecursors()) {
+      if (graph.getIssueSchedule(precursor.getKey()).getAdjustedNextBeginDate().equals(issueBeginDate)) {
+        result.precursors.add(criticalPathFor(precursor, graph));
+      }
+    }
+    
+    return result;
+    
+  }
+  
 }
