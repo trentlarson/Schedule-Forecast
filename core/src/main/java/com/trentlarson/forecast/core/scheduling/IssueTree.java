@@ -80,20 +80,20 @@ public class IssueTree extends TimeSchedule.IssueWorkDetailOriginal<IssueTree> i
     return "IssueTree " + key;
   }
 
-  public static StringBuffer treeString(Iterator treeIter) {
+  public static StringBuffer treeString(Iterator<IssueTree> treeIter) {
     StringBuffer sb = new StringBuffer();
     for (; treeIter.hasNext(); ) {
-      sb.append(((IssueTree) treeIter.next()).treeString());
+      sb.append((treeIter.next()).treeString());
     }
     return sb;
   }
   public String treeString() {
     StringBuffer preds = new StringBuffer();
-    for (Iterator iter = precursors.iterator(); iter.hasNext(); ) {
+    for (Iterator<IssueTree> iter = precursors.iterator(); iter.hasNext(); ) {
       if (preds.length() > 0) {
         preds.append(",");
       }
-      preds.append(((IssueTree) iter.next()).getKey());
+      preds.append((iter.next()).getKey());
     }
     return
       ("<li>" + (resolved ? "<strike>" : "") + key + (resolved ? "</strike>" : "")
@@ -118,8 +118,8 @@ public class IssueTree extends TimeSchedule.IssueWorkDetailOriginal<IssueTree> i
   }
 
   /** @return the maximum end date of sub- and dependent issues (including this issue) */
-  public Date getBeginDate(Map issueSchedules) {
-    return ((TimeSchedule.IssueSchedule) issueSchedules.get(getKey())).getAdjustedBeginCal().getTime();
+  public Date getBeginDate(Map<String,TimeSchedule.IssueSchedule<IssueTree>> issueSchedules) {
+    return ((TimeSchedule.IssueSchedule<IssueTree>) issueSchedules.get(getKey())).getAdjustedBeginCal().getTime();
   }
 
   /**
@@ -129,19 +129,19 @@ public class IssueTree extends TimeSchedule.IssueWorkDetailOriginal<IssueTree> i
      @param dPrefs is the preferences for filtering whether to use
      issues (see displayIssue), or null if we want to check all issues
   */
-  public Date findMaxDateOfSubsAndDeps(Map<String, TimeSchedule.IssueSchedule> issueSchedules,
+  public Date findMaxDateOfSubsAndDeps(Map<String, TimeSchedule.IssueSchedule<IssueTree>> issueSchedules,
                                        TimeScheduleDisplayPreferences dPrefs) {
     Date max = (issueSchedules.get(getKey())).getAdjustedEndCal().getTime();            
     if (dPrefs != null
         && !dPrefs.displayIssue(this)) {
       max = new Date(Long.MIN_VALUE);
     }
-    for (Iterator i = subtasks.iterator(); i.hasNext(); ) {
-      Date subMax = ((IssueTree) i.next()).findMaxDateOfSubsAndDeps(issueSchedules, dPrefs);
+    for (Iterator<IssueTree> i = subtasks.iterator(); i.hasNext(); ) {
+      Date subMax = (i.next()).findMaxDateOfSubsAndDeps(issueSchedules, dPrefs);
       if (max.compareTo(subMax) < 0) { max = subMax; }
     }
-    for (Iterator i = dependents.iterator(); i.hasNext(); ) {
-      Date subMax = ((IssueTree) i.next()).findMaxDateOfSubsAndDeps(issueSchedules, dPrefs);
+    for (Iterator<IssueTree> i = dependents.iterator(); i.hasNext(); ) {
+      Date subMax = (i.next()).findMaxDateOfSubsAndDeps(issueSchedules, dPrefs);
       if (max.compareTo(subMax) < 0) { max = subMax; }
     }
     return max;
@@ -152,15 +152,15 @@ public class IssueTree extends TimeSchedule.IssueWorkDetailOriginal<IssueTree> i
      @param dPrefs is the preferences for filtering whether to use
      issues (see displayIssue), or null if we want to check all issues
   */
-  public Date findMaxDateOfDeps(Map<String, TimeSchedule.IssueSchedule> issueSchedules,
+  public Date findMaxDateOfDeps(Map<String, TimeSchedule.IssueSchedule<IssueTree>> issueSchedules,
                                 TimeScheduleDisplayPreferences dPrefs) {
     Date max = (issueSchedules.get(getKey())).getAdjustedEndCal().getTime();
     if (dPrefs != null
         && !dPrefs.displayIssue(this)) {
       max = new Date(Long.MIN_VALUE);
     }
-    for (Iterator i = dependents.iterator(); i.hasNext(); ) {
-      Date subMax = ((IssueTree) i.next()).findMaxDateOfSubs(issueSchedules, dPrefs);
+    for (Iterator<IssueTree> i = dependents.iterator(); i.hasNext(); ) {
+      Date subMax = (i.next()).findMaxDateOfSubs(issueSchedules, dPrefs);
       if (max.compareTo(subMax) < 0) { max = subMax; }
     }
     return max;
@@ -171,15 +171,15 @@ public class IssueTree extends TimeSchedule.IssueWorkDetailOriginal<IssueTree> i
      @param dPrefs is the preferences for filtering whether to use
      issues (see displayIssue), or null if we want to check all issues
   */
-  public Date findMaxDateOfSubs(Map<String, TimeSchedule.IssueSchedule> issueSchedules,
+  public Date findMaxDateOfSubs(Map<String, TimeSchedule.IssueSchedule<IssueTree>> issueSchedules,
                                 TimeScheduleDisplayPreferences dPrefs) {
     Date max = (issueSchedules.get(getKey())).getAdjustedEndCal().getTime();
     if (dPrefs != null
         && !dPrefs.displayIssue(this)) {
       max = new Date(Long.MIN_VALUE);
     }
-    for (Iterator i = subtasks.iterator(); i.hasNext(); ) {
-      Date subMax = ((IssueTree) i.next()).findMaxDateOfSubs(issueSchedules, dPrefs);
+    for (Iterator<IssueTree> i = subtasks.iterator(); i.hasNext(); ) {
+      Date subMax = (i.next()).findMaxDateOfSubs(issueSchedules, dPrefs);
       if (max.compareTo(subMax) < 0) { max = subMax; }
     }
     return max;
@@ -211,8 +211,8 @@ public class IssueTree extends TimeSchedule.IssueWorkDetailOriginal<IssueTree> i
   */
   public int totalEstimate() {
     int total = 0;
-    for (Iterator i = subtasks.iterator(); i.hasNext(); ) {
-      IssueTree tree = (IssueTree) i.next();
+    for (Iterator<IssueTree> i = subtasks.iterator(); i.hasNext(); ) {
+      IssueTree tree = i.next();
       total += tree.totalEstimate();
     }
     return total > getEstimate() ? total : getEstimate();
@@ -220,15 +220,15 @@ public class IssueTree extends TimeSchedule.IssueWorkDetailOriginal<IssueTree> i
   /** @return the time spent on this issue plus sub-issues, whichever is greater */
   public int totalTimeSpent() {
     int total = spent;
-    for (Iterator i = subtasks.iterator(); i.hasNext(); ) {
-      total += ((IssueTree) i.next()).totalTimeSpent();
+    for (Iterator<IssueTree> i = subtasks.iterator(); i.hasNext(); ) {
+      total += (i.next()).totalTimeSpent();
     }
     return total;
   }
 
   public boolean allSubtasksResolved() {
     boolean allResolved = true;
-    for (Iterator i = subtasks.iterator(); i.hasNext() && allResolved; ) {
+    for (Iterator<IssueTree> i = subtasks.iterator(); i.hasNext() && allResolved; ) {
       IssueTree tree = (IssueTree) i.next();
       allResolved = tree.getResolved() && tree.allSubtasksResolved();
     }
@@ -246,8 +246,7 @@ public class IssueTree extends TimeSchedule.IssueWorkDetailOriginal<IssueTree> i
    */
   protected void setPriorityCompleteDates(Map<Integer,Date> maxDateForPriority, IssueDigraph graph,
                                           TimeScheduleDisplayPreferences dPrefs) {
-    TimeSchedule.IssueSchedule sched =
-      (TimeSchedule.IssueSchedule) graph.getIssueSchedules().get(getKey());
+    TimeSchedule.IssueSchedule<IssueTree> sched = graph.getIssueSchedules().get(getKey());
     if (dPrefs == null
         || dPrefs.displayIssue(this)) {
       if (maxDateForPriority.get(getPriority()) == null
@@ -255,11 +254,11 @@ public class IssueTree extends TimeSchedule.IssueWorkDetailOriginal<IssueTree> i
         maxDateForPriority.put(getPriority(), sched.getEndDate());
       }
     }
-    for (Iterator i = getSubtasks().iterator(); i.hasNext(); ) {
-      ((IssueTree) i.next()).setPriorityCompleteDates(maxDateForPriority, graph, dPrefs);
+    for (Iterator<IssueTree> i = getSubtasks().iterator(); i.hasNext(); ) {
+      (i.next()).setPriorityCompleteDates(maxDateForPriority, graph, dPrefs);
     }
-    for (Iterator i = getDependents().iterator(); i.hasNext(); ) {
-      ((IssueTree) i.next()).setPriorityCompleteDates(maxDateForPriority, graph, dPrefs);
+    for (Iterator<IssueTree> i = getDependents().iterator(); i.hasNext(); ) {
+      (i.next()).setPriorityCompleteDates(maxDateForPriority, graph, dPrefs);
     }
   }
 }

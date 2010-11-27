@@ -191,9 +191,11 @@ public class TimeScheduleWriter {
 
 
   /** @return count of days, including first and last date if partials, but at minimum 1 */
+  /** unused
   private static int daysBetweenDates(Date date1, Date date2) {
     return Math.max(1, (int) ((date2.getTime() - date1.getTime()) / (24 * 60 * 60 * 1000)));
   }
+  **/
 
   /** @return the number of days to display
    */
@@ -392,10 +394,6 @@ public class TimeScheduleWriter {
         prefix = "<strike>";
         postfix = "</strike>";
       }
-      boolean isSpanning =
-        schedule.isSplitAroundOthers()
-        || schedule.getAdjustedBeginCal().getTime().after(issueStartTime)
-        || schedule.getAdjustedEndCal().getTime().before(issueEndTime);
 
       TimeSchedule.WeeklyWorkHours userWeeklyHours = 
         allUserWeeklyHours.get(detail.getTimeAssigneeKey());
@@ -641,16 +639,16 @@ public class TimeScheduleWriter {
       dPrefs.showHierarchically && (!stopAtTargetDistance || dist != 0);
     if (goDeeper) {
       // write all subtask and dependent issue rows
-      for (Iterator i = detail.getSubtasks().iterator(); i.hasNext(); ) {
-        IssueTree subIssue = (IssueTree) i.next();
+      for (Iterator<IssueTree> i = detail.getSubtasks().iterator(); i.hasNext(); ) {
+        IssueTree subIssue = i.next();
         writeIssueRows
           (subIssue, allUserWeeklyHours, issueSchedules, maxEndDate, maxPriority,
            indentDepth + 1, dist,
            true, out, startTime, dPrefs, shownAlready, stopAtTargetDistance);
       }
       if (dPrefs.showBlocked) {
-        for (Iterator i = detail.getDependents().iterator(); i.hasNext(); ) {
-          IssueTree current = (IssueTree) i.next();
+        for (Iterator<IssueTree> i = detail.getDependents().iterator(); i.hasNext(); ) {
+          IssueTree current = i.next();
           writeIssueRows
             (current, allUserWeeklyHours, issueSchedules, maxEndDate, maxPriority,
              indentDepth + 1, dist + 1,
@@ -665,21 +663,21 @@ public class TimeScheduleWriter {
   private static void writeUserRow
     (Teams.AssigneeKey userKey,
      TimeSchedule.WeeklyWorkHours userWeeklyHours,
-     List details, Map schedules, int numDays, Date maxEndDate,
+     List<IssueTree> details, Map<String,TimeSchedule.IssueSchedule<IssueTree>> schedules, int numDays, Date maxEndDate,
      Writer out, Date startTime, TimeScheduleDisplayPreferences dPrefs)
     throws IOException {
 
     // loop through details and fill a color for each date
     String[] dateColors = new String[numDays];
     Arrays.fill(dateColors, "");
-    for (Iterator issuei = details.iterator(); issuei.hasNext(); ) {
-      IssueTree issue = (IssueTree) issuei.next();
+    for (Iterator<IssueTree> issuei = details.iterator(); issuei.hasNext(); ) {
+      IssueTree issue = issuei.next();
       // only change a color if it's an unresolved issue with time left
       if (!issue.getResolved()
           && issue.getEstimate() > 0) {
 
-        TimeSchedule.IssueSchedule schedule =
-          (TimeSchedule.IssueSchedule) schedules.get(issue.getKey());
+        TimeSchedule.IssueSchedule<IssueTree> schedule =
+          (TimeSchedule.IssueSchedule<IssueTree>) schedules.get(issue.getKey());
 
         // calculate the beginning and ending of the first time slice
         Calendar calStartOfDay = Calendar.getInstance();
