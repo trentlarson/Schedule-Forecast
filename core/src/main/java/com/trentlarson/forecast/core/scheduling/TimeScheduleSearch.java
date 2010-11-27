@@ -153,29 +153,33 @@ public class TimeScheduleSearch {
       return result;
     }
     
+    /**
+     * 
+     * @return the path in post-order traversal, except for subtasks which are done in pre-order; never null
+     */
     public List<IssueTree> collectPostOrderButPreOrderForSubtasks() {
       List<IssueTree> result = new ArrayList<IssueTree>();
-      
       for (CriticalPath path : previousPriority) {
         result.addAll(path.collectPostOrderButPreOrderForSubtasks());
       }
       for (CriticalPath path : precursors) {
         result.addAll(path.collectPostOrderButPreOrderForSubtasks());
       }
+      // now add the issue, after previous priorities and precursors but before subtasks
       result.add(issue);
       for (CriticalPath path : subtasks) {
         result.addAll(path.collectPostOrderButPreOrderForSubtasks());
       }
-      
       return result;
     }
   }
+
   
   /**
    * 
    * @param issueKey
    * @param graph
-   * @return never null
+   * @return the entire critical path for this issue (possibly including duplicate sub-trees); never null
    */
   public static CriticalPath criticalPathFor(IssueTree issue, IssueDigraph graph) {
     // approach: check other user tasks, predecessors, and dependents and see which end immediately before this one.

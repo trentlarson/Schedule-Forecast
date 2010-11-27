@@ -547,6 +547,9 @@ public class TimeScheduleTests {
                         new String[]{"TEST-22"},
                         false, graph));
 
+    TimeScheduleWriter.writeIssueTable
+      (graph, out, sPrefs, TimeScheduleDisplayPreferences.createForCriticalPath(1, 0, false, false, "TEST-22", graph));
+
     out.println(TimeScheduleSearch.criticalPathFor(issue22, graph).toString());
     
   }
