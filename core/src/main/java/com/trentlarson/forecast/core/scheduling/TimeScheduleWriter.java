@@ -3,7 +3,6 @@ package com.trentlarson.forecast.core.scheduling;
 import java.io.IOException;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -17,7 +16,6 @@ import java.util.Set;
 import org.apache.log4j.Category;
 
 import com.trentlarson.forecast.core.actions.TimeScheduleAction;
-import com.trentlarson.forecast.core.scheduling.TimeSchedule.IssueWorkDetail;
 
 /**
 Assumptions:
@@ -139,7 +137,7 @@ public class TimeScheduleWriter {
       }
     } else {
       
-      Set shownAlready = new HashSet();
+      Set<String> shownAlready = new HashSet<String>();
       for (int i = 0; i < dPrefs.showIssues.size(); i++) {
         IssueTree tree = graph.getIssueTree(dPrefs.showIssues.get(i));
 
@@ -147,11 +145,11 @@ public class TimeScheduleWriter {
 
         // display predecessors of the main issue
         if (dPrefs.showHierarchically) {
-          List predBranches = TimeScheduleSearch.findPredecessorBranches(tree);
+          List<TimeScheduleSearch.DependencyBranch<IssueTree>> predBranches = TimeScheduleSearch.findPredecessorBranches(tree);
 
           // to figure out the indentation, we need the maximum distance from the issue
-          for (Iterator predBranch = predBranches.iterator(); predBranch.hasNext(); ) {
-            TimeScheduleSearch.DependencyBranch branch = (TimeScheduleSearch.DependencyBranch) predBranch.next();
+          for (Iterator<TimeScheduleSearch.DependencyBranch<IssueTree>> predBranch = predBranches.iterator(); predBranch.hasNext(); ) {
+            TimeScheduleSearch.DependencyBranch<IssueTree> branch = predBranch.next();
             if (branch.getLongestDistanceFromTarget() > maxDist) {
               maxDist = branch.getLongestDistanceFromTarget();
             }
@@ -162,11 +160,11 @@ public class TimeScheduleWriter {
 
           // now write out those predecessors
           log4jLog.debug("Writing predecessors: stopAtTargetDistance=true; showBlocked=" + dPrefs2.showBlocked);
-          for (Iterator predBranch = predBranches.iterator(); predBranch.hasNext(); ) {
-            TimeScheduleSearch.DependencyBranch branch = (TimeScheduleSearch.DependencyBranch) predBranch.next();
+          for (Iterator<TimeScheduleSearch.DependencyBranch<IssueTree>> predBranch = predBranches.iterator(); predBranch.hasNext(); ) {
+            TimeScheduleSearch.DependencyBranch<IssueTree> branch = predBranch.next();
             // show each node in the branch, except the last since it's first in a later branch
             for (int branchNum = 0; branchNum < branch.getBranchList().size() - 1; branchNum++) {
-              TimeSchedule.IssueWorkDetail issueDetail = branch.getBranchList().get(branchNum);
+              IssueTree issueDetail = branch.getBranchList().get(branchNum);
               IssueTree predTree = graph.getIssueTree(issueDetail.getKey());
               int thisDist = branch.getLongestDistanceFromTarget() - branchNum;
               writeIssueRows
@@ -375,17 +373,16 @@ public class TimeScheduleWriter {
   private static void writeIssueRows
     (IssueTree detail,
      Map<Teams.UserTimeKey,TimeSchedule.WeeklyWorkHours> allUserWeeklyHours,
-     Map issueSchedules,
+     Map<String,TimeSchedule.IssueSchedule<IssueTree>> issueSchedules,
      Date maxEndDate, int maxPriority, int indentDepth, int dist,
      boolean isSubtask, Writer out, Date startTime,
-     TimeScheduleDisplayPreferences dPrefs, Set shownAlready, boolean stopAtTargetDistance)
+     TimeScheduleDisplayPreferences dPrefs, Set<String> shownAlready, boolean stopAtTargetDistance)
     throws IOException {
 
     log4jLog.debug("Writing issue row: " + detail.getKey() + ", indent " + indentDepth + ", dist " + dist);
     if (dPrefs.displayIssue(detail)) {
 
-      TimeSchedule.IssueSchedule schedule =
-        (TimeSchedule.IssueSchedule) issueSchedules.get(detail.getKey());
+      TimeSchedule.IssueSchedule<IssueTree> schedule = issueSchedules.get(detail.getKey());
 
       // write this row
       String prefix = "", postfix = "";
@@ -558,7 +555,7 @@ public class TimeScheduleWriter {
             domMarker += "<span id='" + detail.getKey() + "-middle' style='display:block'></span>";
             
             // for each of the subtask issues, create 'rel' links (for a visual pointer if it masters other issues)
-            for (IssueWorkDetail subtask : detail.getSubtasks()) {
+            for (IssueTree subtask : detail.getSubtasks()) {
                 subtaskRels += "<span rel='" + subtask.getKey() + "-middle' type='subtask' style='display:block'></span>";
             }
         }

@@ -6,7 +6,7 @@ import com.trentlarson.forecast.core.dao.TeamHours;
 
 public class IssueDigraph {
 
-  private Map<String,TimeSchedule.IssueSchedule> issueSchedules;
+  private Map<String,TimeSchedule.IssueSchedule<IssueTree>> issueSchedules;
   private Map<Teams.AssigneeKey,List<IssueTree>> assignedUserDetails;
   private Map<Teams.UserTimeKey,List<IssueTree>> timeUserDetails;
   private Map<Teams.AssigneeKey,Teams.UserTimeKey> assigneeToAllocatedUsers;
@@ -20,7 +20,7 @@ public class IssueDigraph {
      @param userDetails_ maps user key to IssueDetail List
   */
   public IssueDigraph
-  (Map<String,TimeSchedule.IssueSchedule> issueSchedules_,
+  (Map<String,TimeSchedule.IssueSchedule<IssueTree>> issueSchedules_,
    Map<Teams.AssigneeKey,List<IssueTree>> assignedUserDetails_,
    Map<Teams.UserTimeKey,List<IssueTree>> timeUserDetails_,
    Map<Teams.AssigneeKey,Teams.UserTimeKey> assigneeToAllocatedUsers_,
@@ -40,11 +40,11 @@ public class IssueDigraph {
   /**
      @return a Map from issue pkey to TimeSchedule.IssueSchedule object for it
   */
-  public Map<String,TimeSchedule.IssueSchedule> getIssueSchedules() {
+  public Map<String,TimeSchedule.IssueSchedule<IssueTree>> getIssueSchedules() {
     return issueSchedules;
   }
-  public TimeSchedule.IssueSchedule getIssueSchedule(String key) {
-    return (TimeSchedule.IssueSchedule) getIssueSchedules().get(key);
+  public TimeSchedule.IssueSchedule<IssueTree> getIssueSchedule(String key) {
+    return getIssueSchedules().get(key);
   }
 
   public IssueTree getIssueTree(String key) {
@@ -111,16 +111,16 @@ public class IssueDigraph {
 
   public String treeString() {
     StringBuffer sb = new StringBuffer();
-    for (Iterator i = getIssueSchedules().keySet().iterator(); i.hasNext(); ) {
-      String key = (String) i.next();
+    for (Iterator<String> i = getIssueSchedules().keySet().iterator(); i.hasNext(); ) {
+      String key = i.next();
       sb.append(getIssueTree(key).treeString());
     }
     return sb.toString();
   }
 
   public Date findMaxEndDate(Date max) {
-    for (Iterator iter = getIssueSchedules().values().iterator(); iter.hasNext(); ) {
-      TimeSchedule.IssueSchedule schedule = (TimeSchedule.IssueSchedule) iter.next();
+    for (Iterator<TimeSchedule.IssueSchedule<IssueTree>> iter = getIssueSchedules().values().iterator(); iter.hasNext(); ) {
+      TimeSchedule.IssueSchedule<IssueTree> schedule = iter.next();
       if (max.compareTo(schedule.getAdjustedEndCal().getTime()) < 0) {
         max = schedule.getAdjustedEndCal().getTime();
       }
@@ -141,8 +141,7 @@ public class IssueDigraph {
       TimeScheduleLoader.createMapFromAssigneeKeyStringToUserIssues(newTimeDetails.timeDetails);
 
     // clone the hourly data (since it's modified later)
-    Map<Teams.UserTimeKey,TimeSchedule.WeeklyWorkHours> weeklyHoursFromKey2 =
-      new HashMap();
+    Map<Teams.UserTimeKey,TimeSchedule.WeeklyWorkHours> weeklyHoursFromKey2 = new HashMap<Teams.UserTimeKey,TimeSchedule.WeeklyWorkHours>();
     for (Teams.UserTimeKey user : newTimeDetails.hours.keySet()) {
       weeklyHoursFromKey2
         .put(user,
@@ -152,7 +151,7 @@ public class IssueDigraph {
     Map<String,TimeSchedule.WeeklyWorkHours> weeklyHoursFromString =
       TimeScheduleLoader.createMapFromUserTimeKeyStringToWeeklyHours(weeklyHoursFromKey2);
 
-    Map newSchedules =
+    Map<String,TimeSchedule.IssueSchedule<IssueTree>> newSchedules =
       TimeSchedule.schedulesForUserIssues
       (issuesFromString, weeklyHoursFromString,
        getTimeScheduleCreatePreferences().getStartTime(),

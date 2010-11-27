@@ -10,18 +10,18 @@ public class TimeScheduleSearch {
   /**
    * to keep track of branches when displaying precedessors of the selection
    */
-  protected static class DependencyBranch {
-    private List<TimeSchedule.IssueWorkDetail> precursorsInOrder;
+  protected static class DependencyBranch<T extends TimeSchedule.IssueWorkDetail<T>> {
+    private List<T> precursorsInOrder;
     private boolean hasMore;
     private int shortestDistanceFromTarget;
-    public DependencyBranch(List<TimeSchedule.IssueWorkDetail> precursorsInOrder_,
+    public DependencyBranch(List<T> precursorsInOrder_,
                             boolean hasMore_, int shortestDistanceFromTarget_) {
       this.precursorsInOrder = precursorsInOrder_;
       this.hasMore = hasMore_;
       this.shortestDistanceFromTarget = shortestDistanceFromTarget_;
     }
     /** @return the list of issues in this branch, from first to last */
-    public List<TimeSchedule.IssueWorkDetail> getBranchList() {
+    public List<T> getBranchList() {
       return precursorsInOrder;
     }
     /** @return the first node in this branch */
@@ -54,21 +54,20 @@ public class TimeScheduleSearch {
         + getNextBranchDependant() + "(" + getShortestDistanceFromTarget() + ")";
     }
   }
-  protected static List findPredecessorBranches(TimeSchedule.IssueWorkDetail tree) {
-    return findPredecessorBranches2(tree, new HashSet(), 0);
+  protected static <T extends TimeSchedule.IssueWorkDetail<T>> List<DependencyBranch<T>> findPredecessorBranches(T tree) {
+    return findPredecessorBranches2(tree, new HashSet<String>(), 0);
   }
   /**
      @param precursorsFound Set of Strings for each issue pkey to not check
      @return List of DependencyBranch objects, with leaves first and the trunk as the last element
   */
-  private static List<DependencyBranch> findPredecessorBranches2
-    (TimeSchedule.IssueWorkDetail tree, Set<String> precursorsFound, int shortestDistanceFromTarget) {
+  private static <T extends TimeSchedule.IssueWorkDetail<T>> List<DependencyBranch<T>> findPredecessorBranches2
+    (T tree, Set<String> precursorsFound, int shortestDistanceFromTarget) {
 
-    List<DependencyBranch> branchesDiscovered = new ArrayList<DependencyBranch>();
-    for (TimeSchedule.IssueWorkDetail precursor : tree.getPrecursors()) {
+    List<DependencyBranch<T>> branchesDiscovered = new ArrayList<DependencyBranch<T>>();
+    for (T precursor : tree.getPrecursors()) {
 
-      List<TimeSchedule.IssueWorkDetail> precursorsInBranch =
-        new ArrayList<TimeSchedule.IssueWorkDetail>();
+      List<T> precursorsInBranch = new ArrayList<T>();
       precursorsInBranch.add(tree);
 
       precursorsInBranch.add(0, precursor);
@@ -78,13 +77,13 @@ public class TimeScheduleSearch {
              && !precursorsFound.contains(precursor.getKey())) {
         precursorsFound.add(precursor.getKey());
         branchLength++;
-        precursor = (TimeSchedule.IssueWorkDetail) precursor.getPrecursors().iterator().next();
+        precursor = (T) precursor.getPrecursors().iterator().next();
         precursorsInBranch.add(0, precursor);
       }
       // add more branches if this one has more predecessors
       if (precursor.getPrecursors().size() > 1
           && !precursorsFound.contains(precursor.getKey())) {
-        List<DependencyBranch> moreBranches =
+        List<DependencyBranch<T>> moreBranches =
           findPredecessorBranches2(precursor, precursorsFound, shortestDistanceFromTarget + branchLength - 1);
         branchesDiscovered.addAll(moreBranches);
       }
@@ -93,8 +92,7 @@ public class TimeScheduleSearch {
         && precursorsFound.contains(precursor.getKey());
       precursorsFound.add(precursor.getKey());
       // now add the current one as a branch of the parent
-      DependencyBranch thisBranch =
-        new DependencyBranch(precursorsInBranch, hasMore, shortestDistanceFromTarget);
+      DependencyBranch<T> thisBranch = new DependencyBranch<T>(precursorsInBranch, hasMore, shortestDistanceFromTarget);
       branchesDiscovered.add(thisBranch);
     }
     return branchesDiscovered;

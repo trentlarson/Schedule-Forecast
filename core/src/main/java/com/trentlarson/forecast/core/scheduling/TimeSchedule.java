@@ -301,16 +301,16 @@ public class TimeSchedule {
   }
 
 
-  public static class IssueSchedule implements Comparable<IssueSchedule> {
-    private final IssueWorkDetail issue;
-    private final Date beginDate; // date work on this task should begin, NOT adjusted by workday hours
-    private final Date endDate; // date work on this task should complete, NOT adjusted by workday hours
-    private final Calendar nextEstBegin; // date the next task can begin, NOT adjusted by workday hours
-    private final List<IssueSchedule> splitAroundOthers;
+  public static class IssueSchedule<T extends IssueWorkDetail<T>> implements Comparable<IssueSchedule<T>> {
+    private final T issue;
+    private final Date beginDate;
+    private final Date endDate;
+    private final Calendar nextEstBegin;
+    private final List<IssueSchedule<T>> splitAroundOthers;
     private final List<WorkedHoursAndRates> hoursWorked;
-    public IssueSchedule
-      (IssueWorkDetail issue_, Date beginDate_, Date endDate_,
-       Calendar nextEstBegin_, List<IssueSchedule> splitAroundOthers_,
+    private IssueSchedule
+      (T issue_, Date beginDate_, Date endDate_,
+       Calendar nextEstBegin_, List<IssueSchedule<T>> splitAroundOthers_,
        List<WorkedHoursAndRates> hoursWorked_) {
 
       this.issue = issue_;
@@ -320,7 +320,7 @@ public class TimeSchedule {
       this.splitAroundOthers = splitAroundOthers_;
       this.hoursWorked = hoursWorked_;
     }
-    public int compareTo(IssueSchedule object) {
+    public int compareTo(IssueSchedule<T> object) {
       return getBeginDate().compareTo((object).getBeginDate());
     }
     public String toString() {
@@ -348,13 +348,20 @@ public class TimeSchedule {
       return sb;
     }
 
-    public IssueWorkDetail getIssue() { return issue; }
-    public Date getBeginDate() { return beginDate; }
+    public IssueWorkDetail<T> getIssue() {
+      return issue;
+    }
+    /** @return date work on this task should begin, NOT adjusted by workday hours */
+    public Date getBeginDate() {
+      return beginDate;
+    }
+    /** @return date work on this task should begin, NOT adjusted by workday hours */
     public Calendar getBeginCal() {
       Calendar cal = new GregorianCalendar();
       cal.setTime(beginDate);
       return cal;
     }
+    /** @return date work on this task should begin, adjusted by workday hours */
     public Calendar getAdjustedBeginCal() {
       // REFACTOR to use instanceAdjustedByStartOfWorkDay
       Calendar beginCal = Calendar.getInstance();
@@ -362,12 +369,17 @@ public class TimeSchedule {
       beginCal.roll(Calendar.HOUR_OF_DAY, FIRST_HOUR_OF_WORKDAY); // to calculate during day
       return beginCal;
     }
-    public Date getEndDate() { return endDate; }
+    /** @return date work on this task should complete, NOT adjusted by workday hours */
+    public Date getEndDate() {
+      return endDate;
+    }
+    /** @return date work on this task should complete, NOT adjusted by workday hours */
     public Calendar getEndCal() {
       Calendar cal = new GregorianCalendar();
       cal.setTime(endDate);
       return cal;
     }
+    /** @return date work on this task should complete, adjusted by workday hours */
     public Calendar getAdjustedEndCal() {
       // REFACTOR to use instanceAdjustedByStartOfWorkDay
       Calendar endCal = Calendar.getInstance();
@@ -375,7 +387,11 @@ public class TimeSchedule {
       endCal.roll(Calendar.HOUR_OF_DAY, FIRST_HOUR_OF_WORKDAY); // to calculate during day
       return endCal;
     }
-    public Calendar getNextEstBegin() { return nextEstBegin; }
+    /** @return date the next task can begin, NOT adjusted by workday hours */
+    public Calendar getNextEstBegin() {
+      return nextEstBegin;
+    }
+    /** @return date the next task can begin, adjusted by workday hours */
     public Date getAdjustedNextBeginDate() {
       // REFACTOR to use instanceAdjustedByStartOfWorkDay?
       nextEstBegin.roll(Calendar.HOUR_OF_DAY, FIRST_HOUR_OF_WORKDAY); // to display during day
@@ -384,7 +400,7 @@ public class TimeSchedule {
       return result;
     }
     /** @return IssueSchedule elements of items spanned by this one */
-    public List<IssueSchedule> getSplitAroundOthers() {
+    public List<IssueSchedule<T>> getSplitAroundOthers() {
       return splitAroundOthers;
     }
     public boolean isSplitAroundOthers() {
@@ -401,9 +417,9 @@ public class TimeSchedule {
       double dailyHours = weeklyHours / WORKDAYS_PER_WEEK;
       long totalTime =
         workSecondsBetween(calStartOfDay, calStartOfNextDay, dailyHours);
-      for (Iterator<IssueSchedule> schedIter = getSplitAroundOthers().iterator();
+      for (Iterator<IssueSchedule<T>> schedIter = getSplitAroundOthers().iterator();
            schedIter.hasNext(); ) {
-        IssueSchedule sched = schedIter.next();
+        IssueSchedule<T> sched = schedIter.next();
         if (sched.getBeginCal().before(calStartOfNextDay)
             && sched.getEndCal().after(calStartOfDay)) {
           totalTime -=
@@ -428,7 +444,7 @@ public class TimeSchedule {
 
 
 
-  public static interface IssueWorkDetail {
+  public static interface IssueWorkDetail<T extends IssueWorkDetail<T>> {
     public String getKey();
     public String getTimeAssignee();
     public String getSummary();
@@ -446,24 +462,24 @@ public class TimeSchedule {
     public boolean getResolved();
 
     /** @return issues that "must be done before" this issue */
-    public <T extends IssueWorkDetail> Set<T> getPrecursors();
+    public Set<T> getPrecursors();
     /** @return issues to schedule before this issue (subtasks and precursors) */
-    public <T extends IssueWorkDetail> Set<T> getIssuesToScheduleFirst();
+    public Set<T> getIssuesToScheduleFirst();
   }
 
 
 
 
-  protected static class IssueWorkDetailOriginal implements IssueWorkDetail {
+  protected static class IssueWorkDetailOriginal<T extends IssueWorkDetailOriginal<T>> implements IssueWorkDetail<T> {
     // REFACTOR the key to be null by default
     protected String key = "", timeAssignee = null, summary = "";
     protected int issueEstSecondsRaw = 0;
     protected int priority = 0;
     protected Date dueDate = null, mustStartOnDate = null;
     // issues that "must be done before" this one
-    protected final SortedSet<IssueWorkDetail> precursors = new TreeSet<IssueWorkDetail>();
+    protected final SortedSet<T> precursors = new TreeSet<T>();
     // issues that "are part of" this one
-    protected final Set<IssueWorkDetail> subtasks = new TreeSet<IssueWorkDetail>();
+    protected final Set<T> subtasks = new TreeSet<T>();
 
     /**
        @param issueEstSecondsRaw_ estimate in seconds
@@ -493,11 +509,11 @@ public class TimeSchedule {
     public Date getMustStartOnDate() { return mustStartOnDate; }
     public int getPriority() { return priority; }
     public boolean getResolved() { return false; }
-    public Set<IssueWorkDetail> getPrecursors() { return precursors; }
-    public Set<IssueWorkDetail> getSubtasks() { return subtasks; }
-    public Set<IssueWorkDetail> getIssuesToScheduleFirst() {
-      Set<IssueWorkDetail> result = new TreeSet<IssueWorkDetail>();
-      result.addAll(precursors);
+    public Set<T> getPrecursors() { return precursors; }
+    public Set<T> getSubtasks() { return subtasks; }
+    public Set<T> getIssuesToScheduleFirst() {
+      Set<T> result = new TreeSet<T>();
+      result.addAll(getPrecursors());
       result.addAll(subtasks);
       return result;
     }
@@ -560,8 +576,8 @@ public class TimeSchedule {
   /**
      sorts by start date, then priority, then due date
    */
-  public static class DetailPriorityComparator implements Comparator<IssueWorkDetail> {
-    public int compare(IssueWorkDetail d1, IssueWorkDetail d2) {
+  public static class DetailPriorityComparator<T extends IssueWorkDetail<T>> implements Comparator<T> {
+    public int compare(T d1, T d2) {
       // first determinant is whether there's a start date on it
       if (d1.getMustStartOnDate() == null && d2.getMustStartOnDate() != null) {
         return 1;
@@ -1051,20 +1067,20 @@ public class TimeSchedule {
      @return list of IssueSchedule elements in the order they were
      created
   */
-  private static <T extends IssueWorkDetail> List<IssueSchedule> createIssueSchedules
+  private static <T extends IssueWorkDetail<T>> List<IssueSchedule<T>> createIssueSchedules
     (List<T> issueDetails,
      Map<String,WeeklyWorkHours> userWeeklyHours,
-     Map<String,IssueSchedule> schedulesForKeys,
+     Map<String,IssueSchedule<T>> schedulesForKeys,
      double multiplier, Date startDate) {
 
     // store each IssueSchedule as it is scheduled
-    List<IssueSchedule> allSchedules = new ArrayList<IssueSchedule>();
+    List<IssueSchedule<T>> allSchedules = new ArrayList<IssueSchedule<T>>();
     Iterator<T> detailIter = issueDetails.iterator();
 
     if (detailIter.hasNext()) {
 
       // move past all the issues already scheduled
-      IssueWorkDetail currentDetail;
+      T currentDetail;
       boolean detailIsScheduled;
       // using MAX_WORKHOURS shouldn't make a difference since start
       // date should be specified at the beginning of the day
@@ -1125,9 +1141,9 @@ public class TimeSchedule {
           // get the starting time based on the last precursor ending time,
           // but don't proceed if any precursors or subtasks are not scheduled
           Calendar maxEndOfPrecursors = null;
-          Set<IssueWorkDetail> allToDoBefore =
+          Set<? extends IssueWorkDetail> allToDoBefore =
             currentDetail.getIssuesToScheduleFirst();
-          for (Iterator<IssueWorkDetail> preIter = allToDoBefore.iterator();
+          for (Iterator<? extends IssueWorkDetail> preIter = allToDoBefore.iterator();
                preIter.hasNext() && allPrecursorsScheduled; ) {
             IssueWorkDetail preDetail = preIter.next();
             if (!schedulesForKeys.containsKey(preDetail.getKey())
@@ -1270,7 +1286,7 @@ public class TimeSchedule {
      added if they are precursors owned by assignee
   */
   private static Set<IssueWorkDetail> findAllPrecursorsForAssignee
-  (IssueWorkDetail issue, String assignee, Set<IssueWorkDetail> found, TreeSet<String> parents) {
+  (IssueWorkDetail<? extends IssueWorkDetail> issue, String assignee, Set<IssueWorkDetail> found, TreeSet<String> parents) {
 
     // check for loops
     if (parents.contains(issue.getKey())) {
@@ -1337,7 +1353,7 @@ public class TimeSchedule {
      it; plus, it has the side-effect that the userDetails Map will be
      sorted in priority order
   */
-  public static <T extends IssueWorkDetail> Map<String,IssueSchedule> schedulesForUserIssues
+  public static <T extends IssueWorkDetail<T>> Map<String,IssueSchedule<T>> schedulesForUserIssues
     (Map<String,List<T>> userDetails,
      Map<String,WeeklyWorkHours> userWeeklyHours, Date startDate,
      double multiplier) {
@@ -1353,8 +1369,8 @@ public class TimeSchedule {
     setInitialOrdering(userDetails);
 
     // look through all the user issues, and repeat until all scheduled
-    Map<String,IssueSchedule> issueSchedules =
-      new HashMap<String,IssueSchedule>();
+    Map<String,IssueSchedule<T>> issueSchedules =
+      new HashMap<String,IssueSchedule<T>>();
     String stillUnfinished;
     String previousUnfinishedName = null;
     int previousUnfinishedIssueNum = -1;
@@ -1366,7 +1382,7 @@ public class TimeSchedule {
         finished = 0;
         for (String user : userDetails.keySet()) {
           List<T> oneUserDetails = userDetails.get(user);
-          List<IssueSchedule> schedule =
+          List<IssueSchedule<T>> schedule =
             createIssueSchedules(oneUserDetails, userWeeklyHours,
                                  issueSchedules, multiplier, startDate);
 
@@ -1374,7 +1390,7 @@ public class TimeSchedule {
 
           // check if there are any issues still not scheduled
           if (oneUserDetails.size() > 0) {
-            IssueWorkDetail lastDetail =
+            IssueWorkDetail<T> lastDetail =
               oneUserDetails.get(oneUserDetails.size() - 1);
             if (!issueSchedules.containsKey(lastDetail.getKey())) {
               stillUnfinished = user;
@@ -1417,7 +1433,7 @@ public class TimeSchedule {
           previousUnfinishedIssueNum = lastIssueDone + 1;
 
           // now grab that unfinished issue, get the precursors, and move them forward
-          IssueWorkDetail unfinishedTarget = oneUserDetails.get(lastIssueDone + 1);
+          T unfinishedTarget = oneUserDetails.get(lastIssueDone + 1);
           shiftPrecursors(unfinishedTarget, userDetails, issueSchedules, new HashSet<String>());
         }
       }
@@ -1430,10 +1446,10 @@ public class TimeSchedule {
      Adjust position in schedule for precursors of unfinishedTarget.
      Note that the HashSet argument was specified only because we need both Set and Cloneable.
   */
-  private static <T extends IssueWorkDetail> void shiftPrecursors
-    (IssueWorkDetail unfinishedTarget,
+  private static <T extends IssueWorkDetail<T>> void shiftPrecursors
+    (T unfinishedTarget,
      Map<String,List<T>> userDetails,
-     Map<String,IssueSchedule> issueSchedules,
+     Map<String,IssueSchedule<T>> issueSchedules,
      HashSet<String> visitedPrecursorKeys) {
 
     Set<T> precursorsToShift = unfinishedTarget.getIssuesToScheduleFirst();

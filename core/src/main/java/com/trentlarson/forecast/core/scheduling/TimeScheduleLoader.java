@@ -257,7 +257,7 @@ public class TimeScheduleLoader {
     Map<String,TimeSchedule.WeeklyWorkHours> weeklyHoursFromString =
       createMapFromUserTimeKeyStringToWeeklyHours(weeklyHoursFromKey2);
 
-    Map<String,TimeSchedule.IssueSchedule> schedules =
+    Map<String,TimeSchedule.IssueSchedule<IssueTree>> schedules =
       TimeSchedule.schedulesForUserIssues
       (assigneeStringToIssues, weeklyHoursFromString,
        sPrefs.getStartTime(), sPrefs.getTimeMultiplier());

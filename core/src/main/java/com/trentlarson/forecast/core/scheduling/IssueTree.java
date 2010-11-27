@@ -2,7 +2,7 @@ package com.trentlarson.forecast.core.scheduling;
 
 import java.util.*;
 
-public class IssueTree extends TimeSchedule.IssueWorkDetailOriginal implements Comparable {
+public class IssueTree extends TimeSchedule.IssueWorkDetailOriginal<IssueTree> implements Comparable<IssueTree> {
   private String rawPerson; // (REFACTOR: store a Teams.AssigneeKey instead of separate person & team ID)
   private Long rawTeamId;
   private String timePerson; // (REFACTOR: store a Teams.UserTimeKey instead of separate person & team ID)
@@ -51,7 +51,6 @@ public class IssueTree extends TimeSchedule.IssueWorkDetailOriginal implements C
   public int getEstimateOrig() { return estimateOrig; }
   public Date getDueDateOrig() { return dueDateOrig; }
   public boolean getResolved() { return resolved; }
-  public Set<TimeSchedule.IssueWorkDetail>  getSubtasks() { return subtasks; }
   public Set<IssueTree>  getDependents() { return dependents; }
 
   /**
@@ -74,7 +73,7 @@ public class IssueTree extends TimeSchedule.IssueWorkDetailOriginal implements C
   public boolean equals(Object object) {
     return key.equals(((IssueTree)object).key);
   }
-  public int compareTo(Object object) {
+  public int compareTo(IssueTree object) {
     return getKey().compareTo(((IssueTree) object).getKey());
   }
   public String toString() {
@@ -191,14 +190,14 @@ public class IssueTree extends TimeSchedule.IssueWorkDetailOriginal implements C
      @param dPrefs is the preferences for filtering whether to use
      issues (see displayIssue), or null if we want to check all issues
   */
-  public Date findMinDateOfSubs(Map<String, TimeSchedule.IssueSchedule> issueSchedules,
+  public Date findMinDateOfSubs(Map<String, TimeSchedule.IssueSchedule<IssueTree>> issueSchedules,
                                 TimeScheduleDisplayPreferences dPrefs) {
     Date min = (issueSchedules.get(getKey())).getAdjustedBeginCal().getTime();
     if (dPrefs != null
         && !dPrefs.displayIssue(this)) {
       min = new Date(Long.MAX_VALUE);
     }
-    for (Iterator i = subtasks.iterator(); i.hasNext(); ) {
+    for (Iterator<IssueTree> i = subtasks.iterator(); i.hasNext(); ) {
       Date subMin = ((IssueTree) i.next()).findMinDateOfSubs(issueSchedules, dPrefs);
       if (min.compareTo(subMin) > 0) { min = subMin; }
     }

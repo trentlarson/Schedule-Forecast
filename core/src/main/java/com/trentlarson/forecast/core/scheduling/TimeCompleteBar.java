@@ -28,8 +28,8 @@ public class TimeCompleteBar {
     if (tree.getResolved()) {
       totals.finished = 1;
     }
-    for (Iterator<TimeSchedule.IssueWorkDetail> iter = tree.getSubtasks().iterator(); iter.hasNext(); ) {
-      IssueTree subtree = (IssueTree) iter.next();
+    for (Iterator<IssueTree> iter = tree.getSubtasks().iterator(); iter.hasNext(); ) {
+      IssueTree subtree = iter.next();
       TotalAndFinished subtotals = numIssues(subtree);
       totals.total = totals.total + subtotals.total; 
       totals.finished = totals.finished + subtotals.finished; 
