@@ -849,13 +849,17 @@ public class TimeScheduleTests {
            (((TimeSchedule.IssueWorkDetail) userIssueList.get(i)).getKey()));
       }
       out.println("Schedule for " + Arrays.asList(users) + ".<br>");
-      Map range =
-        TimeScheduleLoader.weeklyHoursToRange
-        (TimeScheduleLoader.teamToUserHours(userWeeklyHours));
       TimeSchedule.writeIssueSchedule
         (schedule, sPrefs.getTimeMultiplier(), true, out);
     }
 
+    {
+      out.println("<p>");
+      out.println("Critical Path for " + Arrays.asList(issue13_1.getKey()) + ".<br>");
+      TimeScheduleWriter.writeIssueTable
+      (graph, out, sPrefs,
+       TimeScheduleDisplayPreferences.createForCriticalPath(1, 0, false, false, issue13_1.getKey(), graph));
+    }
 
 
     out.println("<xmp>");

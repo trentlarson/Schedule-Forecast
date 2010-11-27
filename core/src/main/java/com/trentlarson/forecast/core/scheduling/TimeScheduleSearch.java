@@ -152,6 +152,23 @@ public class TimeScheduleSearch {
       }
       return result;
     }
+    
+    public List<IssueTree> collectPostOrderButPreOrderForSubtasks() {
+      List<IssueTree> result = new ArrayList<IssueTree>();
+      
+      for (CriticalPath path : previousPriority) {
+        result.addAll(path.collectPostOrderButPreOrderForSubtasks());
+      }
+      for (CriticalPath path : precursors) {
+        result.addAll(path.collectPostOrderButPreOrderForSubtasks());
+      }
+      result.add(issue);
+      for (CriticalPath path : subtasks) {
+        result.addAll(path.collectPostOrderButPreOrderForSubtasks());
+      }
+      
+      return result;
+    }
   }
   
   /**
@@ -172,18 +189,16 @@ public class TimeScheduleSearch {
         && issue.getMustStartOnDate().equals(schedule.getBeginDate())) {
       result.becauseOfstartDate = true;
     }
-    
-    Date issueBeginDate = schedule.getAdjustedBeginCal().getTime();
-    
+        
     // check for ones assigned to this user/team that are immediately preceding
-    Teams.UserTimeKey userTimeKey = issue.getTimeAssigneeKey();
-    List<IssueTree> issueList = graph.getTimeUserDetails().get(userTimeKey);
-    int issueIndex = issueList.indexOf(issue);
-    for (int previousIndex = issueIndex - 1;
-         previousIndex > -1 
-         && graph.getIssueSchedule(issueList.get(previousIndex).getKey()).getAdjustedNextBeginDate().equals(issueBeginDate);
-         previousIndex--){
-      result.previousPriority.add(criticalPathFor(issueList.get(previousIndex), graph));
+    Date issueBeginDate = schedule.getAdjustedBeginCal().getTime();
+    List<IssueTree> issueList = graph.getTimeUserDetails().get(issue.getTimeAssigneeKey());
+    for (int previousIndex = issueList.indexOf(issue) - 1; previousIndex > -1; previousIndex--) {
+      TimeSchedule.IssueSchedule<IssueTree> prevSchedule = graph.getIssueSchedule(issueList.get(previousIndex).getKey());
+      if (prevSchedule.getAdjustedNextBeginDate().equals(issueBeginDate)) {
+        result.previousPriority.add(criticalPathFor(issueList.get(previousIndex), graph));
+      }
+      
     }
       
     // check for subtasks that are immediately preceding

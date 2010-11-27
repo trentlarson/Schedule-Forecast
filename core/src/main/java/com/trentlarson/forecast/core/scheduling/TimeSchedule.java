@@ -1282,7 +1282,7 @@ public class TimeSchedule {
     return findAllPrecursorsForAssignee(issue, issue.getTimeAssignee(), new TreeSet<IssueWorkDetail>(), new TreeSet<String>());
   }
   /**
-     @param found Set of IssueTree objects, to which issues are
+     @param found Set of IssueWorkDetail objects, to which issues are
      added if they are precursors owned by assignee
   */
   private static Set<IssueWorkDetail> findAllPrecursorsForAssignee

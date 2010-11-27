@@ -593,12 +593,6 @@ public class TimeScheduleWriter {
                         || !calStartOfDay.getTime().before(maxEndDate))))) {
           // show a line to mark that this is where the issue is due
           markerColoring = " bgcolor='red'";
-          /**
-             } else if (dueDate == null
-             && !calStartOfDay.getTime().before(maxEndDate)) {
-             // show a line to mark that the issue had no due date
-             markerColoring = " bgcolor='black'";
-          */
         }
         out.write("   <td" + markerColoring + "></td>\n");
 
