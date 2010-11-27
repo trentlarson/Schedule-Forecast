@@ -1,8 +1,10 @@
 package com.trentlarson.forecast.core.scheduling;
 
-import java.util.*;
-
-import com.trentlarson.forecast.core.dao.TeamHours;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 public class IssueDigraph {
 
