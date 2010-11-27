@@ -28,9 +28,9 @@ public class TimeScheduleTests {
     try {
       out = new PrintWriter(System.out);
 
-      //unitMain(out);
+      unitMain(out);
       //integrationMain(out);
-      testIntegrationDynamicLoadAssigneeProblem(out);
+      //testIntegrationDynamicLoadAssigneeProblem(out);
     } finally {
       out.close();
     }
@@ -106,7 +106,7 @@ public class TimeScheduleTests {
     Teams.AssigneeKey user = new Teams.AssigneeKey(1L, "matt");
 
     // print out team table schedule
-    List<TimeSchedule.IssueSchedule> schedule = new ArrayList();
+    List<TimeSchedule.IssueSchedule<IssueTree>> schedule = new ArrayList();
     List<IssueTree> userIssueList = graph.getAssignedUserDetails().get(user);
     for (int i = 0; i < userIssueList.size(); i++) {
       schedule.add
@@ -147,7 +147,7 @@ public class TimeScheduleTests {
 
     out.println("<br><br>");
     out.println("Schedule table, even though there are no team hours defined.<br>");
-    List<TimeSchedule.IssueSchedule> schedule = new ArrayList<TimeSchedule.IssueSchedule>();
+    List<TimeSchedule.IssueSchedule<IssueTree>> schedule = new ArrayList<TimeSchedule.IssueSchedule<IssueTree>>();
     Teams.AssigneeKey user = new Teams.AssigneeKey(null, null);
     List<IssueTree> userIssueList = graph.getAssignedUserDetails().get(user);
     for (int i = 0; i < userIssueList.size(); i++) {
@@ -250,7 +250,7 @@ public class TimeScheduleTests {
        .createForUser(1, 0, true, false, false, user, false, graph));
 
     // print out team table schedule
-    List<TimeSchedule.IssueSchedule> schedule = new ArrayList();
+    List<TimeSchedule.IssueSchedule<IssueTree>> schedule = new ArrayList();
     List<IssueTree> userIssueList = graph.getAssignedUserDetails().get(user);
     for (int i = 0; i < userIssueList.size(); i++) {
       schedule.add
@@ -377,7 +377,7 @@ public class TimeScheduleTests {
     out.println("<br><br>");
     out.println("Schedule for trent on team 1");
     userKey = new Teams.AssigneeKey(1L, "trent");
-    List<TimeSchedule.IssueSchedule> schedule = new ArrayList();
+    List<TimeSchedule.IssueSchedule<IssueTree>> schedule = new ArrayList();
     List<IssueTree> userIssueList = userDetails.get(userKey);
     for (int i = 0; i < userIssueList.size(); i++) {
       schedule.add
@@ -476,7 +476,7 @@ public class TimeScheduleTests {
       Teams.AssigneeKey userKey = new Teams.AssigneeKey(userTeam, userPerson);
 
       // print out single-user table schedule
-      List<TimeSchedule.IssueSchedule> schedule = new ArrayList();
+      List<TimeSchedule.IssueSchedule<IssueTree>> schedule = new ArrayList();
       List<IssueTree> userIssueList = userDetails.get(userKey);
       for (int i = 0; i < userIssueList.size(); i++) {
         schedule.add
@@ -547,12 +547,6 @@ public class TimeScheduleTests {
                         new String[]{"TEST-22"},
                         false, graph));
 
-    TimeScheduleWriter.writeIssueTable
-      (graph, out, sPrefs,
-       TimeScheduleDisplayPreferences
-       .createForIssues(1, 0, true, false, false,
-           new String[]{"TEST-22"},
-           false, graph));
   }
 
   public static void outputManyBlockedTestResults(PrintWriter out) throws Exception {
@@ -679,7 +673,7 @@ public class TimeScheduleTests {
       Long userTeam = 1L;
       Teams.AssigneeKey userKey = new Teams.AssigneeKey(userTeam, userPerson);
 
-      List<TimeSchedule.IssueSchedule> schedule = new ArrayList();
+      List<TimeSchedule.IssueSchedule<IssueTree>> schedule = new ArrayList();
       List<IssueTree> userIssueList = userDetails.get(userKey);
       for (int i = 0; i < userIssueList.size(); i++) {
         schedule.add
@@ -845,7 +839,7 @@ public class TimeScheduleTests {
     // print out single-user table schedule
     {
       Teams.AssigneeKey[] users = { new Teams.AssigneeKey(1L, "ken") };
-      List<TimeSchedule.IssueSchedule> schedule = new ArrayList();
+      List<TimeSchedule.IssueSchedule<IssueTree>> schedule = new ArrayList();
       List<IssueTree> userIssueList = userDetails.get(users[0]);
       for (int i = 0; i < userIssueList.size(); i++) {
         schedule.add
@@ -974,7 +968,7 @@ public class TimeScheduleTests {
     {
       String user = "trent";
       out.println("Schedule for " + user + ".<br>");
-      List<TimeSchedule.IssueSchedule> schedule = new ArrayList<TimeSchedule.IssueSchedule>();
+      List<TimeSchedule.IssueSchedule<IssueTree>> schedule = new ArrayList<TimeSchedule.IssueSchedule<IssueTree>>();
       List<IssueTree> userIssueList = (List<IssueTree>) graph.getAssignedUserDetails().get(new Teams.AssigneeKey(null, user));
       for (int i = 0; i < userIssueList.size(); i++) {
         schedule.add

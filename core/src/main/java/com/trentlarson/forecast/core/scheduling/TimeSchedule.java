@@ -1482,8 +1482,8 @@ public class TimeSchedule {
   /**
      @param fullSchedule contains all the IssueSchedule elements to display
   */
-  public static void writeIssueSchedule
-    (List<IssueSchedule> fullSchedule,
+  public static <T extends IssueWorkDetail<T>> void writeIssueSchedule
+    (List<IssueSchedule<T>> fullSchedule,
      double multiplier,
      boolean showResolved,
      java.io.Writer out)
