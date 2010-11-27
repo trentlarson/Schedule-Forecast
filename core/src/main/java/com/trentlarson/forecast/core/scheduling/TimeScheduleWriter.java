@@ -474,36 +474,10 @@ public class TimeScheduleWriter {
       calStartOfDay.add(Calendar.DAY_OF_YEAR, -dPrefs.timeGranularity);
       calStartOfNextDay.add(Calendar.DAY_OF_YEAR, -dPrefs.timeGranularity);
 
-/** remove
-      // also keep track of available hours
-      // -- start with the first, since calStartOfDay is before the first one
-      TimeSchedule.HoursForTimeSpan thisHours = userWeeklyHours.first();
-      TimeSchedule.HoursForTimeSpan nextHours = null;
-      Iterator<TimeSchedule.HoursForTimeSpan> hoursIter =
-        userWeeklyHours.tailSet(thisHours).iterator();
-      hoursIter.next(); // move past the one we already have
-      if (hoursIter.hasNext()) {
-        nextHours = hoursIter.next();
-      }
-**/
       do {
         calStartOfDay.add(Calendar.DAY_OF_YEAR, dPrefs.timeGranularity);
         calStartOfNextDay.add(Calendar.DAY_OF_YEAR, dPrefs.timeGranularity);
 
-/** remove
-        // find the hours worked this week
-        if (nextHours != null // if there are more weeks
-            // and the next week is not after date (must be before)
-            && !nextHours.getStartOfTimeSpan().after(calStartOfDay.getTime())) {
-          thisHours = nextHours;
-          if (hoursIter.hasNext()) {
-            nextHours = hoursIter.next();
-          } else {
-            nextHours = null;
-          }
-        }
-        double weeklyHours = thisHours.getHoursAvailable();
-**/
         double weeklyHours = userWeeklyHours.retrieve(calStartOfDay.getTime());
 
         // add a marker row if it's in the right time period
@@ -695,37 +669,11 @@ public class TimeScheduleWriter {
         calStartOfNextDay.add(Calendar.DAY_OF_YEAR, -dPrefs.timeGranularity);
         int dateNum = -1;
 
-/** remove
-        // also keep track of available hours
-        // -- start with the first, since calStartOfDay is before the first one
-        TimeSchedule.HoursForTimeSpan thisHours = userWeeklyHours.first();
-        TimeSchedule.HoursForTimeSpan nextHours = null;
-        Iterator<TimeSchedule.HoursForTimeSpan> hoursIter =
-          userWeeklyHours.tailSet(thisHours).iterator();
-        hoursIter.next(); // move past the one we already have
-        if (hoursIter.hasNext()) {
-          nextHours = hoursIter.next();
-        }
-**/
         do {
           calStartOfDay.add(Calendar.DAY_OF_YEAR, dPrefs.timeGranularity);
           calStartOfNextDay.add(Calendar.DAY_OF_YEAR, dPrefs.timeGranularity);
           dateNum++;
 
-/** remove
-          // find the hours worked this week
-          if (nextHours != null // if there are more weeks
-              // and the next week is not after date (must be before)
-              && !nextHours.getStartOfTimeSpan().after(calStartOfDay.getTime())) {
-            thisHours = nextHours;
-            if (hoursIter.hasNext()) {
-              nextHours = hoursIter.next();
-            } else {
-              nextHours = null;
-            }
-          }
-          double weeklyHours = thisHours.getHoursAvailable();
-**/
           double weeklyHours = userWeeklyHours.retrieve(calStartOfDay.getTime());
 
           if (calStartOfNextDay.getTime().after(schedule.getBeginDate())) {
