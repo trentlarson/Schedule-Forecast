@@ -548,7 +548,7 @@ public class TimeScheduleTests {
                         false, graph));
 
     TimeScheduleWriter.writeIssueTable
-      (graph, out, sPrefs, TimeScheduleDisplayPreferences.createForCriticalPath(1, 0, false, false, "TEST-22", graph));
+      (graph, out, sPrefs, TimeScheduleDisplayPreferences.createForCriticalPaths(1, 0, false, false, new String[]{"TEST-22"}, graph));
 
     out.println(TimeScheduleSearch.criticalPathFor(issue22, graph).toString());
     
@@ -861,7 +861,7 @@ public class TimeScheduleTests {
       out.println("Critical Path for " + Arrays.asList(issue13_1.getKey()) + ".<br>");
       TimeScheduleWriter.writeIssueTable
       (graph, out, sPrefs,
-       TimeScheduleDisplayPreferences.createForCriticalPath(1, 0, false, false, issue13_1.getKey(), graph));
+       TimeScheduleDisplayPreferences.createForCriticalPaths(1, 0, false, false, new String[]{issue13_1.getKey()}, graph));
     }
 
 

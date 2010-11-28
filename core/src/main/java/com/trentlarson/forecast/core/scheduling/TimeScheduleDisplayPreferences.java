@@ -204,19 +204,21 @@ public class TimeScheduleDisplayPreferences {
     return prefs;
   }
 
-  public static TimeScheduleDisplayPreferences createForCriticalPath
+  public static TimeScheduleDisplayPreferences createForCriticalPaths
     (int timeGranularity_, int timeMarker_, boolean hideDetails_, 
-     boolean showChangeTools_, String issueKey, IssueDigraph graph) {
+     boolean showChangeTools_, String[] issueKeys, IssueDigraph graph) {
     
     TimeScheduleDisplayPreferences prefs =
       new TimeScheduleDisplayPreferences
       (timeGranularity_, timeMarker_, false, hideDetails_, false, 
           false, showChangeTools_);
 
-    // just show the issues in the critical path
-    IssueTree issue = graph.getIssueTree(issueKey);
-    for (IssueTree nextIssue : TimeScheduleSearch.criticalPathFor(issue, graph).collectPostOrderButPreOrderForSubtasks()) {
-      prefs.showIssues.add(nextIssue.getKey());
+    for (String issueKey : issueKeys) {
+      // just show the issues in the critical path
+      IssueTree issue = graph.getIssueTree(issueKey);
+      for (IssueTree nextIssue : TimeScheduleSearch.criticalPathFor(issue, graph).collectPostOrderButPreOrderForSubtasks()) {
+        prefs.showIssues.add(nextIssue.getKey());
+      }
     }
 
     return prefs;

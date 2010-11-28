@@ -182,6 +182,12 @@ public class TimeScheduleSearch {
    * @return the entire critical path for this issue (possibly including duplicate sub-trees); never null
    */
   public static CriticalPath criticalPathFor(IssueTree issue, IssueDigraph graph) {
+    return criticalPathFor2(issue, graph, new ArrayList<String>());
+  }
+  public static CriticalPath criticalPathFor2(IssueTree issue, IssueDigraph graph, List<String> visited) {
+    
+    visited.add(issue.getKey());
+    
     // approach: check other user tasks, predecessors, and dependents and see which end immediately before this one.
     
     CriticalPath result = new CriticalPath(issue);
@@ -199,23 +205,28 @@ public class TimeScheduleSearch {
     List<IssueTree> issueList = graph.getTimeUserDetails().get(issue.getTimeAssigneeKey());
     for (int previousIndex = issueList.indexOf(issue) - 1; previousIndex > -1; previousIndex--) {
       TimeSchedule.IssueSchedule<IssueTree> prevSchedule = graph.getIssueSchedule(issueList.get(previousIndex).getKey());
-      if (prevSchedule.getAdjustedNextBeginDate().equals(issueBeginDate)) {
-        result.previousPriority.add(criticalPathFor(issueList.get(previousIndex), graph));
+      if (!visited.contains(prevSchedule.getIssue().getKey())) {
+        if (prevSchedule.getAdjustedNextBeginDate().equals(issueBeginDate)) {
+          result.previousPriority.add(criticalPathFor2(issueList.get(previousIndex), graph, visited));
+        }
       }
-      
     }
       
     // check for subtasks that are immediately preceding
     for (IssueTree subtask : issue.getSubtasks()) {
-      if (graph.getIssueSchedule(subtask.getKey()).getAdjustedNextBeginDate().equals(issueBeginDate)) {
-        result.subtasks.add(criticalPathFor(subtask, graph));
+      if (!visited.contains(subtask.getKey())) {
+        if (graph.getIssueSchedule(subtask.getKey()).getAdjustedNextBeginDate().equals(issueBeginDate)) {
+          result.subtasks.add(criticalPathFor2(subtask, graph, visited));
+        }
       }
     }
     
     // check for precursors that are immediately preceding
     for (IssueTree precursor : issue.getPrecursors()) {
-      if (graph.getIssueSchedule(precursor.getKey()).getAdjustedNextBeginDate().equals(issueBeginDate)) {
-        result.precursors.add(criticalPathFor(precursor, graph));
+      if (!visited.contains(precursor.getKey())) {
+        if (graph.getIssueSchedule(precursor.getKey()).getAdjustedNextBeginDate().equals(issueBeginDate)) {
+          result.precursors.add(criticalPathFor2(precursor, graph, visited));
+        }
       }
     }
     

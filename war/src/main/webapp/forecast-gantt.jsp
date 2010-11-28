@@ -186,6 +186,9 @@ try {
   // check whether to reschedule
   boolean reschedule = (request.getParameter(RESCHEDULE_REQ_NAME) != null);
 
+  // check whether to show the critical paths
+  boolean show_critical_paths = (request.getParameter(SHOW_CRITICAL_PATHS_REQ_NAME) != null);
+
   // check whether to show the resolved issues
   boolean show_resolved = (request.getParameter(SHOW_RESOLVED_REQ_NAME) != null);
 
@@ -345,6 +348,8 @@ Charts below are based on data loaded at <%= graph.getLoadedDate() %>.
 <div>
   <input type='text' size='1' name='<%=TIME_GRANULARITY_REQ_NAME%>' value='<%=session.getAttribute(TIME_GRANULARITY_SES_NAME)%>'>
   Days per slice
+  <input type='checkbox' name='<%=SHOW_CRITICAL_PATHS_REQ_NAME%>' <%= (show_critical_paths ? "CHECKED" : "") %>>
+  Show critical paths
   <!-- doesn't seem to work
   <input type='checkbox' name='<%=SHOW_RESOLVED_REQ_NAME%>' <%= (show_resolved ? "CHECKED" : "") %>>
   Show resolved
@@ -419,9 +424,17 @@ Charts below are based on data loaded at <%= graph.getLoadedDate() %>.
     if (keyArray.length > 0) {
 
       out.write("<hr>\n");
-      TimeScheduleDisplayPreferences dPrefs = 
-      TimeScheduleDisplayPreferences.createForIssues
-          (time_granularity, 0, true, false, show_resolved, keyArray, show_bulk_changer, graph);
+      
+      TimeScheduleDisplayPreferences dPrefs;
+      if (show_critical_paths) {
+        dPrefs =
+          TimeScheduleDisplayPreferences.createForCriticalPaths
+            (time_granularity, 0, false, false, keyArray, graph);
+      } else {
+        dPrefs =
+          TimeScheduleDisplayPreferences.createForIssues
+            (time_granularity, 0, true, false, show_resolved, keyArray, show_bulk_changer, graph);
+      }
 
       if (show_completion) {
         for (Iterator iter = dPrefs.showIssues.iterator(); iter.hasNext(); ) {
@@ -618,6 +631,7 @@ Charts below are based on data loaded at <%= graph.getLoadedDate() %>.
   public static String REVERT_PRIORITIES_REQ_NAME = "revert";
   public static String SAVE_PRIORITIES_REQ_NAME = "save_priorities";
   // check boxes that have to be handled each time they're sent
+  public static String SHOW_CRITICAL_PATHS_REQ_NAME = "show_critical_paths";
   public static String SHOW_RESOLVED_REQ_NAME = "show_resolved";
   public static String SHOW_USERS_IN_ONE_ROW_REQ_NAME = "show_users_in_one_row";
   public static String SHOW_SCHEDULE_REQ_NAME = "show_schedule";
