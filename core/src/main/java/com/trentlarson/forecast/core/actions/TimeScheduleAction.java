@@ -29,6 +29,7 @@ public class TimeScheduleAction {
 
   public static String MULTIPLIER_REQ_NAME = "time_multiplier";
   public static String ISSUE_KEY_REQ_NAME = "issueKey";
+  public static String SHOW_CRITICAL_PATHS_REQ_NAME = "show_critical_paths";
 
 
 

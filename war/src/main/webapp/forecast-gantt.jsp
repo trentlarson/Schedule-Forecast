@@ -631,7 +631,7 @@ Charts below are based on data loaded at <%= graph.getLoadedDate() %>.
   public static String REVERT_PRIORITIES_REQ_NAME = "revert";
   public static String SAVE_PRIORITIES_REQ_NAME = "save_priorities";
   // check boxes that have to be handled each time they're sent
-  public static String SHOW_CRITICAL_PATHS_REQ_NAME = "show_critical_paths";
+  public static String SHOW_CRITICAL_PATHS_REQ_NAME = TimeScheduleAction.SHOW_CRITICAL_PATHS_REQ_NAME;
   public static String SHOW_RESOLVED_REQ_NAME = "show_resolved";
   public static String SHOW_USERS_IN_ONE_ROW_REQ_NAME = "show_users_in_one_row";
   public static String SHOW_SCHEDULE_REQ_NAME = "show_schedule";
