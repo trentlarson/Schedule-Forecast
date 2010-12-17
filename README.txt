@@ -48,7 +48,7 @@ To use:
 
 For tests:
 - Run the TimeScheduleTests unit test, eg. in core:
-mvn package; java -classpath target/forecast-core-0.1-SNAPSHOT.jar:lib/commons-logging-1.1.1.jar:lib/hibernate-3.2.6.ga.jar:lib/hsqldb-1.8.0.jar:lib/log4j-1.2.15.jar:lib/mysql-5.0.7.jar com.trentlarson.forecast.core.scheduling.TimeScheduleTests > target/gantt-test-db.html
+mvn package; java -classpath target/forecast-core-0.1-SNAPSHOT.jar:lib/commons-logging-1.1.1.jar:lib/hibernate-3.2.6.ga.jar:lib/hsqldb-1.8.0.jar:lib/log4j-1.2.15.jar:lib/mysql-5.0.7.jar com.trentlarson.forecast.core.scheduling.TimeScheduleTests > target/gantt-test.html
 - Compare the output with gantt-test.html
 - Redirect the jira-test-db.sql into a test DB, eg: 
 mysql -u jira --password=jirapass  -D test_forecast_jira < ~/dev/scheduling/Schedule-Forecast/core/src/test/resources/jira-test-db.sql 
@@ -71,7 +71,13 @@ Places to clean up:
 
 To duplicate the error with efficient loading:
 - Load your DB with jira-test-render-error.sql (an admin user is trent/jirapass)
-- Run TimeScheduleTests.testIntegrationDynamicLoadAssigneeProblem
+- Run TimeScheduleTests.testIntegrationDynamicLoadAssigneeProblem (and see the exception)
+
+To duplicate the error with time scheduling:
+- Load your DB with jira-test-render-error.sql (an admin user is tlarson/jirapass)
+- see http://localhost:8080/secure/views/max/forecast-gantt.jsp?show_user=tlarson
+  ... and notice the bad scheduling, where many begin work at the same time
+  (If you have problems seeing it, try forcing this load date: Fri Dec 17 12:59:42 MST 2010)
 
 ________________________________________________________________________________
 Sample SQL to adjust timeestimate fields if you've already set a bunch of estimates on 24x7 tracking:

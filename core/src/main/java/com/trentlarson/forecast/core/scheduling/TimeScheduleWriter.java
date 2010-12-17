@@ -514,7 +514,7 @@ public class TimeScheduleWriter {
           // set the start-point DOM ID (for a visual pointer if it follows a previous issue)
           domMarker = "<span id='" + detail.getKey() + "-start' style='display:block'></span>";
           String title = detail.getKey() + ": " + detail.getSummary() + " -- " + detail.getTimeAssigneeKey().toString();
-          focusIssueLink = "<a href='?" + TimeScheduleAction.ISSUE_KEY_REQ_NAME + "=" + detail.getKey() + "' style='color:black' title='Focus on " + title + "'>#</a>";
+          focusIssueLink = "<a href='?" + TimeScheduleAction.ISSUE_KEY_REQ_NAME + "=" + detail.getKey() + "' style='color:black' title='Focus on " + title + "'>+</a>";
           if (!dPrefs.hideDetails) {
             focusIssueLink += "<br/>";
           }

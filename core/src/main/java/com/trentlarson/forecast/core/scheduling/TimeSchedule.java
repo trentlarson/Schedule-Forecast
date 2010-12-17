@@ -19,6 +19,8 @@ import java.util.TreeSet;
 
 import org.apache.log4j.Category;
 
+import com.trentlarson.forecast.core.helper.DateUtil;
+
 public class TimeSchedule {
 
 
@@ -32,7 +34,7 @@ public class TimeSchedule {
   private static final java.text.SimpleDateFormat WEEKDAY_DATE = new java.text.SimpleDateFormat("EEE MMM dd");
   private static final java.text.SimpleDateFormat SLASH_DATE = new java.text.SimpleDateFormat("yyyy/MM/dd");
   // this has no spaces so table formatting in HTML wraps consistently (ug)
-  private static final java.text.SimpleDateFormat SLASH_TIME = new java.text.SimpleDateFormat("yyyy.MM.dd.HH:mm");
+  private static final java.text.SimpleDateFormat SLASH_TIME = new java.text.SimpleDateFormat("yyyy.MM.dd'@'HH:mm");
 
 
   // OK, I'd like to shorten these strings (eg. to just "scheduling.Time"),
@@ -868,6 +870,7 @@ public class TimeSchedule {
       }
     }
     nextEstBegin.add(Calendar.SECOND, numEstSecsOnLastDay);
+    nextEstBegin = DateUtil.round(nextEstBegin, Calendar.MINUTE); // This shouldn't matter, but you can see what can happen with rounding errors on tlarson's schedule with jira-test-begin-work-error.sql (after removing this line).
     if (fdiwwLog.isDebugEnabled()) {
       fdiwwLog.debug("added " + thisEstBegin.getTime() + " + "
                     + (secondsToAdd / 3600.0) + " hours"
@@ -1206,7 +1209,7 @@ public class TimeSchedule {
                 findNextEstBegin(nextEstBegin, issueEstSeconds, weeklyHours);
               log4jLog.debug(currentDetail.getKey() + " end: "
                              + "+" + (issueEstSeconds / 3600.0)
-                             + "h = " + nextEstBegin.getTime());
+                             + "h = " + nextAndWorked.nextBegin.getTime());
               nextEstBegin = nextAndWorked.nextBegin;
               
               {
