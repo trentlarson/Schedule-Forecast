@@ -397,7 +397,6 @@ Render HTML: <input type="checkbox" name="escapeHtmlInResults" <%= ( getBooleanP
 </form>
   <% } %>
 <% } %>
-<br>For helpful SQL hints, <a href="http://tiki.icentris.com/tiki/tiki-index.php?page=JiraSqlHints">see the page in Tiki</a>.
 <br><br>
 
 <FONT SIZE=-1>
