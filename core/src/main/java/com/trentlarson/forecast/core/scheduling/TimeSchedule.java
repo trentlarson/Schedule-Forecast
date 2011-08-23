@@ -619,6 +619,47 @@ public class TimeSchedule {
     }
   }
 
+  /**
+     sorts by start date, then due date, then priority
+   */
+  public static class DetailDueComparator<T extends IssueWorkDetail<T>> implements Comparator<T> {
+    public int compare(T d1, T d2) {
+      // first determinant is whether there's a start date on it
+      if (d1.getMustStartOnDate() == null && d2.getMustStartOnDate() != null) {
+        return 1;
+      } else if (d1.getMustStartOnDate() != null && d2.getMustStartOnDate() == null) {
+        return -1;
+      } else {
+        int dateCompare = 0;
+        if (d1.getMustStartOnDate() != null && d2.getMustStartOnDate() != null) {
+          dateCompare = d1.getMustStartOnDate().compareTo(d2.getMustStartOnDate());
+        }
+        if (dateCompare != 0) {
+          return dateCompare;
+        } else {
+          // next determinant is the due-date
+          if (d1.getDueDate() == null && d2.getDueDate() != null) {
+            return 100;
+          } else if (d1.getDueDate() != null && d2.getDueDate() == null) {
+            return -100;
+          } else {
+            dateCompare = 0;
+            if (d1.getDueDate() != null && d2.getDueDate() != null) {
+              dateCompare = d1.getDueDate().compareTo(d2.getDueDate());
+            }
+            if (dateCompare != 0) {
+              return dateCompare;
+            } else {
+              // final determinant is the priority
+              // lower priority comes earlier
+              return 10 * (d1.getPriority() - d2.getPriority());
+            }
+          }
+        }
+      }
+    }
+  }
+
 
 
 
