@@ -61,6 +61,7 @@ public class IssueLoader {
 
   /* These are SQL differences between my ideal DB and the Jira DB (besides "jiraissue"). */
   /** for my ideal
+   * 
 	  private static final String DB_ISSUE_TABLE = "issue";
 	  private static final String DB_START_DATE_COLUMN = "startdate";
 	  private static final String DB_START_DATE_COLUMN_B = "issueb.startdate";
@@ -68,13 +69,27 @@ public class IssueLoader {
    */
 
   /** for Jira
+   * 
    */
   public static final String DB_ISSUE_TABLE = "jiraissue";
+  
+  /** 
+   * for Jira, when we do have a custom start date
+   * 
   private static final String DB_START_DATE_COLUMN = "cfv.datevalue";
   private static final String DB_START_DATE_COLUMN_B = DB_START_DATE_COLUMN;
   private static final String DB_START_DATE_JOIN = 
     " left outer join customfieldvalue cfv on issueb.id = cfv.issue"
     + " and cfv.customfield = " + CUSTOM_START_DATE;
+   */
+
+  /**
+   * for Jira, when we don't have a custom start-date
+   *
+   */
+  private static final String DB_START_DATE_COLUMN = "null";
+  private static final String DB_START_DATE_COLUMN_B = DB_START_DATE_COLUMN;
+  private static final String DB_START_DATE_JOIN = "";
 
 
 

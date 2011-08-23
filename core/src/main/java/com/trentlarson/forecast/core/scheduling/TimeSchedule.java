@@ -508,6 +508,7 @@ public class TimeSchedule {
     public int totalEstimate() { return issueEstSecondsRaw; }
     public int totalTimeSpent() { return 0; }
     public Date getDueDate() { return dueDate; }
+    /** date when work must start (probably for X hours-per-week tasks, which isn't built yet); see IssueLoader.DB_START_DATE_COLUMN for how we load values */
     public Date getMustStartOnDate() { return mustStartOnDate; }
     public int getPriority() { return priority; }
     public boolean getResolved() { return false; }
