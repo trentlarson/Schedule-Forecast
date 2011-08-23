@@ -677,7 +677,12 @@ Charts below are based on data loaded at <%= graph.getLoadedDate() %>.
       }
       result.append(replaceNonAlphaNum(issueKey) + "[label=\"" + issueKey + ": " + summary + "\"" + color + "];");
 
-      for (IssueTree subtask : issue.getSubtasks()) {
+      // Jeremy wants to see the subtasks in general order of due + priority.
+      List<IssueTree> sortedSubtasks = new ArrayList<IssueTree>();
+      sortedSubtasks.addAll(issue.getSubtasks());
+      Collections.sort(sortedSubtasks, new TimeSchedule.DetailDueComparator());
+
+      for (IssueTree subtask : sortedSubtasks) {
         result.append(replaceNonAlphaNum(issueKey) + "->" + replaceNonAlphaNum(subtask.getKey()));
         result.append("[penwidth=3 arrowhead=dot]");
         result.append(";");
