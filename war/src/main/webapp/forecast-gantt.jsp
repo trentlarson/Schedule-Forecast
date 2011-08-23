@@ -414,6 +414,19 @@ Charts below are based on data loaded at <%= graph.getLoadedDate() %>.
 <% if (show_bulk_changer) { %>
   <form action="?" method="post">
     <input type='hidden' name='<%=NEW_PRIORITIES_REQ_NAME%>' value='true'>
+
+<% } else { %>
+<%   if (keyArray.length > 0) { %>
+
+  <hr/>
+  <form action='https://chart.googleapis.com/chart' method='POST'>
+    <input type="submit" value="Click here for a tree chart.">
+    <input type="hidden" name="cht" value="gv" />
+    <input type="hidden" name="chtt" value="Issue Tree" />
+    <textarea name="chl" style="visibility:hidden;"><%= generateTreeChartCode(graph, keyArray) %></textarea>
+  </form> 
+
+<%   } %>
 <% } %>
 
 
@@ -640,6 +653,54 @@ Charts below are based on data loaded at <%= graph.getLoadedDate() %>.
 
   public static String DATA_SES_NAME = "all my data";
 
+  public static String generateTreeChartCode(IssueDigraph graph, String[] issueKeys) {
+    StringBuilder result = new StringBuilder();
+    result.append("digraph{");
+    Set<String> done = new TreeSet<String>();
+    for (int i = 0; i < issueKeys.length; i++) {
+      String key = issueKeys[i];
+      generateTree(result, graph, key, done);
+    }
+    result.append("}");
+    return result.toString();
+  }
+
+  public static void generateTree(StringBuilder result, IssueDigraph graph, String issueKey, Set<String> done) {
+    if (!done.contains(issueKey)) {
+      done.add(issueKey);
+      IssueTree issue = graph.getIssueTree(issueKey);
+      String summary = issue.getSummary().replaceAll("\"", "'");
+      String color = "";
+      if (issue.getDueDate() != null
+          && graph.getIssueSchedule(issueKey).getEndDate().after(issue.getDueDate())) {
+        color = " color=\"red\"";
+      }
+      result.append(replaceNonAlphaNum(issueKey) + "[label=\"" + issueKey + ": " + summary + "\"" + color + "];");
+
+      for (IssueTree subtask : issue.getSubtasks()) {
+        result.append(replaceNonAlphaNum(issueKey) + "->" + replaceNonAlphaNum(subtask.getKey()));
+        result.append("[penwidth=3 arrowhead=dot]");
+        result.append(";");
+        generateTree(result, graph, subtask.getKey(), done);
+      }
+      for (IssueTree subtask : issue.getDependents()) {
+        result.append(replaceNonAlphaNum(issueKey) + "->" + replaceNonAlphaNum(subtask.getKey()));
+        result.append("[constraint=false]");
+        result.append(";");
+        generateTree(result, graph, subtask.getKey(), done);
+      }
+    }
+  }
+
+  private static String replaceNonAlphaNum(String input) {
+    StringBuilder output = new StringBuilder();
+    for (int i = 0; i < input.length(); i++) {
+      char ch = input.charAt(i);
+      boolean ok = ('a' <= ch && ch <='z') || ('A' <= ch && ch <= 'Z') || ('0' <= ch && ch <= '9');
+      output.append(ok ? ch : '_');
+    }
+    return output.toString();
+  }
 
   /****************************************************************
    BEGIN useful classes for introspection.  Use thus:
