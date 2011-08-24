@@ -417,15 +417,33 @@ Charts below are based on data loaded at <%= graph.getLoadedDate() %>.
 
 <% } else { %>
 <%   if (keyArray.length > 0) { %>
+<%     try { %>
 
   <hr/>
   <form action='https://chart.googleapis.com/chart' method='POST'>
-    <input type="submit" value="Click here for a tree chart.">
     <input type="hidden" name="cht" value="gv" />
     <input type="hidden" name="chtt" value="Issue Tree" />
     <textarea name="chl" style="visibility:hidden;"><%= generateTreeChartCode(graph, keyArray) %></textarea>
+    <input type="submit" value="Click here for a tree chart.">
+    (... and remember to force a refresh to clear out the cached copy.)
   </form> 
 
+<%     } catch (Exception e) { %>
+       <%
+         Date errorDate = new Date();
+         System.out.println("Showing user error message at " + errorDate);
+         e.printStackTrace();
+       %>
+  </textarea></form>
+  <h2>Something went wrong!</h2>
+  Report the following information to the Jira developers 
+  and include any helpful details about what you were doing,
+  then try clicking <a href="?reset=true">here</a>.
+  <p>
+  Error time: <%= errorDate %>
+  <p>
+  Error message: <%= e %>
+<%     } %>
 <%   } %>
 <% } %>
 
@@ -659,7 +677,10 @@ Charts below are based on data loaded at <%= graph.getLoadedDate() %>.
     Set<String> done = new TreeSet<String>();
     for (int i = 0; i < issueKeys.length; i++) {
       String key = issueKeys[i];
-      generateTree(result, graph, key, done);
+      // avoid errors when they enter bad data, including tasks that are finished
+      if (graph.getIssueSchedule(key) != null) {
+        generateTree(result, graph, key, done);
+      }
     }
     result.append("}");
     return result.toString();
@@ -670,6 +691,9 @@ Charts below are based on data loaded at <%= graph.getLoadedDate() %>.
       done.add(issueKey);
       IssueTree issue = graph.getIssueTree(issueKey);
       String summary = issue.getSummary().replaceAll("\"", "'");
+      if (summary.length() > 13) {
+        summary = summary.substring(0, 13) + "...";
+      }
       String color = "";
       if (issue.getDueDate() != null
           && graph.getIssueSchedule(issueKey).getEndDate().after(issue.getDueDate())) {
