@@ -84,7 +84,7 @@ public class TimeScheduleTests {
     IssueTree[] manyIssues = {
       new IssueTree
       ("TEST-230", "~18-week issue", username, 1L,
-       (int) (751.5 * 3600), 0, null, null, 5, false)
+       (int) (751.5 * 3600), 0, 0.0, null, null, 5, false)
     };
     
     Map<Teams.UserTimeKey,List<TeamHours>> userWeeklyHours =
@@ -129,7 +129,7 @@ public class TimeScheduleTests {
     IssueTree[] manyIssues = {
         new IssueTree
         ("TEST-231", "null team & assignee", null, null,
-         40 * 3600, 0, null, null, 5, false)
+         40 * 3600, 0, 0.0, null, null, 5, false)
       };
 
     Map<Teams.UserTimeKey,List<TeamHours>> userWeeklyHours = new TreeMap<Teams.UserTimeKey,List<TeamHours>>();
@@ -194,32 +194,32 @@ public class TimeScheduleTests {
     IssueTree[] manyIssues = {
       new IssueTree
       ("TEST-200", "5-day issue", null, 1L,
-       5 * jira_day, 0 * jira_day,
+       5 * jira_day, 0 * jira_day, 0.0,
        null, null, 5, false)
       ,
       new IssueTree
       ("TEST-201", "3-day issue", null, 1L,
-       3 * jira_day, 0 * jira_day,
+       3 * jira_day, 0 * jira_day, 0.0,
        null, null, 6, false)
       ,
       new IssueTree
       ("TEST-202", "3 days again", null, 1L,
-       3 * jira_day, 0 * jira_day,
+       3 * jira_day, 0 * jira_day, 0.0,
        SLASH_DATE.parse("2005/04/11"), null, 6, false)
       ,
       new IssueTree
       ("TEST-203", "14-day issue", null, 1L,
-       14 * jira_day, 0 * jira_day,
+       14 * jira_day, 0 * jira_day, 0.0,
        null, null, 3, false)
       ,
       new IssueTree
       ("TEST-204", "9-day issue", null, 1L,
-       9 * jira_day, 0 * jira_day,
+       9 * jira_day, 0 * jira_day, 0.0,
        null, null, 6, false)
       ,
       new IssueTree
       ("TEST-204.1", "8-day issue", null, 1L,
-       8 * jira_day, 0 * jira_day,
+       8 * jira_day, 0 * jira_day, 0.0,
        null, null, 7, false)
     };
 
@@ -266,7 +266,7 @@ public class TimeScheduleTests {
     manyIssues[0] =
       new IssueTree
       ("TEST-200.1", "5-day issue", "trent", 1L,
-       5 * jira_day, 0 * jira_day, null, null, 5, false);
+       5 * jira_day, 0 * jira_day, 0.0, null, null, 5, false);
 
     userDetails =
       createUserDetails(manyIssues, userWeeklyHours);
@@ -297,42 +297,42 @@ public class TimeScheduleTests {
     IssueTree[] manyIssues = {
       new IssueTree
       ("TEST-205", "3-day issue", "trent", 1L,
-       3 * jira_day, 0 * jira_day,
+       3 * jira_day, 0 * jira_day, 0.0,
        null, null, 5, false)
       ,
       new IssueTree
       ("TEST-206", "3-day issue", "trent", 1L,
-       3 * jira_day, 0 * jira_day,
+       3 * jira_day, 0 * jira_day, 0.0,
        null, null, 6, false)
       ,
       new IssueTree
       ("TEST-207", "3-day issue", "trent", 2L,
-       3 * jira_day, 0 * jira_day,
+       3 * jira_day, 0 * jira_day, 0.0,
        null, null, 4, false)
       ,
       new IssueTree
       ("TEST-208", "3-day issue", "trent", null,
-       3 * jira_day, 0 * jira_day,
+       3 * jira_day, 0 * jira_day, 0.0,
        null, null, 5, false)
       ,
       new IssueTree
       ("TEST-209", "3-day issue", "trent", null,
-       3 * jira_day, 0 * jira_day,
+       3 * jira_day, 0 * jira_day, 0.0,
        null, null, 6, false)
       ,
       new IssueTree
       ("TEST-210", "3-day issue", "trent", null,
-       3 * jira_day, 0 * jira_day,
+       3 * jira_day, 0 * jira_day, 0.0,
        null, null, 7, false)
       ,
       new IssueTree
       ("TEST-211", "3-day issue", "trent", null,
-       3 * jira_day, 0 * jira_day,
+       3 * jira_day, 0 * jira_day, 0.0,
        null, null, 8, false)
       ,
       new IssueTree
       ("TEST-212", "3-day issue", "trent", null,
-       3 * jira_day, 0 * jira_day,
+       3 * jira_day, 0 * jira_day, 0.0,
        null, null, 9, false)
     };
 
@@ -445,14 +445,14 @@ public class TimeScheduleTests {
       {
         new IssueTree
         ("TEST-100", "one week", "trent", 1L,
-         5 * jira_day, 0 * jira_day,
+         5 * jira_day, 0 * jira_day, 0.0,
          null, null, 3, false)
         ,
         // This one has lower priority, but it should be scheduled first because
         // it has a start time.
         new IssueTree
         ("TEST-101", "one day", "trent", 1L,
-         1 * jira_day, 0 * jira_day,
+         1 * jira_day, 0 * jira_day, 0.0,
          null, SLASH_DATE.parse("2005/04/11"), 6, false)
       };
 
@@ -515,15 +515,15 @@ public class TimeScheduleTests {
 
     IssueTree issue20 =
       new IssueTree
-      ("TEST-20", "sub issue", "trent", 1L, 16 * 3600, 0,
+      ("TEST-20", "sub issue", "trent", 1L, 16 * 3600, 0, 0.0,
        null, null, 3, false);
     IssueTree issue21 =
       new IssueTree
-      ("TEST-21", "some issue", "brent", 1L, 32 * 3600, 0,
+      ("TEST-21", "some issue", "brent", 1L, 32 * 3600, 0, 0.0,
        null, null, 2, false);
     IssueTree issue22 =
       new IssueTree
-      ("TEST-22", "some issue", "ken", 1L, 1 * 3600, 0,
+      ("TEST-22", "some issue", "ken", 1L, 1 * 3600, 0, 0.0,
        null, null, 2, false);
 
     issue20.addSubtask(issue21);
@@ -566,76 +566,76 @@ public class TimeScheduleTests {
     IssueTree issue_6 =
       new IssueTree
       ("TEST--6", "Ancestor test issue", "trent", 1L,
-       0 * 3600, 0 * 3600, null, null, 1, false);
+       0 * 3600, 0 * 3600, 0.0, null, null, 1, false);
     IssueTree issue_5 =
       new IssueTree
       ("TEST--5", "Ancestor test issue", "trent", 1L,
-       4 * 3600, 0 * 3600, null, null, 1, false);
+       4 * 3600, 0 * 3600, 0.0, null, null, 1, false);
     IssueTree issue_4 =
       new IssueTree
       ("TEST--4", "Ancestor test issue", "ken", 1L,
-       4 * 3600, 0 * 3600, null, null, 1, false);
+       4 * 3600, 0 * 3600, 0.0, null, null, 1, false);
     IssueTree issue_3 =
       new IssueTree
       ("TEST--3", "Ancestor test issue", "brent", 1L,
-       4 * 3600, 0 * 3600, null, null, 1, false);
+       4 * 3600, 0 * 3600, 0.0, null, null, 1, false);
     IssueTree issue_2 =
       new IssueTree
       ("TEST--2", "Ancestor test issue", "trent", 1L,
-       4 * 3600, 0 * 3600, null, null, 1, false);
+       4 * 3600, 0 * 3600, 0.0, null, null, 1, false);
     IssueTree issue_1 =
       new IssueTree
       ("TEST--1", "Ancestor test issue", "ken", 1L,
-       4 * 3600, 0 * 3600, null, null, 1, false);
+       4 * 3600, 0 * 3600, 0.0, null, null, 1, false);
     IssueTree issue0 =
       new IssueTree
       ("TEST-0", "Grandparent test issue", "fred", 1L,
-       8 * 3600, 0 * 3600,
+       8 * 3600, 0 * 3600, 0.0,
        SLASH_DATE.parse("2005/01/01"), null, 1, false);
     IssueTree issue1 =
       new IssueTree
       ("TEST-1", "Parent test issue", "brent", 1L,
-       10 * 3600, 0 * 3600,
+       10 * 3600, 0 * 3600, 0.0,
        SLASH_DATE.parse("2005/04/01"), null, 1, false);
     IssueTree issue2 =
       new IssueTree
-      ("TEST-2", "issue", "ken", 1L, 24 * 3600, 1 * 3600,
+      ("TEST-2", "issue", "ken", 1L, 24 * 3600, 1 * 3600, 0.0,
        SLASH_DATE.parse("2005/04/16"), null, 8, false);
     IssueTree issue4 =
       new IssueTree
-      ("TEST-4", "top", "trent", 1L, 8 * 3600, 1 * 3600,
+      ("TEST-4", "top", "trent", 1L, 8 * 3600, 1 * 3600, 0.0,
        SLASH_DATE.parse("2005/04/13"), null, 4, false);
     IssueTree issue9 =
       new IssueTree
-      ("TEST-9", "issue", "ken", 1L, 20 * 3600, 1 * 3600,
+      ("TEST-9", "issue", "ken", 1L, 20 * 3600, 1 * 3600, 0.0,
        SLASH_DATE.parse("2005/04/05"), null, 3, false);
     IssueTree issue11 =
       new IssueTree
-      ("TEST-11", "sub issue", "trent", 1L, 4 * 3600, 1 * 3600,
+      ("TEST-11", "sub issue", "trent", 1L, 4 * 3600, 1 * 3600, 0.0,
        SLASH_DATE.parse("2005/04/15"), null, 3, true);
     IssueTree issue12 =
       new IssueTree
-      ("TEST-12", "sub issue", "ken", 1L, 3 * 3600, 1 * 3600,
+      ("TEST-12", "sub issue", "ken", 1L, 3 * 3600, 1 * 3600, 0.0,
        SLASH_DATE.parse("2005/06/01"), null, 2, false);
     IssueTree issue13 =
       new IssueTree
-      ("TEST-13", "after TEST-1,2", "trent", 1L, 10 * 3600, 1 * 3600,
+      ("TEST-13", "after TEST-1,2", "trent", 1L, 10 * 3600, 1 * 3600, 0.0,
        null, null, 2, true);
     IssueTree issue13_1 =
       new IssueTree
-      ("TEST-13-1", "sub of TEST-13", "trent", 1L, 10 * 3600, 1 * 3600,
+      ("TEST-13-1", "sub of TEST-13", "trent", 1L, 10 * 3600, 1 * 3600, 0.0,
        null, null, 9, false);
     IssueTree issue14 =
       new IssueTree
-      ("TEST-14", "dependant issue", "trent", 1L, 16 * 3600, 1 * 3600,
+      ("TEST-14", "dependant issue", "trent", 1L, 16 * 3600, 1 * 3600, 0.0,
        SLASH_DATE.parse("2005/06/01"), null, 4, false);
     IssueTree issue15 =
       new IssueTree
-      ("TEST-15", "dependant issue", "trent", 1L, 4 * 3600, 1 * 3600,
+      ("TEST-15", "dependant issue", "trent", 1L, 4 * 3600, 1 * 3600, 0.0,
        SLASH_DATE.parse("2005/04/07"), null, 5, false);
     IssueTree issue16 =
       new IssueTree
-      ("TEST-16", "some issue", "trent", 1L, 12 * 3600, 1 * 3600,
+      ("TEST-16", "some issue", "trent", 1L, 12 * 3600, 1 * 3600, 0.0,
        SLASH_DATE.parse("2005/04/15"), null, 6, false);
 
     IssueTree[] manyIssues = {

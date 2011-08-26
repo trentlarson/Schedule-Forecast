@@ -28,6 +28,7 @@ public class IssueLoader {
   // The source (outward) is the dependent (cannot start until the predecessor is completed) and the destination (inward) is the predecessor (must be completed before starting dependent).
   public static final String LINK_DEPENDENCY="10004";
   public static final String CUSTOM_START_DATE="10180";
+  public static final String CUSTOM_HOURS_PER_WEEK="10060";
   /**
 	  public static final String LINK_SUBTASK, LINK_DEPENDENCY, CUSTOM_START_DATE;
 	  public static final String PROP_LINK_SUBTASK = "icentris.jira.string.link.subtask";
@@ -92,6 +93,18 @@ public class IssueLoader {
   private static final String DB_START_DATE_JOIN = "";
 
 
+  /** 
+   * for Jira, when we do have hours per week
+   * 
+   */
+  private static final String DB_HOURS_PER_WEEK_COLUMN = "cfv.datevalue";
+  private static final String DB_HOURS_PER_WEEK_COLUMN_B = DB_HOURS_PER_WEEK_COLUMN;
+  private static final String DB_HOURS_PER_WEEK_JOIN = 
+    " left outer join customfieldvalue cfv on issueb.id = cfv.issue"
+    + " and cfv.customfield = " + CUSTOM_HOURS_PER_WEEK;
+
+
+
 
   /**
   @return Map from assignee to the list of their issues needing scheduling
@@ -116,9 +129,12 @@ public class IssueLoader {
         "select pkey, summary, assignee, resolution, timeestimate, timespent, duedate,"
         + " priority, project, "
         + " " + DB_START_DATE_COLUMN + " as earliest_start_date"
+        + ", " + DB_HOURS_PER_WEEK_COLUMN + " as hours_per_week"
         + " from " + DB_ISSUE_TABLE + " issueb"
         + " " + DB_START_DATE_JOIN
+        + " " + DB_HOURS_PER_WEEK_JOIN
         + " where (resolution is null or resolution = 0)";
+System.out.println("Here's the SQL " + openIssueSql);
       rset = SimpleSQL.executeQuery(openIssueSql, new Object[0], conn);
       while (rset.next()) {
         Long teamId = config.projectToTeam.get(Long.valueOf(rset.getLong("project")));
@@ -130,6 +146,7 @@ public class IssueLoader {
               teamId,
               rset.getInt("timeestimate"),
               rset.getInt("timespent"),
+              rset.getDouble("hours_per_week"),
               rset.getDate("dueDate"),
               rset.getDate("earliest_start_date"),
               config.priorities.get(rset.getString("priority")).intValue(),
@@ -363,6 +380,7 @@ public class IssueLoader {
               teamId,
               rset.getInt("timeestimate"),
               rset.getInt("timespent"),
+              rset.getDouble("hours_per_week"),
               rset.getDate("dueDate"),
               rset.getDate("earliest_start_date"),
               priorities.get(rset.getString("priority")).intValue(),
@@ -455,8 +473,10 @@ public class IssueLoader {
           "select issueb.pkey, issueb.summary, issueb.assignee, issueb.timeestimate,"
           + " issueb.timespent, issueb.duedate, issueb.resolution, issueb.priority, issueb.project,"
           + " " + DB_START_DATE_COLUMN_B + " as earliest_start_date"
+          + ", " + DB_HOURS_PER_WEEK_COLUMN_B + " as hours_per_week"
           + " from issuelink, " + DB_ISSUE_TABLE + " a, " + DB_ISSUE_TABLE + " issueb"
           + " " + DB_START_DATE_JOIN
+          + " " + DB_HOURS_PER_WEEK_JOIN
           + " where linktype = '" + LINK_SUBTASK + "'"
           + " and a.pkey = ? and source = a.id and issueb.id = destination";
         args = new Object[]{ parent.getKey() };
@@ -488,6 +508,7 @@ public class IssueLoader {
                   teamId,
                   rset.getInt("timeestimate"),
                   rset.getInt("timespent"),
+                  rset.getDouble("hours_per_week"),
                   rset.getDate("duedate"),
                   rset.getDate("earliest_start_date"),
                   priorities.get(rset.getString("priority")).intValue(),
@@ -505,8 +526,10 @@ public class IssueLoader {
           "select issueb.pkey, issueb.summary, issueb.assignee, issueb.timeestimate,"
           + " issueb.timespent, issueb.duedate, issueb.resolution, issueb.priority, issueb.project,"
           + " " + DB_START_DATE_COLUMN_B + " as earliest_start_date"
+          + " " + DB_HOURS_PER_WEEK_COLUMN_B + " as hours_per_week"
           + " from issuelink, " + DB_ISSUE_TABLE + " a, " + DB_ISSUE_TABLE + " issueb"
           + " " + DB_START_DATE_JOIN
+          + " " + DB_HOURS_PER_WEEK_JOIN
           + " where linktype = '" + LINK_DEPENDENCY + "'"
           + " and a.pkey = ? and destination = issueb.id and a.id = source";
         // + " and (issueb.resolution is null or issueb.resolution = 0)"
@@ -539,6 +562,7 @@ public class IssueLoader {
                   teamId,
                   rset.getInt("timeestimate"),
                   rset.getInt("timespent"),
+                  rset.getDouble("hours_per_week"),
                   rset.getDate("duedate"),
                   rset.getDate("earliest_start_date"),
                   priorities.get(rset.getString("priority")).intValue(),
@@ -556,8 +580,10 @@ public class IssueLoader {
           "select issueb.pkey, issueb.summary, issueb.assignee, issueb.timeestimate,"
           + " issueb.timespent, issueb.duedate, issueb.resolution, issueb.priority, issueb.project,"
           + " " + DB_START_DATE_COLUMN_B + " as earliest_start_date"
+          + " " + DB_HOURS_PER_WEEK_COLUMN_B + " as hours_per_week"
           + " from issuelink, " + DB_ISSUE_TABLE + " a, " + DB_ISSUE_TABLE + " issueb"
           + " " + DB_START_DATE_JOIN
+          + " " + DB_HOURS_PER_WEEK_JOIN
           + " where linktype = '" + LINK_DEPENDENCY + "'"
           + " and a.pkey = ? and source = issueb.id and a.id = destination";
         // + " and (issueb.resolution is null or issueb.resolution = 0)"
@@ -590,6 +616,7 @@ public class IssueLoader {
                   teamId,
                   rset.getInt("timeestimate"),
                   rset.getInt("timespent"),
+                  rset.getDouble("hours_per_week"),
                   rset.getDate("duedate"),
                   rset.getDate("earliest_start_date"),
                   priorities.get(rset.getString("priority")).intValue(),

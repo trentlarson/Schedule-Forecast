@@ -7,14 +7,28 @@ public class IssueTree extends TimeSchedule.IssueWorkDetailOriginal<IssueTree> i
   private Long rawTeamId;
   private String timePerson; // (REFACTOR: store a Teams.UserTimeKey instead of separate person & team ID)
   private Long timeTeamId;
-  private int spent, estimateOrig, priorityOrig;
+  private int spent, estimateOrig, priorityOrig, secsPerWeek;
   private Date dueDateOrig;
   private boolean resolved;
   // issues that "cannot be done until" this one
   private Set<IssueTree> dependents = new TreeSet<IssueTree>();
 
+  /**
+   * 
+   * @param key_
+   * @param summary_
+   * @param person
+   * @param teamId
+   * @param est_ total estimage in seconds
+   * @param spent_ total time spent in seconds
+   * @param hoursPerWeek_ max hours to spend per week; if <= 0.0, use the full estimate
+   * @param dueDate_
+   * @param mustStartOnDate_ earliest date to start issue (may be null)
+   * @param priority_
+   * @param resolved_
+   */
   public IssueTree(String key_, String summary_, String person, Long teamId, 
-                   int est_, int spent_, Date dueDate_, Date mustStartOnDate_, int priority_,
+                   int est_, int spent_, double hoursPerWeek_, Date dueDate_, Date mustStartOnDate_, int priority_,
                    boolean resolved_) {
     super(key_,
           new Teams.UserTimeKey(teamId, person).toString(),
@@ -26,6 +40,7 @@ public class IssueTree extends TimeSchedule.IssueWorkDetailOriginal<IssueTree> i
     this.timeTeamId = teamId;
     this.spent = spent_;
     this.estimateOrig = est_;
+    this.secsPerWeek = hoursPerWeek_ <= 0.0 ? est_ : ((int) (hoursPerWeek_ * 60 * 60));
     this.dueDateOrig = dueDate_;
     this.priorityOrig = priority_;
     this.resolved = resolved_;
@@ -49,6 +64,7 @@ public class IssueTree extends TimeSchedule.IssueWorkDetailOriginal<IssueTree> i
   public int  getTimeSpent() { return spent; }
   public int  getPriorityOrig() { return priorityOrig; }
   public int getEstimateOrig() { return estimateOrig; }
+  public int getSecsPerWeek() { return secsPerWeek; }
   public Date getDueDateOrig() { return dueDateOrig; }
   public boolean getResolved() { return resolved; }
   public Set<IssueTree>  getDependents() { return dependents; }
