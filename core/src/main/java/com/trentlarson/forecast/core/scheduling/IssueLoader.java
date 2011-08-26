@@ -134,7 +134,6 @@ public class IssueLoader {
         + " " + DB_START_DATE_JOIN
         + " " + DB_HOURS_PER_WEEK_JOIN
         + " where (resolution is null or resolution = 0)";
-System.out.println("Here's the SQL " + openIssueSql);
       rset = SimpleSQL.executeQuery(openIssueSql, new Object[0], conn);
       while (rset.next()) {
         Long teamId = config.projectToTeam.get(Long.valueOf(rset.getLong("project")));
