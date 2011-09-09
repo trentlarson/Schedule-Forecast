@@ -58,6 +58,8 @@ public class TimeScheduleTests {
 
     outputVariableTimeTestResults(out);
 
+    //outputTimePerWeekTestResults(out);
+
     outputSplitTeamTestResults(out);
 
     outputStartTimeTestResults(out);
@@ -188,7 +190,6 @@ public class TimeScheduleTests {
     out.println("<P>");
     out.println("<H2>... for teams with various time availability.</H2>");
 
-    Date startDate = SLASH_DATE.parse("2005/04/05");
     int jira_day = 8 * 60 * 60;
 
     IssueTree[] manyIssues = {
@@ -284,6 +285,68 @@ public class TimeScheduleTests {
        TimeScheduleDisplayPreferences
        .createForUser(1, 0, true, false, false, user, false, graph));
   
+  }
+
+  public static void outputTimePerWeekTestResults(PrintWriter out) throws Exception {
+    
+    out.println("<P>");
+    out.println("<H2>... for issues with hours-per-week settings.</H2>");
+
+    int jira_day = 8 * 60 * 60;
+
+    IssueTree[] manyIssues = {
+        // let's make this one a few hours per week
+      new IssueTree
+      ("TEST-200", "3-day issue", null, 1L,
+       5 * jira_day, 0 * jira_day, 8.0,
+       SLASH_DATE.parse("2005/05/20"), null, 4, false)
+      ,
+      new IssueTree
+      ("TEST-201", "4.5-day issue", null, 1L,
+       3 * jira_day, 0 * jira_day, 0.0,
+       SLASH_DATE.parse("2005/04/24"), null, 5, false)
+      ,
+      new IssueTree
+      ("TEST-202", "3 days again", null, 1L,
+       3 * jira_day, 0 * jira_day, 4.0,
+       SLASH_DATE.parse("2005/04/30"), null, 6, false)
+      ,
+      new IssueTree
+      ("TEST-203", "9-day issue", null, 1L,
+       9 * jira_day, 0 * jira_day, 0.0,
+       null, null, 3, false)
+      ,
+      new IssueTree
+      ("TEST-204", "9-day issue", null, 1L,
+       9 * jira_day, 0 * jira_day, 32.0,
+       null, null, 6, false)
+      ,
+      new IssueTree
+      ("TEST-204.1", "8-day issue", null, 1L,
+       8 * jira_day, 0 * jira_day, 0.0,
+       null, null, 7, false)
+    };
+
+    Map<Teams.UserTimeKey,List<TeamHours>> userWeeklyHours =
+      new TreeMap<Teams.UserTimeKey,List<TeamHours>>();
+    Map<Teams.AssigneeKey,List<IssueTree>> userDetails =
+      createUserDetails(manyIssues, userWeeklyHours);
+    TimeScheduleCreatePreferences sPrefs =
+      new TimeScheduleCreatePreferences(0, SLASH_DATE.parse("2005/04/05"), 1);
+    IssueDigraph graph =
+      TimeScheduleLoader.schedulesForUserIssues3
+      (userDetails, userWeeklyHours, sPrefs);
+
+
+    // print out team Gantt chart
+    Teams.AssigneeKey user = new Teams.AssigneeKey(1L, null);
+    out.println("<br><br>");
+    out.println("Tree for " + user + ".<br>");
+    TimeScheduleWriter.writeIssueTable
+      (graph, out, sPrefs,
+       TimeScheduleDisplayPreferences
+       .createForUser(1, 0, true, false, false, user, false, graph));
+    
   }
 
   public static void outputSplitTeamTestResults(PrintWriter out) throws Exception {
