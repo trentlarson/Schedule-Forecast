@@ -24,6 +24,7 @@ Assumptions:
  */
 public class TimeScheduleWriter {
 
+  @SuppressWarnings("deprecation")
   public static final Category log4jLog = Category.getInstance(TimeScheduleWriter.class);
 
 
