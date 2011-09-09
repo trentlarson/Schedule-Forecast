@@ -475,7 +475,7 @@ public class TimeSchedule {
   protected static class IssueWorkDetailOriginal<T extends IssueWorkDetailOriginal<T>> implements IssueWorkDetail<T> {
     // REFACTOR the key to be null by default
     protected String key = "", timeAssignee = null, summary = "";
-    protected int issueEstSecondsRaw = 0;
+    protected int issueEstSecondsRaw = 0, secsPerWeek = 0;
     protected int priority = 0;
     protected Date dueDate = null, mustStartOnDate = null;
     // issues that "must be done before" this one
@@ -488,12 +488,14 @@ public class TimeSchedule {
      */
     public IssueWorkDetailOriginal
         (String key_, String timeAssignee_, String summary_,
-         int issueEstSecondsRaw_, Date dueDate_, Date mustStartOnDate_,
+         int issueEstSecondsRaw_, double maxHoursPerWeek_,
+         Date dueDate_, Date mustStartOnDate_,
          int priority_) {
       this.key = key_;
       this.timeAssignee = timeAssignee_;
       this.summary = summary_;
       this.issueEstSecondsRaw = issueEstSecondsRaw_;
+      this.secsPerWeek = maxHoursPerWeek_ <= 0.0 ? issueEstSecondsRaw_ : ((int) (maxHoursPerWeek_ * 60 * 60));
       this.dueDate = dueDate_;
       this.mustStartOnDate = mustStartOnDate_;
       this.priority = priority_;
@@ -1681,26 +1683,26 @@ public class TimeSchedule {
     String user = "trent--team_1";
     IssueWorkDetailOriginal test1 =
       (new IssueWorkDetailOriginal
-       ("TEST-T1", user, "summary T1", 10 * 3600,
+       ("TEST-T1", user, "summary T1", 10 * 3600, 0.0,
         slashFormatter.parse("2005/06/01"), null, 1));
     IssueWorkDetailOriginal test2 =
       (new IssueWorkDetailOriginal
-       ("TEST-T2", user, "summary T2", 5 * 3600,
+       ("TEST-T2", user, "summary T2", 5 * 3600, 0.0,
         slashFormatter.parse("2005/05/01"), null, 2));
     IssueWorkDetailOriginal test3 =
       (new IssueWorkDetailOriginal
-       ("TEST-T3", user, "summary T3", 5 * 3600, null, null, 3));
+       ("TEST-T3", user, "summary T3", 5 * 3600, 0.0, null, null, 3));
     IssueWorkDetailOriginal test4 =
       (new IssueWorkDetailOriginal
-       ("TEST-T4", user, "summary T4", 4 * 3600,
+       ("TEST-T4", user, "summary T4", 4 * 3600, 0.0,
         slashFormatter.parse("2005/06/01"), null, 4));
     IssueWorkDetailOriginal test5 =
       (new IssueWorkDetailOriginal
-       ("TEST-T5", user, "summary T5", 1 * 3600,
+       ("TEST-T5", user, "summary T5", 1 * 3600, 0.0,
         slashFormatter.parse("2005/05/15"), null, 3));
     IssueWorkDetailOriginal test6 =
       (new IssueWorkDetailOriginal
-       ("TEST-T6", user, "summary T6", 4 * 3600,
+       ("TEST-T6", user, "summary T6", 4 * 3600, 0.0,
         slashFormatter.parse("2005/06/01"), null, 3));
 
     details1.add(test1);
@@ -1717,7 +1719,7 @@ public class TimeSchedule {
     user = "nobody--team_1";
     details2.add
       (new IssueWorkDetailOriginal
-       ("TEST-n1", user, "summary n1", 4 * 3600,
+       ("TEST-n1", user, "summary n1", 4 * 3600, 0.0,
         slashFormatter.parse("2005/06/01"), null, 0));
 
     userDetails.put(user, details2);

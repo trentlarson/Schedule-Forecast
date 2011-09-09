@@ -7,7 +7,7 @@ public class IssueTree extends TimeSchedule.IssueWorkDetailOriginal<IssueTree> i
   private Long rawTeamId;
   private String timePerson; // (REFACTOR: store a Teams.UserTimeKey instead of separate person & team ID)
   private Long timeTeamId;
-  private int spent, estimateOrig, priorityOrig, secsPerWeek;
+  private int spent, estimateOrig, priorityOrig;
   private Date dueDateOrig;
   private boolean resolved;
   // issues that "cannot be done until" this one
@@ -28,19 +28,18 @@ public class IssueTree extends TimeSchedule.IssueWorkDetailOriginal<IssueTree> i
    * @param resolved_
    */
   public IssueTree(String key_, String summary_, String person, Long teamId, 
-                   int est_, int spent_, double hoursPerWeek_, Date dueDate_, Date mustStartOnDate_, int priority_,
+                   int est_, int spent_, double maxHoursPerWeek_, Date dueDate_, Date mustStartOnDate_, int priority_,
                    boolean resolved_) {
     super(key_,
           new Teams.UserTimeKey(teamId, person).toString(),
-          summary_, est_, dueDate_,
-          mustStartOnDate_, priority_);
+          summary_, est_, maxHoursPerWeek_,
+          dueDate_, mustStartOnDate_, priority_);
     this.rawPerson = person;
     this.rawTeamId = teamId;
     this.timePerson = person;
     this.timeTeamId = teamId;
     this.spent = spent_;
     this.estimateOrig = est_;
-    this.secsPerWeek = hoursPerWeek_ <= 0.0 ? est_ : ((int) (hoursPerWeek_ * 60 * 60));
     this.dueDateOrig = dueDate_;
     this.priorityOrig = priority_;
     this.resolved = resolved_;
