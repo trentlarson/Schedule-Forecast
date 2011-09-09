@@ -1104,10 +1104,12 @@ public class TimeSchedule {
   /**
      @param issueDetails IssueWorkDetail objects remaining to be
      scheduled
+     @param userWeeklyHours used to determine available hours, 
+     and modified when hours are used
      @param schedulesForKeys maps from issue key String to the
      IssueSchedule element for it; elements are added as they are
      successfully scheduled
-     @param defaultStartDate is the beginning of some day to start
+     @param startDate is the beginning of some day to start
      scheduling
      @return list of IssueSchedule elements in the order they were
      created
