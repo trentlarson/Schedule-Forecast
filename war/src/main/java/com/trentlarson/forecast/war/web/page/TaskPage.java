@@ -12,7 +12,8 @@ import org.apache.wicket.model.CompoundPropertyModel;
 public class TaskPage extends WebPage {
   
   public TaskPage() {
-    Form<TaskBean> newForm = new Form<TaskBean>("editForm", new CompoundPropertyModel(new TaskBean())) {
+    Form<TaskBean> newForm = new Form<TaskBean>("editForm", new CompoundPropertyModel<TaskBean>(new TaskBean())) {
+      private static final long serialVersionUID = 3079588773813118825L;
       @Override
       public void onSubmit() {
         try {
