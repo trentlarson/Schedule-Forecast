@@ -999,10 +999,10 @@ public class TimeSchedule {
 
       double dailyHoursAvailableThisRange = 
         Math.min(MAX_WORKHOURS_PER_WORKDAY, totalWorkRateAvailableThisRange / WORKDAYS_PER_WEEK);
-      // This is my velocity-fix, where I'm trying to get the hours & rate to show accurately on days worked.
-      //double dailyHoursWorkingThisRange = dailyHoursAvailableThisRange; // ... and change all but hoursWorked.add
+      // This is helpful to show the actual worked time, eg. when there's a maximum hours/week for this issue.
+      double dailyHoursWorkingThisRange = dailyHoursAvailableThisRange;
       if (maxSecondsPerWeek > 0) {
-        dailyHoursAvailableThisRange =
+        dailyHoursWorkingThisRange =
           Math.min(dailyHoursAvailableThisRange, (maxSecondsPerWeek / 3600.0) / WORKDAYS_PER_WEEK);
       }
 
@@ -1011,7 +1011,7 @@ public class TimeSchedule {
         fnebLog.debug("next work begins: " + (nextWorkChunkBegins.getTime()));
         fnebLog.debug("all rates: " + (weeklyHours.toShortString()));
         fnebLog.debug("rate this range: " + totalWorkRateAvailableThisRange);
-        fnebLog.debug("daily rate: " + dailyHoursAvailableThisRange);
+        fnebLog.debug("daily rate: " + dailyHoursWorkingThisRange);
         if (maxSecondsPerWeek > 0) {
           fnebLog.debug("max hours this issue/week: " + (maxSecondsPerWeek / 3600));
         }
@@ -1030,11 +1030,14 @@ public class TimeSchedule {
         }
         availableSecsToNextChange =
           workSecondsBetween(nextWorkChunkBegins, nextChangeCal,
-                             dailyHoursAvailableThisRange);
+                             dailyHoursWorkingThisRange);
       }
 
       long secondsThisRange =
         Math.min(availableSecsToNextChange, estSecsRemaining);
+      if (maxSecondsPerWeek > 0) {
+        secondsThisRange = Math.min(secondsThisRange, maxSecondsPerWeek);
+      }
 
       if (fnebLog.isDebugEnabled()) {
         fnebLog.debug("hours available: " + (availableSecsToNextChange / 3600.0));
@@ -1042,14 +1045,12 @@ public class TimeSchedule {
       }
 
       Calendar endOfThisRange = nextChangeCal;
-      // see 'velocity-fix'
-      // the next start may be different, eg. if we only work a few hours a week on this 
-      //Calendar startOfNextRange = nextChangeCal; // ... and change all but hoursWorked.add
+      // the next start may be different from the end, eg. if we only work a few hours a week on this 
+      Calendar startOfNextRange = nextChangeCal;
       if (secondsThisRange > 0) {
         endOfThisRange =
           futureDateInWorkWeek(nextWorkChunkBegins, secondsThisRange,
                                dailyHoursAvailableThisRange);
-        /** see 'velocity-fix'
         if (dailyHoursAvailableThisRange == dailyHoursWorkingThisRange) {
           startOfNextRange = endOfThisRange;
         } else {
@@ -1057,17 +1058,15 @@ public class TimeSchedule {
             futureDateInWorkWeek(nextWorkChunkBegins, secondsThisRange,
                                  dailyHoursWorkingThisRange);
         }
-         */
         weeklyHours
           .injectAndAdjust(nextWorkChunkBegins.getTime(),
-                           endOfThisRange.getTime(),
-                           dailyHoursAvailableThisRange * WORKDAYS_PER_WEEK);
+                           startOfNextRange.getTime(),
+                           dailyHoursWorkingThisRange * WORKDAYS_PER_WEEK);
       } else { // secondsThisRange == 0
         if (estSecsRemaining == 0.0) {
           // just set the end date to the same as the beginning
           endOfThisRange = nextWorkChunkBegins;
-          // see 'velocity-fix'
-          //startOfNextRange = endOfThisRange;
+          startOfNextRange = nextWorkChunkBegins;
         }
       }
 
@@ -1091,7 +1090,7 @@ public class TimeSchedule {
 
 
       estSecsRemaining -= secondsThisRange;
-      nextWorkChunkBegins = endOfThisRange;
+      nextWorkChunkBegins = startOfNextRange;
       
     } while (estSecsRemaining > 0);
 
