@@ -48,15 +48,15 @@ To use:
 
 For tests:
 - Run the TimeScheduleTests unit test, eg. in core:
-mvn package; java -classpath target/forecast-core-0.1-SNAPSHOT.jar:lib/commons-logging-1.1.1.jar:lib/hibernate-3.2.6.ga.jar:lib/hsqldb-1.8.0.jar:lib/log4j-1.2.15.jar:lib/mysql-5.0.7.jar com.trentlarson.forecast.core.scheduling.TimeScheduleTests > target/gantt-test.html
-- Compare the output with gantt-test.html
+mvn package; java -classpath target/forecast-core-0.1-SNAPSHOT.jar:lib/commons-logging-1.1.1.jar:lib/hibernate-3.2.6.ga.jar:lib/hsqldb-1.8.0.jar:lib/log4j-1.2.15.jar:lib/mysql-5.0.7.jar com.trentlarson.forecast.core.scheduling.TimeScheduleTests > target/gantt-test2.html
+- Compare the output with src/test/resources/gantt-test.html
 - Redirect the jira-test-db.sql into a test DB, eg: 
 mysql -u jira --password=jirapass  -D test_forecast_jira < ~/dev/scheduling/Schedule-Forecast/core/src/test/resources/jira-test-db.sql 
 - Run the TimeScheduleSetup, eg. in core:
 mvn package; java -classpath target/forecast-core-0.1-SNAPSHOT.jar:lib/commons-logging-1.1.1.jar:lib/hibernate-3.2.6.ga.jar:lib/hsqldb-1.8.0.jar:lib/log4j-1.2.15.jar:lib/mysql-5.0.7.jar com.trentlarson.forecast.core.scheduling.TimeScheduleTestSetup
 - Run the TimeScheduleTests integration test, eg. in core:
 mvn package; java -classpath target/forecast-core-0.1-SNAPSHOT.jar:lib/commons-logging-1.1.1.jar:lib/hibernate-3.2.6.ga.jar:lib/hsqldb-1.8.0.jar:lib/log4j-1.2.15.jar:lib/mysql-5.0.7.jar com.trentlarson.forecast.core.scheduling.TimeScheduleTests > target/gantt-test-db.html
-- Compare the output with gantt-test-db.html
+- Compare the output with src/test/resources/gantt-test-db.html
 
 
 ________________________________________________________________________________
