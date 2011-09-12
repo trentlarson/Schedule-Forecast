@@ -28,7 +28,7 @@ public class IssueLoader {
   // The source (outward) is the dependent (cannot start until the predecessor is completed) and the destination (inward) is the predecessor (must be completed before starting dependent).
   public static final String LINK_DEPENDENCY="10004";
   public static final String CUSTOM_START_DATE="10180";
-  public static final String CUSTOM_HOURS_PER_WEEK="10060";
+  public static final String CUSTOM_HOURS_PER_WEEK="10070";
   /**
 	  public static final String LINK_SUBTASK, LINK_DEPENDENCY, CUSTOM_START_DATE;
 	  public static final String PROP_LINK_SUBTASK = "icentris.jira.string.link.subtask";
