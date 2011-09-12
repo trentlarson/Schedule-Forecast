@@ -11,7 +11,7 @@ import org.apache.log4j.Logger;
 
 public class TimeScheduleDisplayPreferences {
 
-  private static final Logger log4jLog = Logger.getLogger("ic.sched.TimeScheduleDisplayPreferences");
+  public static final Logger log4jLog = Logger.getLogger("ic.sched.TimeScheduleDisplayPreferences");
 
   /** # of days to put in each slice */
   public final int timeGranularity;

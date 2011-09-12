@@ -12,9 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Level;
-
 import com.trentlarson.forecast.core.dao.TeamHours;
 import com.trentlarson.forecast.core.helper.ForecastUtil;
 
@@ -24,14 +21,15 @@ public class TimeScheduleTests {
     
     // This enables basic Log4J logging to standard out.
     // ... but note that you'll have to turn off a bunch of logs.
-    //BasicConfigurator.configure();
+    org.apache.log4j.BasicConfigurator.configure();
     
     //IssueLoader.log4jLog.setLevel(org.apache.log4j.Level.DEBUG);
-    //TimeScheduleLoader.log4jLog.setLevel(org.apache.log4j.Level.DEBUG);
-    //TimeSchedule.log4jLog.setLevel(org.apache.log4j.Level.DEBUG);
-    //TimeScheduleWriter.log4jLog.setLevel(org.apache.log4j.Level.DEBUG);
-    //TimeSchedule.fnebLog.setLevel(Level.DEBUG);
-    //TimeSchedule.wsbLog.setLevel(Level.ERROR);
+    TimeSchedule.log4jLog.setLevel(org.apache.log4j.Level.ERROR);
+    TimeScheduleLoader.log4jLog.setLevel(org.apache.log4j.Level.ERROR);
+    TimeScheduleDisplayPreferences.log4jLog.setLevel(org.apache.log4j.Level.ERROR);
+    TimeScheduleWriter.log4jLog.setLevel(org.apache.log4j.Level.ERROR);
+    //TimeSchedule.fnebLog.setLevel(org.apache.log4j.Level.DEBUG);
+    //TimeSchedule.wsbLog.setLevel(org.apache.log4j.Level.ERROR);
     
     PrintWriter out = null;
     try {
