@@ -458,11 +458,12 @@ public class TimeSchedule {
     public int totalEstimate();
     /** @return in seconds */
     public int totalTimeSpent();
+    /** either the maximum number of seconds or 0 if there is no max */
+    public int getMaxSecondsPerWeek();
     public Date getDueDate();
     public Date getMustStartOnDate();
     public int getPriority();
     public boolean getResolved();
-
     /** @return issues that "must be done before" this issue */
     public Set<T> getPrecursors();
     /** @return issues to schedule before this issue (subtasks and precursors) */
@@ -495,7 +496,7 @@ public class TimeSchedule {
       this.timeAssignee = timeAssignee_;
       this.summary = summary_;
       this.issueEstSecondsRaw = issueEstSecondsRaw_;
-      this.secsPerWeek = maxHoursPerWeek_ <= 0.0 ? issueEstSecondsRaw_ : ((int) (maxHoursPerWeek_ * 60 * 60));
+      this.secsPerWeek = maxHoursPerWeek_ <= 0.0 ? 0 : ((int) (maxHoursPerWeek_ * 60 * 60));
       this.dueDate = dueDate_;
       this.mustStartOnDate = mustStartOnDate_;
       this.priority = priority_;
@@ -507,6 +508,7 @@ public class TimeSchedule {
     /** estimated seconds remaining */
     public int getEstimate() { return issueEstSecondsRaw; }
     public int getTimeSpent() { return 0; }
+    public int getMaxSecondsPerWeek() { return secsPerWeek; }
     public int totalEstimate() { return issueEstSecondsRaw; }
     public int totalTimeSpent() { return 0; }
     public Date getDueDate() { return dueDate; }
@@ -683,6 +685,11 @@ public class TimeSchedule {
   }
 
 
+  /**
+   * 
+   * @param thisCal
+   * @return a calendar where the hour-of-day is rounded down (ie. set to beginning of the day, down to the millisecond)
+   */
   private static Calendar instanceAtDayStart(Calendar thisCal) {
     Calendar newCal = (Calendar) thisCal.clone();
     newCal.set(Calendar.HOUR_OF_DAY, 0);
@@ -692,7 +699,19 @@ public class TimeSchedule {
     return newCal;
   }
 
-
+  /**
+   * 
+   * @param thisCal
+   * @return a calendar where the day-of-week is rounded down (ie. set to beginning of the week, down to the millisecond)
+   */
+  /** unused
+  private static Calendar instanceAtWeekStart(Calendar thisCal) {
+    Calendar newCal = (Calendar) thisCal.clone();
+    newCal.set(Calendar.DAY_OF_WEEK, 0);
+    return instanceAtDayStart(newCal);
+  }
+  */
+  
   /** @return number of days into the work week by midnight this day's morning */
   private static int daysIntoWorkWeek(Calendar someday) {
     switch (someday.get(Calendar.DAY_OF_WEEK)) {
@@ -741,6 +760,20 @@ public class TimeSchedule {
     }
     return nextEstBegin;
   }
+
+  /**
+   * 
+   * @param date
+   * @return beginning work time in week following date
+   */
+  /** unused
+  private static Calendar beginningOfNextWorkWeek(Calendar thisCal) {
+    Calendar nextCal = (Calendar) thisCal.clone();
+    nextCal.add(Calendar.WEEK_OF_YEAR, 1);
+    return dateInWorkWeek(instanceAtWeekStart(nextCal).getTime(), MAX_WORKHOURS_PER_WORKDAY);
+  }
+  **/
+
 
 
 
@@ -952,7 +985,7 @@ public class TimeSchedule {
      @return the next start date based on the start date and estimate
    */
   private static NextBeginAndHoursWorked findNextEstBegin
-  (Calendar thisEstBegin, int estSeconds, WeeklyWorkHours weeklyHours) {
+  (Calendar thisEstBegin, int estSeconds, WeeklyWorkHours weeklyHours, int maxSecondsPerWeek) {
 
     Calendar nextWorkChunkBegins = (Calendar) thisEstBegin.clone();
     List<WorkedHoursAndRates> hoursWorked = new ArrayList<WorkedHoursAndRates>();
@@ -965,8 +998,13 @@ public class TimeSchedule {
         weeklyHours.retrieve(nextWorkChunkBegins.getTime());
 
       double dailyHoursAvailableThisRange = 
-        Math.min(totalWorkRateAvailableThisRange / WORKDAYS_PER_WEEK,
-                 MAX_WORKHOURS_PER_WORKDAY);
+        Math.min(MAX_WORKHOURS_PER_WORKDAY, totalWorkRateAvailableThisRange / WORKDAYS_PER_WEEK);
+      // This is my velocity-fix, where I'm trying to get the hours & rate to show accurately on days worked.
+      //double dailyHoursWorkingThisRange = dailyHoursAvailableThisRange; // ... and change all but hoursWorked.add
+      if (maxSecondsPerWeek > 0) {
+        dailyHoursAvailableThisRange =
+          Math.min(dailyHoursAvailableThisRange, (maxSecondsPerWeek / 3600.0) / WORKDAYS_PER_WEEK);
+      }
 
       if (fnebLog.isDebugEnabled()) {
         fnebLog.debug("est hours remaning: " + (estSecsRemaining / 3600.0));
@@ -974,6 +1012,9 @@ public class TimeSchedule {
         fnebLog.debug("all rates: " + (weeklyHours.toShortString()));
         fnebLog.debug("rate this range: " + totalWorkRateAvailableThisRange);
         fnebLog.debug("daily rate: " + dailyHoursAvailableThisRange);
+        if (maxSecondsPerWeek > 0) {
+          fnebLog.debug("max hours this issue/week: " + (maxSecondsPerWeek / 3600));
+        }
       }
 
       Calendar nextChangeCal = null;
@@ -1001,10 +1042,22 @@ public class TimeSchedule {
       }
 
       Calendar endOfThisRange = nextChangeCal;
+      // see 'velocity-fix'
+      // the next start may be different, eg. if we only work a few hours a week on this 
+      //Calendar startOfNextRange = nextChangeCal; // ... and change all but hoursWorked.add
       if (secondsThisRange > 0) {
         endOfThisRange =
           futureDateInWorkWeek(nextWorkChunkBegins, secondsThisRange,
                                dailyHoursAvailableThisRange);
+        /** see 'velocity-fix'
+        if (dailyHoursAvailableThisRange == dailyHoursWorkingThisRange) {
+          startOfNextRange = endOfThisRange;
+        } else {
+          startOfNextRange =
+            futureDateInWorkWeek(nextWorkChunkBegins, secondsThisRange,
+                                 dailyHoursWorkingThisRange);
+        }
+         */
         weeklyHours
           .injectAndAdjust(nextWorkChunkBegins.getTime(),
                            endOfThisRange.getTime(),
@@ -1013,6 +1066,8 @@ public class TimeSchedule {
         if (estSecsRemaining == 0.0) {
           // just set the end date to the same as the beginning
           endOfThisRange = nextWorkChunkBegins;
+          // see 'velocity-fix'
+          //startOfNextRange = endOfThisRange;
         }
       }
 
@@ -1252,7 +1307,7 @@ public class TimeSchedule {
                 (ArrayList<IssueSchedule>) nonContiguousSchedules.clone();
 
               nextAndWorked =
-                findNextEstBegin(nextEstBegin, issueEstSeconds, weeklyHours);
+                findNextEstBegin(nextEstBegin, issueEstSeconds, weeklyHours, currentDetail.getMaxSecondsPerWeek());
               log4jLog.debug(currentDetail.getKey() + " end: "
                              + "+" + (issueEstSeconds / 3600.0)
                              + "h = " + nextAndWorked.nextBegin.getTime());
@@ -1928,7 +1983,7 @@ public class TimeSchedule {
       thisEstBegin.setTime(fourth);
       workingRange = (WeeklyWorkHours) origRange.clone();
       NextBeginAndHoursWorked nextAndHours = 
-        findNextEstBegin(thisEstBegin, 1 * 3600, workingRange);
+        findNextEstBegin(thisEstBegin, 1 * 3600, workingRange, 0);
       Date taskEnd = previousTaskEnd(nextAndHours.nextBegin, 1 * 3600);
       int offsetMillis = (int) (nextAndHours.nextBegin.getTime().getTime() - taskEnd.getTime());
       out.println("<br>");
@@ -1937,7 +1992,7 @@ public class TimeSchedule {
                   + " will end immediately before the next one begins)");
 
       workingRange = (WeeklyWorkHours) origRange.clone();
-      nextAndHours = findNextEstBegin(thisEstBegin, 16 * 3600, workingRange);
+      nextAndHours = findNextEstBegin(thisEstBegin, 16 * 3600, workingRange, 0);
       taskEnd = previousTaskEnd(nextAndHours.nextBegin, 16 * 3600);
       Date eighth = slashFormatter.parse("2005/04/08");
       out.println("<br>");
@@ -1954,7 +2009,7 @@ public class TimeSchedule {
                   + " got " + (offsetMillis / 3600000) + " hours)");
 
       workingRange = (WeeklyWorkHours) origRange.clone();
-      nextAndHours = findNextEstBegin(thisEstBegin, 22 * 3600, workingRange);
+      nextAndHours = findNextEstBegin(thisEstBegin, 22 * 3600, workingRange, 0);
       Date thirteenth = slashFormatter.parse("2005/04/13");
       out.println("<br>");
       out.println((nextAndHours.nextBegin.getTime().equals(thirteenth) ? "pass" : "fail")

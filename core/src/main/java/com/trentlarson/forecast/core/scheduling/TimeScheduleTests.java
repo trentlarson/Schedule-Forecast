@@ -12,6 +12,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Level;
+
 import com.trentlarson.forecast.core.dao.TeamHours;
 import com.trentlarson.forecast.core.helper.ForecastUtil;
 
@@ -19,10 +22,16 @@ public class TimeScheduleTests {
 
   public static void main(String[] args) throws Exception {
     
+    // This enables basic Log4J logging to standard out.
+    // ... but note that you'll have to turn off a bunch of logs.
+    //BasicConfigurator.configure();
+    
     //IssueLoader.log4jLog.setLevel(org.apache.log4j.Level.DEBUG);
     //TimeScheduleLoader.log4jLog.setLevel(org.apache.log4j.Level.DEBUG);
     //TimeSchedule.log4jLog.setLevel(org.apache.log4j.Level.DEBUG);
     //TimeScheduleWriter.log4jLog.setLevel(org.apache.log4j.Level.DEBUG);
+    //TimeSchedule.fnebLog.setLevel(Level.DEBUG);
+    //TimeSchedule.wsbLog.setLevel(Level.ERROR);
     
     PrintWriter out = null;
     try {
@@ -58,7 +67,7 @@ public class TimeScheduleTests {
 
     outputVariableTimeTestResults(out);
 
-    //outputTimePerWeekTestResults(out);
+    outputTimePerWeekTestResults(out);
 
     outputSplitTeamTestResults(out);
 
@@ -297,36 +306,36 @@ public class TimeScheduleTests {
     IssueTree[] manyIssues = {
         // let's make this one a few hours per week
       new IssueTree
-      ("TEST-200", "3-day issue", null, 1L,
-       5 * jira_day, 0 * jira_day, 8.0,
+      ("TEST-220-split", "3-day issue", null, 1L,
+       3 * jira_day, 0 * jira_day, 4.0,
        SLASH_DATE.parse("2005/05/20"), null, 4, false)
       ,
       new IssueTree
-      ("TEST-201", "4.5-day issue", null, 1L,
-       3 * jira_day, 0 * jira_day, 0.0,
-       SLASH_DATE.parse("2005/04/24"), null, 5, false)
+      ("TEST-221", "4.5-day issue", null, 1L,
+       (int) (4.5 * jira_day), 0 * jira_day, 0.0,
+       SLASH_DATE.parse("2005/04/15"), null, 5, false)
       ,
       new IssueTree
-      ("TEST-202", "3 days again", null, 1L,
-       3 * jira_day, 0 * jira_day, 4.0,
-       SLASH_DATE.parse("2005/04/30"), null, 6, false)
+      ("TEST-222-split", "3 days, faster", null, 1L,
+       3 * jira_day, 0 * jira_day, 8.0,
+       SLASH_DATE.parse("2005/05/06"), null, 6, false)
       ,
       new IssueTree
-      ("TEST-203", "9-day issue", null, 1L,
-       9 * jira_day, 0 * jira_day, 0.0,
+      ("TEST-223", "4-day issue", null, 1L,
+       4 * jira_day, 0 * jira_day, 0.0,
        null, null, 3, false)
       ,
       new IssueTree
-      ("TEST-204", "9-day issue", null, 1L,
+      ("TEST-224-split", "9-day issue", null, 1L,
        9 * jira_day, 0 * jira_day, 32.0,
        null, null, 6, false)
       ,
       new IssueTree
-      ("TEST-204.1", "8-day issue", null, 1L,
+      ("TEST-224.1", "8-day issue", null, 1L,
        8 * jira_day, 0 * jira_day, 0.0,
        null, null, 7, false)
     };
-
+    
     Map<Teams.UserTimeKey,List<TeamHours>> userWeeklyHours =
       new TreeMap<Teams.UserTimeKey,List<TeamHours>>();
     Map<Teams.AssigneeKey,List<IssueTree>> userDetails =
@@ -347,6 +356,18 @@ public class TimeScheduleTests {
        TimeScheduleDisplayPreferences
        .createForUser(1, 0, true, false, false, user, false, graph));
     
+    
+    // print out team table schedule
+    List<TimeSchedule.IssueSchedule<IssueTree>> schedule = new ArrayList<TimeSchedule.IssueSchedule<IssueTree>>();
+    List<IssueTree> userIssueList = graph.getAssignedUserDetails().get(user);
+    for (int i = 0; i < userIssueList.size(); i++) {
+      schedule.add
+        (graph.getIssueSchedules().get
+         (userIssueList.get(i).getKey()));
+    }
+    TimeSchedule.writeIssueSchedule
+      (schedule, sPrefs.getTimeMultiplier(), true, out);
+
   }
 
   public static void outputSplitTeamTestResults(PrintWriter out) throws Exception {
