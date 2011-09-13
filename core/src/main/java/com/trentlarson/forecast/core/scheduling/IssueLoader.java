@@ -97,7 +97,7 @@ public class IssueLoader {
    * for Jira, when we do have hours per week
    * 
    */
-  private static final String DB_HOURS_PER_WEEK_COLUMN = "cfv.datevalue";
+  private static final String DB_HOURS_PER_WEEK_COLUMN = "cfv.numbervalue";
   private static final String DB_HOURS_PER_WEEK_COLUMN_B = DB_HOURS_PER_WEEK_COLUMN;
   private static final String DB_HOURS_PER_WEEK_JOIN = 
     " left outer join customfieldvalue cfv on issueb.id = cfv.issue"
