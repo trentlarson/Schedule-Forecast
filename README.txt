@@ -43,8 +43,9 @@ Helpful hints for Eclipse:
    add 'M2_REPO' to point to your $HOME/.m2/repository directory
 
 To use:
+- hours-per-week is enabled by default in IssueLoader.java; make
+    sure to create that as a custom field (of type number) and put the ID in there
 - Browse to forecast/gantt.jsp, eg. http://localhost:8080/forecast/gantt.jsp
-
 
 For tests:
 - Run the TimeScheduleTests unit test, eg. in core:
