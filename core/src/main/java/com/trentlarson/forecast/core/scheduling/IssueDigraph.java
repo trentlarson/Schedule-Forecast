@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.trentlarson.forecast.core.scheduling.TimeSchedule.IssueWorkDetail;
+
 public class IssueDigraph {
 
   private Map<String,TimeSchedule.IssueSchedule<IssueTree>> issueSchedules;
@@ -17,6 +19,8 @@ public class IssueDigraph {
 
   private TimeScheduleCreatePreferences prefs;
   private Date loadedDate = new Date();
+  private int maxPriority = -1;
+  
   /**
      @param issueSchedules_ maps issue key to IssueSchedule object
      @param userDetails_ maps user key to IssueDetail List
@@ -104,6 +108,24 @@ public class IssueDigraph {
   public Date getLoadedDate() {
     return loadedDate;
   }
+  /**
+   * Return the maximum priority found in all the issues, calculating it if this is the first call.
+   * 
+   * Remember: priorities are 1-based.  If no priorities exist, a -1 is returned.
+   * 
+   * @see IssueWorkDetail#getPriority()
+   */
+  public int getMaxPriority() {
+    if (maxPriority == -1) {
+      for (Iterator<TimeSchedule.IssueSchedule<IssueTree>> iter = getIssueSchedules().values().iterator(); iter.hasNext(); ) {
+        TimeSchedule.IssueSchedule<IssueTree> schedule = iter.next();
+        if (maxPriority < schedule.getIssue().getPriority()) {
+          maxPriority = schedule.getIssue().getPriority();
+        }
+      }
+    }
+    return maxPriority;
+  }
   public TimeScheduleCreatePreferences getTimeScheduleCreatePreferences() {
     return prefs;
   }
@@ -120,6 +142,7 @@ public class IssueDigraph {
     return sb.toString();
   }
 
+  /* unused (and loops through all issues when called... why did I write this?)
   public Date findMaxEndDate(Date max) {
     for (Iterator<TimeSchedule.IssueSchedule<IssueTree>> iter = getIssueSchedules().values().iterator(); iter.hasNext(); ) {
       TimeSchedule.IssueSchedule<IssueTree> schedule = iter.next();
@@ -129,6 +152,7 @@ public class IssueDigraph {
     }
     return max;
   }
+  */
 
   public void reschedule() {
     

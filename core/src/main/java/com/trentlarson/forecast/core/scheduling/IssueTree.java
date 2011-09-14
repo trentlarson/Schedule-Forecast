@@ -2,6 +2,8 @@ package com.trentlarson.forecast.core.scheduling;
 
 import java.util.*;
 
+import com.trentlarson.forecast.core.scheduling.TimeSchedule.IssueWorkDetail;
+
 public class IssueTree extends TimeSchedule.IssueWorkDetailOriginal<IssueTree> implements Comparable<IssueTree> {
   private String rawPerson; // (REFACTOR: store a Teams.AssigneeKey instead of separate person & team ID)
   private Long rawTeamId;
@@ -61,6 +63,7 @@ public class IssueTree extends TimeSchedule.IssueWorkDetailOriginal<IssueTree> i
   }
 
   public int  getTimeSpent() { return spent; }
+  /** @see IssueWorkDetail#getPriority() */
   public int  getPriorityOrig() { return priorityOrig; }
   public int getEstimateOrig() { return estimateOrig; }
   public int getSecsPerWeek() { return secsPerWeek; }

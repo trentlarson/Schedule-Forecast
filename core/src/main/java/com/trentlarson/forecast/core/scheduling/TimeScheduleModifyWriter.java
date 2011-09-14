@@ -27,7 +27,7 @@ public class TimeScheduleModifyWriter {
           ("<input type='radio' name='"
            + makePriorityCheckboxName(detail.getKey())
            + "' value='" + (priority) + "' "
-           + (detail.getPriority() == (priority + 1) ? "CHECKED" : "")
+           + (detail.getPriority() == priority ? "CHECKED" : "")
            + ">");
         if (priority == (int) maxPriority / 2) {
           out.write("" + priority);

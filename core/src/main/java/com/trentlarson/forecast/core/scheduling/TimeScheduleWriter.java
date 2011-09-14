@@ -84,15 +84,8 @@ public class TimeScheduleWriter {
       IssueTree detail = graph.getIssueTree(issueKey);
       detail.setPriorityCompleteDates(maxDateForPriority, graph, dPrefs);
     }
-    // now fit that data into an array
-    int maxKey = 1; // priority numbers are 1-based
-    for (Integer priority : maxDateForPriority.keySet()) {
-      if (priority > maxKey) {
-        maxKey = priority;
-      }
-    }
-    Date[] priorityDates = new Date[maxKey];
-    for (int i = 1; i <= maxKey; i++) { // priority numbers are 1-based
+    Date[] priorityDates = new Date[graph.getMaxPriority()];
+    for (int i = 1; i <= graph.getMaxPriority(); i++) { // priority numbers are 1-based
       if (maxDateForPriority.get(new Integer(i)) == null) {
         priorityDates[i - 1] = startDate;
       } else {

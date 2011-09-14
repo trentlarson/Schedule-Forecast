@@ -450,7 +450,7 @@ public class TimeSchedule {
     public String getKey();
     public String getTimeAssignee();
     public String getSummary();
-    /** @return in seconds */
+    /** @return estimated seconds remaining */
     public int getEstimate();
     /** @return in seconds */
     public int getTimeSpent();
@@ -461,7 +461,9 @@ public class TimeSchedule {
     /** either the maximum number of seconds or 0 if there is no max */
     public int getMaxSecondsPerWeek();
     public Date getDueDate();
+    /** date when work must start (probably for X hours-per-week tasks, which isn't built yet); see IssueLoader.DB_START_DATE_COLUMN for how we load values */
     public Date getMustStartOnDate();
+    /** 1-based (though I'd like to make it 0-based; just have to adjust Jira loading and modifying) */
     public int getPriority();
     public boolean getResolved();
     /** @return issues that "must be done before" this issue */
@@ -477,7 +479,7 @@ public class TimeSchedule {
     // REFACTOR the key to be null by default
     protected String key = "", timeAssignee = null, summary = "";
     protected int issueEstSecondsRaw = 0, secsPerWeek = 0;
-    protected int priority = 0;
+    protected int priority = 1;
     protected Date dueDate = null, mustStartOnDate = null;
     // issues that "must be done before" this one
     protected final SortedSet<T> precursors = new TreeSet<T>();
@@ -505,15 +507,15 @@ public class TimeSchedule {
     public String getKey() { return key; }
     public String getTimeAssignee() { return timeAssignee; }
     public String getSummary() { return summary; }
-    /** estimated seconds remaining */
     public int getEstimate() { return issueEstSecondsRaw; }
     public int getTimeSpent() { return 0; }
     public int getMaxSecondsPerWeek() { return secsPerWeek; }
     public int totalEstimate() { return issueEstSecondsRaw; }
     public int totalTimeSpent() { return 0; }
     public Date getDueDate() { return dueDate; }
-    /** date when work must start (probably for X hours-per-week tasks, which isn't built yet); see IssueLoader.DB_START_DATE_COLUMN for how we load values */
+    /** @see IssueWorkDetail#getMustStartOnDate() */
     public Date getMustStartOnDate() { return mustStartOnDate; }
+    /** @see IssueWorkDetail#getPriority() */
     public int getPriority() { return priority; }
     public boolean getResolved() { return false; }
     public Set<T> getPrecursors() { return precursors; }
@@ -704,7 +706,7 @@ public class TimeSchedule {
    * @param thisCal
    * @return a calendar where the day-of-week is rounded down (ie. set to beginning of the week, down to the millisecond)
    */
-  /** unused
+  /* unused
   private static Calendar instanceAtWeekStart(Calendar thisCal) {
     Calendar newCal = (Calendar) thisCal.clone();
     newCal.set(Calendar.DAY_OF_WEEK, 0);
@@ -766,13 +768,13 @@ public class TimeSchedule {
    * @param date
    * @return beginning work time in week following date
    */
-  /** unused
+  /* unused
   private static Calendar beginningOfNextWorkWeek(Calendar thisCal) {
     Calendar nextCal = (Calendar) thisCal.clone();
     nextCal.add(Calendar.WEEK_OF_YEAR, 1);
     return dateInWorkWeek(instanceAtWeekStart(nextCal).getTime(), MAX_WORKHOURS_PER_WORKDAY);
   }
-  **/
+  */
 
 
 
