@@ -608,7 +608,6 @@ public class ForecastUtil extends ForecastConstants {
   public static Connection getConnection() throws SQLException {
 	  
     /** JNDI
-    */
     javax.sql.DataSource dsrc = null;
     try {
       dsrc = (javax.sql.DataSource) new javax.naming.InitialContext().lookup("java:comp/env/jdbc/JiraDS");
@@ -616,7 +615,17 @@ public class ForecastUtil extends ForecastConstants {
       throw new java.lang.reflect.UndeclaredThrowableException(e);
     }
     return dsrc.getConnection();
+    */
 	
+
+    /** OfBiz
+    */
+    try {
+      return (new org.ofbiz.core.entity.jdbc.SQLProcessor("defaultDS")).getConnection();
+    } catch (org.ofbiz.core.util.GeneralException e) {
+      throw new java.lang.reflect.UndeclaredThrowableException(e);
+    }
+
 	
     /** HSQL
     try {
