@@ -638,116 +638,7 @@ public class TimeScheduleTests {
 
     out.println("<p>Creating issues without dependencies...<p>");
 
-    Date startDate = SLASH_DATE.parse("2005/04/05");
-
-    IssueTree issue_6 =
-      new IssueTree
-      ("TEST--6", "Ancestor test issue", "trent", 1L,
-       0 * 3600, 0 * 3600, 0.0, null, null, 1, false);
-    IssueTree issue_5 =
-      new IssueTree
-      ("TEST--5", "Ancestor test issue", "trent", 1L,
-       4 * 3600, 0 * 3600, 0.0, null, null, 1, false);
-    IssueTree issue_4 =
-      new IssueTree
-      ("TEST--4", "Ancestor test issue", "ken", 1L,
-       4 * 3600, 0 * 3600, 0.0, null, null, 1, false);
-    IssueTree issue_3 =
-      new IssueTree
-      ("TEST--3", "Ancestor test issue", "brent", 1L,
-       4 * 3600, 0 * 3600, 0.0, null, null, 1, false);
-    IssueTree issue_2 =
-      new IssueTree
-      ("TEST--2", "Ancestor test issue", "trent", 1L,
-       4 * 3600, 0 * 3600, 0.0, null, null, 1, false);
-    IssueTree issue_1 =
-      new IssueTree
-      ("TEST--1", "Ancestor test issue", "ken", 1L,
-       4 * 3600, 0 * 3600, 0.0, null, null, 1, false);
-    IssueTree issue0 =
-      new IssueTree
-      ("TEST-0", "Grandparent test issue", "fred", 1L,
-       8 * 3600, 0 * 3600, 0.0,
-       SLASH_DATE.parse("2005/01/01"), null, 1, false);
-    IssueTree issue1 =
-      new IssueTree
-      ("TEST-1", "Parent test issue", "brent", 1L,
-       10 * 3600, 0 * 3600, 0.0,
-       SLASH_DATE.parse("2005/04/01"), null, 1, false);
-    IssueTree issue2 =
-      new IssueTree
-      ("TEST-2", "issue", "ken", 1L, 24 * 3600, 1 * 3600, 0.0,
-       SLASH_DATE.parse("2005/04/16"), null, 8, false);
-    IssueTree issue4 =
-      new IssueTree
-      ("TEST-4", "top", "trent", 1L, 8 * 3600, 1 * 3600, 0.0,
-       SLASH_DATE.parse("2005/04/13"), null, 4, false);
-    IssueTree issue9 =
-      new IssueTree
-      ("TEST-9", "issue", "ken", 1L, 20 * 3600, 1 * 3600, 0.0,
-       SLASH_DATE.parse("2005/04/05"), null, 3, false);
-    IssueTree issue11 =
-      new IssueTree
-      ("TEST-11", "sub issue", "trent", 1L, 4 * 3600, 1 * 3600, 0.0,
-       SLASH_DATE.parse("2005/04/15"), null, 3, true);
-    IssueTree issue12 =
-      new IssueTree
-      ("TEST-12", "sub issue", "ken", 1L, 3 * 3600, 1 * 3600, 0.0,
-       SLASH_DATE.parse("2005/06/01"), null, 2, false);
-    IssueTree issue13 =
-      new IssueTree
-      ("TEST-13", "after TEST-1,2", "trent", 1L, 10 * 3600, 1 * 3600, 0.0,
-       null, null, 2, true);
-    IssueTree issue13_1 =
-      new IssueTree
-      ("TEST-13-1", "sub of TEST-13", "trent", 1L, 10 * 3600, 1 * 3600, 0.0,
-       null, null, 9, false);
-    IssueTree issue14 =
-      new IssueTree
-      ("TEST-14", "dependant issue", "trent", 1L, 16 * 3600, 1 * 3600, 0.0,
-       SLASH_DATE.parse("2005/06/01"), null, 4, false);
-    IssueTree issue15 =
-      new IssueTree
-      ("TEST-15", "dependant issue", "trent", 1L, 4 * 3600, 1 * 3600, 0.0,
-       SLASH_DATE.parse("2005/04/07"), null, 5, false);
-    IssueTree issue16 =
-      new IssueTree
-      ("TEST-16", "some issue", "trent", 1L, 12 * 3600, 1 * 3600, 0.0,
-       SLASH_DATE.parse("2005/04/15"), null, 6, false);
-
-    IssueTree[] manyIssues = {
-      issue_6, issue_5, issue_4, issue_3, issue_2, issue_1, issue0, issue1,
-      issue2, issue4, issue9, issue11, issue12, issue13, issue13_1,
-      issue14, issue15, issue16
-    };
-
-    Map<Teams.UserTimeKey,List<TeamHours>> userWeeklyHours =
-      new TreeMap<Teams.UserTimeKey,List<TeamHours>>();
-    List<TeamHours> hourList = new ArrayList();
-    hourList.add(new TeamHours(0L, 1L, "trent", SLASH_DATE.parse("2005/01/01"), 40.0));
-    userWeeklyHours.put(new Teams.UserTimeKey(1L, "trent"), hourList);
-           
-    hourList = new ArrayList();
-    hourList.add(new TeamHours(1L, 1L, "ken", SLASH_DATE.parse("2005/01/01"), 40.0));
-    userWeeklyHours.put(new Teams.UserTimeKey(1L, "ken"), hourList);
-
-    hourList = new ArrayList();
-    hourList.add(new TeamHours(2L, 1L, "brent", SLASH_DATE.parse("2005/01/01"), 40.0));
-    userWeeklyHours.put(new Teams.UserTimeKey(1L, "brent"), hourList);
-
-    hourList = new ArrayList();
-    hourList.add(new TeamHours(3L, 1L, "fred", SLASH_DATE.parse("2005/01/01"), 40.0));
-    userWeeklyHours.put(new Teams.UserTimeKey(1L, "fred"), hourList);
-
-    Map<Teams.AssigneeKey,List<IssueTree>> userDetails =
-        createUserDetails(manyIssues, userWeeklyHours);
-
-    TimeScheduleCreatePreferences sPrefs =
-      new TimeScheduleCreatePreferences(0, startDate, 2);
-    IssueDigraph graph =
-      IssueDigraph.schedulesForUserIssues3
-      (userDetails, userWeeklyHours, sPrefs);
-
+    TestIssues testIssues = createTestIssues();
 
     // print out single-user table schedule & Gantt chart
     {
@@ -756,33 +647,33 @@ public class TimeScheduleTests {
       Teams.AssigneeKey userKey = new Teams.AssigneeKey(userTeam, userPerson);
 
       List<TimeSchedule.IssueSchedule<IssueTree>> schedule = new ArrayList();
-      List<IssueTree> userIssueList = userDetails.get(userKey);
+      List<IssueTree> userIssueList = testIssues.userDetails.get(userKey);
       for (int i = 0; i < userIssueList.size(); i++) {
         schedule.add
-          (graph.getIssueSchedules().get
+          (testIssues.graph.getIssueSchedules().get
            (((TimeSchedule.IssueWorkDetail) userIssueList.get(i)).getKey()));
       }
       TimeSchedule.writeIssueSchedule
-        (schedule, sPrefs.getTimeMultiplier(), true, out);
+        (schedule, testIssues.sPrefs.getTimeMultiplier(), true, out);
 
       out.println("<br><br>");
       out.println("Tree for " + userKey + ".<br>");
       TimeScheduleWriter.writeIssueTable
-        (graph, out, sPrefs,
-         TimeScheduleDisplayPreferences.createForUser(1, 0, true, false, false, userKey, false, graph));
+        (testIssues.graph, out, testIssues.sPrefs,
+         TimeScheduleDisplayPreferences.createForUser(1, 0, true, false, false, userKey, false, testIssues.graph));
 
 
       out.println("<br><br>");
       out.println("Tree for " + userKey + " allowing modifications.<br>");
       TimeScheduleWriter.writeIssueTable
-        (graph, out, sPrefs,
-         TimeScheduleDisplayPreferences.createForUser(1, 0, true, false, false, userKey, true, graph));
+        (testIssues.graph, out,testIssues. sPrefs,
+         TimeScheduleDisplayPreferences.createForUser(1, 0, true, false, false, userKey, true, testIssues.graph));
 
       out.println("<br><br>");
       out.println("Tree for TEST-12 allowing modifications.<br>");
       TimeScheduleWriter.writeIssueTable
-        (graph, out, sPrefs,
-         TimeScheduleDisplayPreferences.createForIssues(1, 0, false, false, false, new String[]{"TEST-12"}, true, graph));
+        (testIssues.graph, out,testIssues. sPrefs,
+         TimeScheduleDisplayPreferences.createForIssues(1, 0, false, false, false, new String[]{"TEST-12"}, true, testIssues.graph));
 
     }
 
@@ -792,25 +683,25 @@ public class TimeScheduleTests {
 
     out.println("<p>Adding dependency relationships...<p>");
 
-    issue_6.addDependent(issue_4);
-    issue_5.addDependent(issue_3);
-    issue_4.addDependent(issue_3);
-    issue_4.addDependent(issue_1);
-    issue_3.addDependent(issue_1);
-    issue_2.addDependent(issue_1);
-    issue_1.addDependent(issue0);
-    issue0.addDependent(issue1);
-    issue0.addDependent(issue12);
-    issue0.addDependent(issue14);
-    issue1.addSubtask(issue11);
-    issue1.addSubtask(issue12);
-    issue1.addDependent(issue4);
-    issue1.addDependent(issue13);
-    issue2.addDependent(issue13);
-    issue2.addSubtask(issue12);
-    issue2.addSubtask(issue14);
-    issue2.addSubtask(issue15);
-    issue13.addSubtask(issue13_1);
+    testIssues.issue_6.addDependent(testIssues.issue_4);
+    testIssues.issue_5.addDependent(testIssues.issue_3);
+    testIssues.issue_4.addDependent(testIssues.issue_3);
+    testIssues.issue_4.addDependent(testIssues.issue_1);
+    testIssues.issue_3.addDependent(testIssues.issue_1);
+    testIssues.issue_2.addDependent(testIssues.issue_1);
+    testIssues.issue_1.addDependent(testIssues.issue0);
+    testIssues.issue0.addDependent(testIssues.issue1);
+    testIssues.issue0.addDependent(testIssues.issue12);
+    testIssues.issue0.addDependent(testIssues.issue14);
+    testIssues.issue1.addSubtask(testIssues.issue11);
+    testIssues.issue1.addSubtask(testIssues.issue12);
+    testIssues.issue1.addDependent(testIssues.issue4);
+    testIssues.issue1.addDependent(testIssues.issue13);
+    testIssues.issue2.addDependent(testIssues.issue13);
+    testIssues.issue2.addSubtask(testIssues.issue12);
+    testIssues.issue2.addSubtask(testIssues.issue14);
+    testIssues.issue2.addSubtask(testIssues.issue15);
+    testIssues.issue13.addSubtask(testIssues.issue13_1);
 
 
     /**
@@ -841,12 +732,12 @@ public class TimeScheduleTests {
 .                                                                     +_ 13_1
     **/
 
-    graph = 
+    testIssues.graph =
       IssueDigraph.schedulesForUserIssues3
-      (userDetails, userWeeklyHours, sPrefs);
+      (testIssues.userDetails, testIssues.userWeeklyHours, testIssues.sPrefs);
 
 
-    List branches1 = TimeScheduleSearch.findPredecessorBranches(issue1);
+    List branches1 = TimeScheduleSearch.findPredecessorBranches(testIssues.issue1);
     out.println("<br><br>");
     out.println("All branches of TEST-1: ");
     out.println(branches1);
@@ -854,49 +745,46 @@ public class TimeScheduleTests {
     out.println("<br><br>");
     out.println("Tree for issues 1 and 2.<br>");
     TimeScheduleWriter.writeIssueTable
-      (graph, out,
-       sPrefs,
+      (testIssues.graph, out,
+          testIssues.sPrefs,
        TimeScheduleDisplayPreferences.createForIssues
        (1, 0, true, false, true,
-        new String[]{ issue1.getKey(), issue2.getKey() },
-        false, graph));
+        new String[]{ testIssues.issue1.getKey(), testIssues.issue2.getKey() },
+        false, testIssues.graph));
 
     out.println("<p>");
     out.println("Squished schedule for issues 1 and 2.<br>");
     TimeScheduleWriter.writeIssueTable
-      (graph, out,
-       sPrefs,
+      (testIssues.graph, out, testIssues.sPrefs,
        TimeScheduleDisplayPreferences.createForIssues
        (4, 0, true, false, true,
-        new String[]{ issue1.getKey(), issue2.getKey() },
-        false, graph));
+        new String[]{ testIssues.issue1.getKey(), testIssues.issue2.getKey() },
+        false, testIssues.graph));
 
     out.println("<p>");
     out.println("Tree for issue 1, w/o resolved.<br>");
     TimeScheduleWriter.writeIssueTable
-      (graph, out,
-       sPrefs,
+      (testIssues.graph, out, testIssues.sPrefs,
        TimeScheduleDisplayPreferences.createForIssues
        (1, 0, true, false, false,
-        new String[]{ issue1.getKey() },
-        false, graph));
+        new String[]{ testIssues.issue1.getKey() },
+        false, testIssues.graph));
 
     out.println("<p>");
     out.println("Schedule for trent.<br>");
     TimeScheduleWriter.writeIssueTable
-      (graph, out,
-       sPrefs,
+    (testIssues.graph, out, testIssues.sPrefs,
        TimeScheduleDisplayPreferences.createForUser
        (1, 0, true, false, true, new Teams.AssigneeKey(1L, "trent"),
-        false, graph));
+        false, testIssues.graph));
 
     {
       Teams.AssigneeKey user = new Teams.AssigneeKey(1L, "fred");
       out.println("<br><br>");
       out.println("Tree for " + user + ".<br>");
       TimeScheduleWriter.writeIssueTable
-        (graph, out, sPrefs,
-         TimeScheduleDisplayPreferences.createForUser(1, 0, true, false, false, user, false, graph));
+        (testIssues.graph, out, testIssues.sPrefs,
+         TimeScheduleDisplayPreferences.createForUser(1, 0, true, false, false, user, false, testIssues.graph));
 
     }
 
@@ -909,98 +797,96 @@ public class TimeScheduleTests {
       out.println("<p>");
       out.println("One-row schedule for all.<br>");
       TimeScheduleWriter.writeIssueTable
-        (graph, out,
-         sPrefs,
+        (testIssues.graph, out, testIssues.sPrefs,
          TimeScheduleDisplayPreferences.createForUsers
-         (1, 0, true, false, true, users, graph));
+         (1, 0, true, false, true, users, testIssues.graph));
 
       out.println("<p>");
       out.println("Schedule for ken.<br>");
       Teams.AssigneeKey user = new Teams.AssigneeKey(1L, "ken");
       TimeScheduleWriter.writeIssueTable
-        (graph, out,
-         sPrefs,
+        (testIssues.graph, out, testIssues.sPrefs,
          TimeScheduleDisplayPreferences.createForUser
-         (1, 0, true, false, true, user, false, graph));
+         (1, 0, true, false, true, user, false, testIssues.graph));
     }
 
     // print out single-user table schedule
     {
       Teams.AssigneeKey[] users = { new Teams.AssigneeKey(1L, "ken") };
       List<TimeSchedule.IssueSchedule<IssueTree>> schedule = new ArrayList();
-      List<IssueTree> userIssueList = userDetails.get(users[0]);
+      List<IssueTree> userIssueList = testIssues.userDetails.get(users[0]);
       for (int i = 0; i < userIssueList.size(); i++) {
         schedule.add
-          (graph.getIssueSchedules().get
+          (testIssues.graph.getIssueSchedules().get
            (((TimeSchedule.IssueWorkDetail) userIssueList.get(i)).getKey()));
       }
       out.println("Schedule for " + Arrays.asList(users) + ".<br>");
       TimeSchedule.writeIssueSchedule
-        (schedule, sPrefs.getTimeMultiplier(), true, out);
+        (schedule, testIssues.sPrefs.getTimeMultiplier(), true, out);
     }
 
     {
       out.println("<p>");
-      out.println("Critical Path for " + Arrays.asList(issue13_1.getKey()) + ".<br>");
+      out.println("Critical Path for " + Arrays.asList(testIssues.issue13_1.getKey()) + ".<br>");
       TimeScheduleWriter.writeIssueTable
-      (graph, out, sPrefs,
-       TimeScheduleDisplayPreferences.createForCriticalPaths(1, 0, false, false, new String[]{issue13_1.getKey()}, graph));
+      (testIssues.graph, out, testIssues.sPrefs,
+       TimeScheduleDisplayPreferences.createForCriticalPaths(1, 0, false, false, new String[]{testIssues.issue13_1.getKey()}, testIssues.graph));
     }
 
 
     out.println("<xmp>");
 
     out.println
-      ((issue1.totalTimeSpent() == 2 * 3600 ? "pass" : "fail")
-       + " (totalColumns: expected " + 2 * 3600 + "; got " + issue1.totalTimeSpent() + ")");
+      ((testIssues.issue1.totalTimeSpent() == 2 * 3600 ? "pass" : "fail")
+       + " (totalColumns: expected " + 2 * 3600 + "; got " + testIssues.issue1.totalTimeSpent() + ")");
     out.println
-      ((issue1.totalEstimate() == 10 * 3600 ? "pass" : "fail")
-       + " (totalColumns: expected " + 10 * 3600 + "; got " + issue1.totalEstimate() + ")");
+      ((testIssues.issue1.totalEstimate() == 10 * 3600 ? "pass" : "fail")
+       + " (totalColumns: expected " + 10 * 3600 + "; got " + testIssues.issue1.totalEstimate() + ")");
 
     out.println
-      ((issue1.totalTimeSpent() == 2 * 3600 ? "pass" : "fail")
-       + " (totalColumns: expected " + 2 * 3600 + "; got " + issue1.totalTimeSpent() + ")");
+      ((testIssues.issue1.totalTimeSpent() == 2 * 3600 ? "pass" : "fail")
+       + " (totalColumns: expected " + 2 * 3600 + "; got " + testIssues.issue1.totalTimeSpent() + ")");
     out.println
-      ((issue1.totalEstimate() == 10 * 3600 ? "pass" : "fail")
-       + " (totalColumns: expected " + 10 * 3600 + "; got " + issue1.totalEstimate() + ")");
+      ((testIssues.issue1.totalEstimate() == 10 * 3600 ? "pass" : "fail")
+       + " (totalColumns: expected " + 10 * 3600 + "; got " + testIssues.issue1.totalEstimate() + ")");
 
 
     TimeSchedule.IssueSchedule sched13 =
-      graph.getIssueSchedules().get(issue13.getKey());
+        testIssues.graph.getIssueSchedules().get(testIssues.issue13.getKey());
     Calendar acal = Calendar.getInstance();
     acal = sched13.getAdjustedBeginCal();
     out.println
       ((acal.get(Calendar.DATE) == 28 ? "pass" : "fail")
-       + " (" + issue13.getKey() + " should start on Apr 22; got "
+       + " (" + testIssues.issue13.getKey() + " should start on Apr 22; got "
        + acal.get(Calendar.DATE) + ")");
     out.println
       ((acal.get(Calendar.HOUR_OF_DAY) == 8 ? "pass" : "fail")
-       + " (" + issue13.getKey() + " should start at 14; got " +
+       + " (" + testIssues.issue13.getKey() + " should start at 14; got " +
        + acal.get(Calendar.HOUR_OF_DAY) + ")");
 
     TimeSchedule.IssueSchedule sched2 =
-      graph.getIssueSchedules().get(issue2.getKey());
+        testIssues.graph.getIssueSchedules().get(testIssues.issue2.getKey());
     boolean notBefore = !sched13.getBeginDate().before(sched2.getEndDate());
     out.println((notBefore ? "pass" : "fail")
-                + " (" + issue13.getKey() + " starts after " + issue2.getKey() + " ends)");
+                + " (" + testIssues.issue13.getKey() + " starts after " + testIssues.issue2.getKey() + " ends)");
 
     TimeSchedule.IssueSchedule sched14 =
-      graph.getIssueSchedules().get(issue14.getKey());
+        testIssues.graph.getIssueSchedules().get(testIssues.issue14.getKey());
     acal = sched14.getAdjustedBeginCal();
     out.println
       ((acal.get(Calendar.DATE) == 12 ? "pass" : "fail")
-       + " (" + issue14.getKey() + " should start on the 12th; got " +
+       + " (" + testIssues.issue14.getKey() + " should start on the 12th; got " +
        + acal.get(Calendar.DATE) + ")");
 
     TimeSchedule.IssueSchedule sched4 =
-      graph.getIssueSchedules().get(issue4.getKey());
+        testIssues.graph.getIssueSchedules().get(testIssues.issue4.getKey());
     acal = sched4.getAdjustedBeginCal();
     out.println
       ((acal.get(Calendar.DATE) == 15 ? "pass" : "fail")
-       + " (" + issue4.getKey() + " should start on the 14th; got " +
+       + " (" + testIssues.issue4.getKey() + " should start on the 14th; got " +
        + acal.get(Calendar.DATE) + ")");
 
-    List branches0 = TimeScheduleSearch.findPredecessorBranches(issue0);
+    List branches0 = TimeScheduleSearch.findPredecessorBranches(testIssues.issue0);
     out.println
       ((branches0.size() == 6 ? "pass" : "fail")
        + " (should be 6 branches preceding 0; got " + branches0.size() + ")");
@@ -1013,6 +899,130 @@ public class TimeScheduleTests {
 
   }
 
+  public static TestIssues createTestIssues() throws Exception {
+    TestIssues result = new TestIssues();
+
+    Date startDate = SLASH_DATE.parse("2005/04/05");
+
+    result.issue_6 =
+        new IssueTree
+            ("TEST--6", "Ancestor test issue", "trent", 1L,
+                0 * 3600, 0 * 3600, 0.0, null, null, 1, false);
+    result.issue_5 =
+        new IssueTree
+            ("TEST--5", "Ancestor test issue", "trent", 1L,
+                4 * 3600, 0 * 3600, 0.0, null, null, 1, false);
+    result.issue_4 =
+        new IssueTree
+            ("TEST--4", "Ancestor test issue", "ken", 1L,
+                4 * 3600, 0 * 3600, 0.0, null, null, 1, false);
+    result.issue_3 =
+        new IssueTree
+            ("TEST--3", "Ancestor test issue", "brent", 1L,
+                4 * 3600, 0 * 3600, 0.0, null, null, 1, false);
+    result.issue_2 =
+        new IssueTree
+            ("TEST--2", "Ancestor test issue", "trent", 1L,
+                4 * 3600, 0 * 3600, 0.0, null, null, 1, false);
+    result.issue_1 =
+        new IssueTree
+            ("TEST--1", "Ancestor test issue", "ken", 1L,
+                4 * 3600, 0 * 3600, 0.0, null, null, 1, false);
+    result.issue0 =
+        new IssueTree
+            ("TEST-0", "Grandparent test issue", "fred", 1L,
+                8 * 3600, 0 * 3600, 0.0,
+                SLASH_DATE.parse("2005/01/01"), null, 1, false);
+    result.issue1 =
+        new IssueTree
+            ("TEST-1", "Parent test issue", "brent", 1L,
+                10 * 3600, 0 * 3600, 0.0,
+                SLASH_DATE.parse("2005/04/01"), null, 1, false);
+    result.issue2 =
+        new IssueTree
+            ("TEST-2", "issue", "ken", 1L, 24 * 3600, 1 * 3600, 0.0,
+                SLASH_DATE.parse("2005/04/16"), null, 8, false);
+    result.issue4 =
+        new IssueTree
+            ("TEST-4", "top", "trent", 1L, 8 * 3600, 1 * 3600, 0.0,
+                SLASH_DATE.parse("2005/04/13"), null, 4, false);
+    result.issue9 =
+        new IssueTree
+            ("TEST-9", "issue", "ken", 1L, 20 * 3600, 1 * 3600, 0.0,
+                SLASH_DATE.parse("2005/04/05"), null, 3, false);
+    result.issue11 =
+        new IssueTree
+            ("TEST-11", "sub issue", "trent", 1L, 4 * 3600, 1 * 3600, 0.0,
+                SLASH_DATE.parse("2005/04/15"), null, 3, true);
+    result.issue12 =
+        new IssueTree
+            ("TEST-12", "sub issue", "ken", 1L, 3 * 3600, 1 * 3600, 0.0,
+                SLASH_DATE.parse("2005/06/01"), null, 2, false);
+    result.issue13 =
+        new IssueTree
+            ("TEST-13", "after TEST-1,2", "trent", 1L, 10 * 3600, 1 * 3600, 0.0,
+                null, null, 2, true);
+    result.issue13_1 =
+        new IssueTree
+            ("TEST-13-1", "sub of TEST-13", "trent", 1L, 10 * 3600, 1 * 3600, 0.0,
+                null, null, 9, false);
+    result.issue14 =
+        new IssueTree
+            ("TEST-14", "dependant issue", "trent", 1L, 16 * 3600, 1 * 3600, 0.0,
+                SLASH_DATE.parse("2005/06/01"), null, 4, false);
+    result.issue15 =
+        new IssueTree
+            ("TEST-15", "dependant issue", "trent", 1L, 4 * 3600, 1 * 3600, 0.0,
+                SLASH_DATE.parse("2005/04/07"), null, 5, false);
+    result.issue16 =
+        new IssueTree
+            ("TEST-16", "some issue", "trent", 1L, 12 * 3600, 1 * 3600, 0.0,
+                SLASH_DATE.parse("2005/04/15"), null, 6, false);
+
+    result.manyIssues = new IssueTree[]{
+        result.issue_6, result.issue_5, result.issue_4, result.issue_3, result.issue_2, result.issue_1, result.issue0, result.issue1,
+        result.issue2, result.issue4, result.issue9, result.issue11, result.issue12, result.issue13, result.issue13_1,
+        result.issue14, result.issue15, result.issue16
+    };
+
+    result.userWeeklyHours = new TreeMap<Teams.UserTimeKey,List<TeamHours>>();
+    List<TeamHours> hourList = new ArrayList();
+    hourList.add(new TeamHours(0L, 1L, "trent", SLASH_DATE.parse("2005/01/01"), 40.0));
+    result.userWeeklyHours.put(new Teams.UserTimeKey(1L, "trent"), hourList);
+
+    hourList = new ArrayList();
+    hourList.add(new TeamHours(1L, 1L, "ken", SLASH_DATE.parse("2005/01/01"), 40.0));
+    result.userWeeklyHours.put(new Teams.UserTimeKey(1L, "ken"), hourList);
+
+    hourList = new ArrayList();
+    hourList.add(new TeamHours(2L, 1L, "brent", SLASH_DATE.parse("2005/01/01"), 40.0));
+    result.userWeeklyHours.put(new Teams.UserTimeKey(1L, "brent"), hourList);
+
+    hourList = new ArrayList();
+    hourList.add(new TeamHours(3L, 1L, "fred", SLASH_DATE.parse("2005/01/01"), 40.0));
+    result.userWeeklyHours.put(new Teams.UserTimeKey(1L, "fred"), hourList);
+
+    result.userDetails =
+        createUserDetails(result.manyIssues, result.userWeeklyHours);
+
+    result.sPrefs = new TimeScheduleCreatePreferences(0, startDate, 2);
+    result.graph =
+        IssueDigraph.schedulesForUserIssues3
+            (result.userDetails, result.userWeeklyHours, result.sPrefs);
+
+    return result;
+  }
+
+  public static class TestIssues {
+    IssueTree issue_6, issue_5, issue_4, issue_3, issue_2, issue_1,
+        issue0, issue1, issue2, issue4, issue9, issue11, issue12, issue13,
+        issue13_1, issue14, issue15, issue16;
+    IssueTree[] manyIssues;
+    IssueDigraph graph;
+    Map<Teams.AssigneeKey,List<IssueTree>> userDetails;
+    TimeScheduleCreatePreferences sPrefs;
+    Map<Teams.UserTimeKey,List<TeamHours>> userWeeklyHours;
+  }
 
   private static Map<Teams.AssigneeKey,List<IssueTree>> createUserDetails
   (IssueTree[] issues, Map<Teams.UserTimeKey,List<TeamHours>> userWeeklyHours) {
