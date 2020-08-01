@@ -1,4 +1,4 @@
-package com.trentlarson.forecast.core.scheduling;
+package com.trentlarson.forecast.core.scheduling.external;
 
 import java.sql.Connection;
 import java.text.SimpleDateFormat;

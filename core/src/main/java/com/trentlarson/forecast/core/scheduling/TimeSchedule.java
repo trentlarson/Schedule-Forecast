@@ -17,7 +17,7 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import com.trentlarson.forecast.core.helper.DateUtil;
 
@@ -39,11 +39,11 @@ public class TimeSchedule {
 
   // OK, I'd like to shorten these strings (eg. to just "scheduling.Time"),
   // but then the Jira page to set logging levels doesn't work. Any ideas? TNL
-  protected static final Category log4jLog = Category.getInstance("com.trentlarson.forecast.core.scheduling.TimeSchedule");
-  protected static final Category fnebLog  = Category.getInstance("com.trentlarson.forecast.core.scheduling.TimeSchedule.-FNEB--"); // findNextEstBegin
-  protected static final Category fdiwwLog = Category.getInstance("com.trentlarson.forecast.core.scheduling.TimeSchedule.-FDIWW-"); // futureDateInWorkWeek
-  protected static final Category iaaLog   = Category.getInstance("com.trentlarson.forecast.core.scheduling.TimeSchedule.--IAA--"); // injectAndAdjust
-  protected static final Category wsbLog   = Category.getInstance("com.trentlarson.forecast.core.scheduling.TimeSchedule.--WSB--"); // workSecondsBetween
+  public static final Logger log4jLog = Logger.getLogger("com.trentlarson.forecast.core.scheduling.TimeSchedule");
+  public static final Logger fnebLog  = Logger.getLogger("com.trentlarson.forecast.core.scheduling.TimeSchedule.-FNEB--"); // findNextEstBegin
+  public static final Logger fdiwwLog = Logger.getLogger("com.trentlarson.forecast.core.scheduling.TimeSchedule.-FDIWW-"); // futureDateInWorkWeek
+  public static final Logger iaaLog   = Logger.getLogger("com.trentlarson.forecast.core.scheduling.TimeSchedule.--IAA--"); // injectAndAdjust
+  public static final Logger wsbLog   = Logger.getLogger("com.trentlarson.forecast.core.scheduling.TimeSchedule.--WSB--"); // workSecondsBetween
 
 
 
@@ -475,7 +475,7 @@ public class TimeSchedule {
 
 
 
-  protected static class IssueWorkDetailOriginal<T extends IssueWorkDetailOriginal<T>> implements IssueWorkDetail<T> {
+  protected static class IssueWorkDetailOriginal<T extends IssueWorkDetailOriginal<T>> implements IssueWorkDetail<T>, Comparable<T> {
     // REFACTOR the key to be null by default
     protected String key = "", timeAssignee = null, summary = "";
     protected int issueEstSecondsRaw = 0, secsPerWeek = 0;
@@ -528,6 +528,9 @@ public class TimeSchedule {
     }
     public String toString() {
       return "IssueWorkDetailOriginal " + getKey();
+    }
+    public int compareTo(T object) {
+      return getKey().compareTo(object.getKey());
     }
   }
 

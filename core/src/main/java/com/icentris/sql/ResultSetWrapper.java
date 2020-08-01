@@ -109,6 +109,10 @@ public class ResultSetWrapper implements ResultSet {
     return realResultSet.getBinaryStream(columnIndex);
   }
 
+  public <T>T getObject(int columnIndex, Class<T> type) throws SQLException {
+    return realResultSet.getObject(columnIndex, type);
+  }
+
 
   //======================================================================
   // Methods for accessing results by column name
@@ -180,6 +184,9 @@ public class ResultSetWrapper implements ResultSet {
     return realResultSet.getBinaryStream(columnName);
   }
 
+  public <T>T getObject(String columnName, Class<T> type) throws SQLException {
+    return realResultSet.getObject(columnName, type);
+  }
 
   //=====================================================================
   // Advanced features:

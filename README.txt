@@ -1,5 +1,22 @@
 ________________________________________________________________________________
 
+Note that I updated core but I haven't tested with jira-plugin or war
+
+
+For tests:
+- Run the TimeScheduleTests unit test, eg. in core:
+mvn package; java -classpath target/forecast-core-0.1-SNAPSHOT.jar:lib/commons-logging-1.1.1.jar:lib/hibernate-3.2.6.ga.jar:lib/hsqldb-1.8.0.jar:lib/log4j-1.2.15.jar com.trentlarson.forecast.core.scheduling.TimeScheduleTests > target/gantt-test2.html
+- Compare the output with src/test/resources/gantt-test.html
+- Redirect the jira-test-db.sql into a test DB, eg: 
+mysql -u jira --password=jirapass  -D test_forecast_jira < ~/dev/scheduling/Schedule-Forecast/core/src/test/resources/jira-test-db.sql 
+- Run the TimeScheduleSetup, eg. in core:
+mvn package; java -classpath target/forecast-core-0.1-SNAPSHOT.jar:lib/commons-logging-1.1.1.jar:lib/hibernate-3.2.6.ga.jar:lib/hsqldb-1.8.0.jar:lib/log4j-1.2.15.jar:lib/mysql-connector-java-8.0.21.jar com.trentlarson.forecast.core.scheduling.external.TimeScheduleTestSetup
+- Run the TimeScheduleTests integration test, eg. in core:
+mvn package; java -classpath target/forecast-core-0.1-SNAPSHOT.jar:lib/commons-logging-1.1.1.jar:lib/hibernate-3.2.6.ga.jar:lib/hsqldb-1.8.0.jar:lib/log4j-1.2.15.jar:lib/mysql-connector-java-8.0.21.jar com.trentlarson.forecast.core.scheduling.external.TimeScheduleIntegrationTests > target/gantt-test-db.html
+- Compare the output with src/test/resources/gantt-test-db.html
+
+________________________________________________________________________________
+
 To develop with the Atlassian SDK:
 - Install it.
 - Go to the project home directory (with pom.xml) and run: atlas-run
@@ -47,17 +64,6 @@ To use:
     sure to create that as a custom field (of type number) and put the ID in there
 - Browse to forecast/gantt.jsp, eg. http://localhost:8080/forecast/gantt.jsp
 
-For tests:
-- Run the TimeScheduleTests unit test, eg. in core:
-mvn package; java -classpath target/forecast-core-0.1-SNAPSHOT.jar:lib/commons-logging-1.1.1.jar:lib/hibernate-3.2.6.ga.jar:lib/hsqldb-1.8.0.jar:lib/log4j-1.2.15.jar:lib/mysql-5.0.7.jar com.trentlarson.forecast.core.scheduling.TimeScheduleTests > target/gantt-test2.html
-- Compare the output with src/test/resources/gantt-test.html
-- Redirect the jira-test-db.sql into a test DB, eg: 
-mysql -u jira --password=jirapass  -D test_forecast_jira < ~/dev/scheduling/Schedule-Forecast/core/src/test/resources/jira-test-db.sql 
-- Run the TimeScheduleSetup, eg. in core:
-mvn package; java -classpath target/forecast-core-0.1-SNAPSHOT.jar:lib/commons-logging-1.1.1.jar:lib/hibernate-3.2.6.ga.jar:lib/hsqldb-1.8.0.jar:lib/log4j-1.2.15.jar:lib/mysql-5.0.7.jar com.trentlarson.forecast.core.scheduling.TimeScheduleTestSetup
-- Run the TimeScheduleTests integration test, eg. in core:
-mvn package; java -classpath target/forecast-core-0.1-SNAPSHOT.jar:lib/commons-logging-1.1.1.jar:lib/hibernate-3.2.6.ga.jar:lib/hsqldb-1.8.0.jar:lib/log4j-1.2.15.jar:lib/mysql-5.0.7.jar com.trentlarson.forecast.core.scheduling.TimeScheduleTests > target/gantt-test-db.html
-- Compare the output with src/test/resources/gantt-test-db.html
 
 
 ________________________________________________________________________________

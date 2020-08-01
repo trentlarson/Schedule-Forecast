@@ -19,6 +19,7 @@ package com.trentlarson.forecast.core.helper;
 //import org.ofbiz.core.entity.GenericValue;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.DateFormat;
@@ -619,12 +620,12 @@ public class ForecastUtil extends ForecastConstants {
 	
 
     /** OfBiz
-    */
     try {
       return (new org.ofbiz.core.entity.jdbc.SQLProcessor("defaultDS")).getConnection();
     } catch (org.ofbiz.core.util.GeneralException e) {
       throw new java.lang.reflect.UndeclaredThrowableException(e);
     }
+    */
 
 	
     /** HSQL
@@ -638,15 +639,16 @@ public class ForecastUtil extends ForecastConstants {
 	
 	
     /** MySQL
+     **/
     try {
-      Class.forName("com.mysql.jdbc.Driver");
+      Class.forName("com.mysql.cj.jdbc.Driver");
     } catch (ClassNotFoundException e) {
       throw new java.lang.reflect.UndeclaredThrowableException(e);
     }
     //return DriverManager.getConnection("jdbc:mysql://10.0.2.16:8319/jiradb?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8", "jira", "jirapass");
     //return DriverManager.getConnection("jdbc:mysql://localhost:3306/test_forecast_jira?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8", "jira", "jirapass");
-    return DriverManager.getConnection("jdbc:mysql://localhost:3306/jiradb_412?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8", "jira", "jirapass");
-    */
+    return DriverManager.getConnection("jdbc:mysql://localhost:3306/forecast?serverTimezone=UTC", "root", "");
+
     
     /** Oracle
     javax.sql.DataSource dsrc = null;
@@ -660,7 +662,9 @@ public class ForecastUtil extends ForecastConstants {
     return DriverManager.getConnection("...", "...", "...");
     */
 
+    /** Postgres
+    return DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5432/test", "postgres", "password");
+    */
 
   }
-
 }

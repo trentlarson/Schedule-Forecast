@@ -34,7 +34,7 @@ public class TimeScheduleLoader {
   // If I use the class, then other loggers below don't show in the "Logging and Profiling" screen.  Why?
   //private static final Category log4jLog = Category.getInstance(TimeScheduleLoader.class);
   //private static final Category log4jLog = Category.getInstance("com.trentlarson.forecast.core.scheduling.TimeScheduleLoader");
-  protected static final Logger log4jLog = Logger.getLogger("com.trentlarson.forecast.core.scheduling.TimeScheduleLoader");
+  public static final Logger log4jLog = Logger.getLogger("com.trentlarson.forecast.core.scheduling.external.TimeScheduleLoader");
 
 
 
