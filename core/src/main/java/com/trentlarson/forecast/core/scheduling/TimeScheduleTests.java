@@ -732,10 +732,6 @@ public class TimeScheduleTests {
 .                                                                     +_ 13_1
     **/
 
-    testIssues.graph =
-      IssueDigraph.schedulesForUserIssues3
-      (testIssues.userDetails, testIssues.userWeeklyHours, testIssues.sPrefs);
-
 
     List branches1 = TimeScheduleSearch.findPredecessorBranches(testIssues.issue1);
     out.println("<br><br>");
@@ -979,36 +975,26 @@ public class TimeScheduleTests {
             ("TEST-16", "some issue", "trent", 1L, 12 * 3600, 1 * 3600, 0.0,
                 SLASH_DATE.parse("2005/04/15"), null, 6, false);
 
-    result.manyIssues = new IssueTree[]{
-        result.issue_6, result.issue_5, result.issue_4, result.issue_3, result.issue_2, result.issue_1, result.issue0, result.issue1,
-        result.issue2, result.issue4, result.issue9, result.issue11, result.issue12, result.issue13, result.issue13_1,
-        result.issue14, result.issue15, result.issue16
-    };
+    Map<Teams.UserTimeKey,List<TeamHours>> userWeeklyHours = new TreeMap<Teams.UserTimeKey,List<TeamHours>>();
 
-    result.userWeeklyHours = new TreeMap<Teams.UserTimeKey,List<TeamHours>>();
     List<TeamHours> hourList = new ArrayList();
     hourList.add(new TeamHours(0L, 1L, "trent", SLASH_DATE.parse("2005/01/01"), 40.0));
-    result.userWeeklyHours.put(new Teams.UserTimeKey(1L, "trent"), hourList);
+    userWeeklyHours.put(new Teams.UserTimeKey(1L, "trent"), hourList);
 
     hourList = new ArrayList();
     hourList.add(new TeamHours(1L, 1L, "ken", SLASH_DATE.parse("2005/01/01"), 40.0));
-    result.userWeeklyHours.put(new Teams.UserTimeKey(1L, "ken"), hourList);
+    userWeeklyHours.put(new Teams.UserTimeKey(1L, "ken"), hourList);
 
     hourList = new ArrayList();
     hourList.add(new TeamHours(2L, 1L, "brent", SLASH_DATE.parse("2005/01/01"), 40.0));
-    result.userWeeklyHours.put(new Teams.UserTimeKey(1L, "brent"), hourList);
+    userWeeklyHours.put(new Teams.UserTimeKey(1L, "brent"), hourList);
 
     hourList = new ArrayList();
     hourList.add(new TeamHours(3L, 1L, "fred", SLASH_DATE.parse("2005/01/01"), 40.0));
-    result.userWeeklyHours.put(new Teams.UserTimeKey(1L, "fred"), hourList);
+    userWeeklyHours.put(new Teams.UserTimeKey(1L, "fred"), hourList);
 
-    result.userDetails =
-        createUserDetails(result.manyIssues, result.userWeeklyHours);
-
-    result.sPrefs = new TimeScheduleCreatePreferences(0, startDate, 2);
-    result.graph =
-        IssueDigraph.schedulesForUserIssues3
-            (result.userDetails, result.userWeeklyHours, result.sPrefs);
+    TimeScheduleCreatePreferences sPrefs = new TimeScheduleCreatePreferences(0, startDate, 2);
+    result.initialize(userWeeklyHours, sPrefs);
 
     return result;
   }
@@ -1017,11 +1003,26 @@ public class TimeScheduleTests {
     IssueTree issue_6, issue_5, issue_4, issue_3, issue_2, issue_1,
         issue0, issue1, issue2, issue4, issue9, issue11, issue12, issue13,
         issue13_1, issue14, issue15, issue16;
-    IssueTree[] manyIssues;
-    IssueDigraph graph;
-    Map<Teams.AssigneeKey,List<IssueTree>> userDetails;
+
     TimeScheduleCreatePreferences sPrefs;
-    Map<Teams.UserTimeKey,List<TeamHours>> userWeeklyHours;
+    Map<Teams.AssigneeKey,List<IssueTree>> userDetails;
+    IssueDigraph graph;
+
+    private Map<Teams.UserTimeKey,List<TeamHours>> userWeeklyHours;
+
+    public void initialize(Map<Teams.UserTimeKey,List<TeamHours>> userWeeklyHours,
+                           TimeScheduleCreatePreferences sPrefs_) {
+      userDetails = createUserDetails(manyIssues(), userWeeklyHours);
+      sPrefs = sPrefs_;
+      graph = IssueDigraph.schedulesForUserIssues3(userDetails, userWeeklyHours, sPrefs);
+    }
+    private IssueTree[] manyIssues() {
+      return new IssueTree[]{
+          issue_6, issue_5, issue_4, issue_3, issue_2, issue_1, issue0, issue1,
+          issue2, issue4, issue9, issue11, issue12, issue13, issue13_1,
+          issue14, issue15, issue16
+      };
+    }
   }
 
   private static Map<Teams.AssigneeKey,List<IssueTree>> createUserDetails
@@ -1033,6 +1034,7 @@ public class TimeScheduleTests {
     }
     return userDetails;
   }
+
   /**
      Add issue to userDetails.
    */
