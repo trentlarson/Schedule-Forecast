@@ -13,10 +13,10 @@ import javax.servlet.http.HttpServletRequest;
 import com.icentris.sql.SimpleSQL;
 import com.trentlarson.forecast.core.helper.ForecastUtil;
 import com.trentlarson.forecast.core.scheduling.IssueDigraph;
-import com.trentlarson.forecast.core.scheduling.IssueLoader;
+import com.trentlarson.forecast.core.scheduling.external.IssueLoader;
 import com.trentlarson.forecast.core.scheduling.IssueTree;
 import com.trentlarson.forecast.core.scheduling.TimeScheduleCreatePreferences;
-import com.trentlarson.forecast.core.scheduling.TimeScheduleLoader;
+import com.trentlarson.forecast.core.scheduling.external.TimeScheduleLoader;
 import com.trentlarson.forecast.core.scheduling.TimeScheduleModifyWriter;
 
 public class TimeScheduleAction {

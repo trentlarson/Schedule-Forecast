@@ -18,7 +18,6 @@ import com.trentlarson.forecast.core.scheduling.IssueDigraph;
 import com.trentlarson.forecast.core.scheduling.IssueTree;
 import com.trentlarson.forecast.core.scheduling.Teams;
 import com.trentlarson.forecast.core.scheduling.TimeSchedule;
-import com.trentlarson.forecast.core.scheduling.TimeScheduleLoader;
 import com.trentlarson.forecast.core.scheduling.TimeScheduleWriter;
 import com.trentlarson.forecast.core.scheduling.TimeScheduleDisplayPreferences;
 import com.trentlarson.forecast.core.scheduling.TimeScheduleCreatePreferences;
@@ -30,7 +29,8 @@ public class TimeScheduleIntegrationTests {
     // This enables basic Log4J logging to standard out.
     // ... but note that you'll have to turn off a bunch of logs.
     org.apache.log4j.BasicConfigurator.configure();
-    
+
+    IssueDigraph.log4jLog.setLevel(org.apache.log4j.Level.ERROR);
     //IssueLoader.log4jLog.setLevel(org.apache.log4j.Level.DEBUG);
     TimeSchedule.log4jLog.setLevel(org.apache.log4j.Level.ERROR);
     TimeScheduleLoader.log4jLog.setLevel(org.apache.log4j.Level.ERROR);

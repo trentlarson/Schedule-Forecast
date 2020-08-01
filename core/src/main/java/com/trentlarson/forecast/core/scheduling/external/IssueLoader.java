@@ -1,4 +1,4 @@
-package com.trentlarson.forecast.core.scheduling;
+package com.trentlarson.forecast.core.scheduling.external;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -15,10 +15,12 @@ import java.util.TreeSet;
 import org.apache.log4j.Logger;
 
 import com.icentris.sql.SimpleSQL;
+import com.trentlarson.forecast.core.scheduling.IssueTree;
+import com.trentlarson.forecast.core.scheduling.Teams;
 
 public class IssueLoader {
 
-  protected static final Logger log4jLog = Logger.getLogger("com.trentlarson.forecast.core.scheduling.IssueLoader");
+  protected static final Logger log4jLog = Logger.getLogger("com.trentlarson.forecast.core.scheduling.external.IssueLoader");
   protected static final Logger issueSqlLog  = Logger.getLogger("com.trentlarson.forecast.core.scheduling.TimeScheduleLoader.IssueSQL");
   public static final String ISSUE_TO_WATCH = null; // set to some issue pkey (and enable log4jLog debugging) to print out info as that issue is loaded and analyzed
 
@@ -438,7 +440,6 @@ public class IssueLoader {
   @param visitedAncestors is Set of (String key for) ancestors to the parent (used to detect cycles)
   @param visitedPrecursors is Set of (String key for) precursors to the parent (used to detect cycles)
   @param visitedDependents is Set of (String key for) dependents to the parent (used to detect cycles)
-  @param assignees is Set of (String username for) assignees
   @return Set of (Teams.AssigneeKey for) assignees found in the loaded issues
    */
   private static Set<String> fillTree

@@ -61,7 +61,7 @@ public class TimeSchedule {
     private TreeMap<Date,Double> ranges = new TreeMap<Date,Double>();
 
     /** for testing */
-    protected Object clone() {
+    public Object clone() {
       WeeklyWorkHours result = new WeeklyWorkHours();
       result.ranges = (TreeMap<Date,Double>) ranges.clone();
       return result;
@@ -121,7 +121,7 @@ public class TimeSchedule {
      */
     // THIS SHOULD BE PRIVATE!  Use injectAndAdjust instead... but
     // maybe a new method that doesn't take an end time?
-    protected void inject(Date startTime, Double hours) {
+    public void inject(Date startTime, Double hours) {
       ranges.put((Date)startTime.clone(), hours);
     }
 
@@ -984,7 +984,7 @@ public class TimeSchedule {
 
   /**
      @param thisEstBegin time to start working (not adjusted by FIRST_HOUR_OF_WORKDAY)
-     @param issueEstSeconds estimate in seconds
+     @param estSeconds estimate in seconds
      @param weeklyHours tells how many available each week;
      beware, because it is modified by time needed for this task
      @return the next start date based on the start date and estimate
@@ -1414,7 +1414,7 @@ public class TimeSchedule {
     return found;
   }
 
-  protected static <T extends IssueWorkDetail> void setInitialOrdering(Map<?,List<T>> userDetails) {
+  public static <T extends IssueWorkDetail> void setInitialOrdering(Map<?,List<T>> userDetails) {
     // put them in order by due date and then by priority
     for (Iterator users = userDetails.keySet().iterator(); users.hasNext(); ) {
       Collections.sort

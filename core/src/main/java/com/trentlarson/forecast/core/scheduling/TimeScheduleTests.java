@@ -20,10 +20,10 @@ public class TimeScheduleTests {
     // This enables basic Log4J logging to standard out.
     // ... but note that you'll have to turn off a bunch of logs.
     org.apache.log4j.BasicConfigurator.configure();
-    
+
+    IssueDigraph.log4jLog.setLevel(org.apache.log4j.Level.ERROR);
     //IssueLoader.log4jLog.setLevel(org.apache.log4j.Level.DEBUG);
     TimeSchedule.log4jLog.setLevel(org.apache.log4j.Level.ERROR);
-    TimeScheduleLoader.log4jLog.setLevel(org.apache.log4j.Level.ERROR);
     TimeScheduleDisplayPreferences.log4jLog.setLevel(org.apache.log4j.Level.ERROR);
     TimeScheduleWriter.log4jLog.setLevel(org.apache.log4j.Level.ERROR);
     //TimeSchedule.fnebLog.setLevel(org.apache.log4j.Level.DEBUG);
@@ -104,7 +104,7 @@ public class TimeScheduleTests {
     TimeScheduleCreatePreferences sPrefs =
       new TimeScheduleCreatePreferences(0, SLASH_DATE.parse("2006/12/03"), 1);
     IssueDigraph graph =
-      TimeScheduleLoader.schedulesForUserIssues3
+      IssueDigraph.schedulesForUserIssues3
       (userDetails, userWeeklyHours, sPrefs);
 
     Teams.AssigneeKey user = new Teams.AssigneeKey(1L, "matt");
@@ -140,7 +140,7 @@ public class TimeScheduleTests {
 
     Map<Teams.AssigneeKey,List<IssueTree>> userDetails = createUserDetails(manyIssues, userWeeklyHours);
     TimeScheduleCreatePreferences sPrefs = new TimeScheduleCreatePreferences(0, SLASH_DATE.parse("2006/12/03"), 1);
-    IssueDigraph graph = TimeScheduleLoader.schedulesForUserIssues3(userDetails, userWeeklyHours, sPrefs);
+    IssueDigraph graph = IssueDigraph.schedulesForUserIssues3(userDetails, userWeeklyHours, sPrefs);
 
     out.println("<br><br>");
     out.println("Unassigned user gantt chart, even though there are no team hours defined.<br>");
@@ -171,7 +171,7 @@ public class TimeScheduleTests {
 
     userDetails = createUserDetails(manyIssues, userWeeklyHours);
     sPrefs = new TimeScheduleCreatePreferences(0, SLASH_DATE.parse("2006/12/03"), 1);
-    graph = TimeScheduleLoader.schedulesForUserIssues3(userDetails, userWeeklyHours, sPrefs);
+    graph = IssueDigraph.schedulesForUserIssues3(userDetails, userWeeklyHours, sPrefs);
 
     out.println("<br><br>");
     out.println("Unassigned user-team gantt chart, where 80 null-team hours are defined.<br>");
@@ -238,7 +238,7 @@ public class TimeScheduleTests {
     TimeScheduleCreatePreferences sPrefs =
       new TimeScheduleCreatePreferences(0, SLASH_DATE.parse("2005/04/05"), 1);
     IssueDigraph graph =
-      TimeScheduleLoader.schedulesForUserIssues3
+      IssueDigraph.schedulesForUserIssues3
       (userDetails, userWeeklyHours, sPrefs);
       
 
@@ -276,7 +276,7 @@ public class TimeScheduleTests {
     sPrefs =
       new TimeScheduleCreatePreferences(0, SLASH_DATE.parse("2005/04/05"), 1);
     graph =
-      TimeScheduleLoader.schedulesForUserIssues3
+      IssueDigraph.schedulesForUserIssues3
       (userDetails, userWeeklyHours, sPrefs);
     
     user = new Teams.AssigneeKey(1L, null);
@@ -336,7 +336,7 @@ public class TimeScheduleTests {
     TimeScheduleCreatePreferences sPrefs =
       new TimeScheduleCreatePreferences(0, SLASH_DATE.parse("2005/04/05"), 1);
     IssueDigraph graph =
-      TimeScheduleLoader.schedulesForUserIssues3
+      IssueDigraph.schedulesForUserIssues3
       (userDetails, userWeeklyHours, sPrefs);
 
 
@@ -434,7 +434,7 @@ public class TimeScheduleTests {
     TimeScheduleCreatePreferences sPrefs =
       new TimeScheduleCreatePreferences(0, SLASH_DATE.parse("2005/04/11"), 1);
     IssueDigraph graph =
-      TimeScheduleLoader.schedulesForUserIssues3
+      IssueDigraph.schedulesForUserIssues3
       (userDetails, userWeeklyHours, sPrefs);
 
     out.println("<br><br>");
@@ -542,7 +542,7 @@ public class TimeScheduleTests {
     TimeScheduleCreatePreferences sPrefs =
       new TimeScheduleCreatePreferences(0, startDate, 2);
     IssueDigraph graph =
-      TimeScheduleLoader.schedulesForUserIssues3
+      IssueDigraph.schedulesForUserIssues3
         (userDetails, userWeeklyHours, sPrefs);
 
 
@@ -614,7 +614,7 @@ public class TimeScheduleTests {
     TimeScheduleCreatePreferences sPrefs =
       new TimeScheduleCreatePreferences(0, startDate, 2);
     IssueDigraph graph =
-      TimeScheduleLoader.schedulesForUserIssues3
+      IssueDigraph.schedulesForUserIssues3
       (userDetails, new HashMap(), sPrefs);
 
     TimeScheduleWriter.writeIssueTable
@@ -745,7 +745,7 @@ public class TimeScheduleTests {
     TimeScheduleCreatePreferences sPrefs =
       new TimeScheduleCreatePreferences(0, startDate, 2);
     IssueDigraph graph =
-      TimeScheduleLoader.schedulesForUserIssues3
+      IssueDigraph.schedulesForUserIssues3
       (userDetails, userWeeklyHours, sPrefs);
 
 
@@ -842,7 +842,7 @@ public class TimeScheduleTests {
     **/
 
     graph = 
-      TimeScheduleLoader.schedulesForUserIssues3
+      IssueDigraph.schedulesForUserIssues3
       (userDetails, userWeeklyHours, sPrefs);
 
 

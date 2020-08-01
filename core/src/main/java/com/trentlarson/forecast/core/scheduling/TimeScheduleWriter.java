@@ -16,6 +16,7 @@ import java.util.Set;
 import org.apache.log4j.Category;
 
 import com.trentlarson.forecast.core.actions.TimeScheduleAction;
+import com.trentlarson.forecast.core.scheduling.external.IssueLoader;
 
 /**
 Assumptions:

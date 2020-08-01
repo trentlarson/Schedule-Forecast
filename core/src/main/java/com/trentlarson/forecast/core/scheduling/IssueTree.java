@@ -23,7 +23,7 @@ public class IssueTree extends TimeSchedule.IssueWorkDetailOriginal<IssueTree> i
    * @param teamId
    * @param est_ total estimage in seconds
    * @param spent_ total time spent in seconds
-   * @param hoursPerWeek_ max hours to spend per week; if <= 0.0, use the full estimate
+   * @param maxHoursPerWeek_ max hours to spend per week; if <= 0.0, use the full estimate
    * @param dueDate_
    * @param mustStartOnDate_ earliest date to start issue (may be null)
    * @param priority_
@@ -74,7 +74,7 @@ public class IssueTree extends TimeSchedule.IssueWorkDetailOriginal<IssueTree> i
   /**
      Used by loader to change the time assignment for this issue.
    */
-  protected void setTimeAssigneeKey(Teams.UserTimeKey assignee) {
+  public void setTimeAssigneeKey(Teams.UserTimeKey assignee) {
     this.timePerson = assignee.getUsername();
     this.timeTeamId = assignee.getTeamId();
     this.timeAssignee = assignee.toString();
