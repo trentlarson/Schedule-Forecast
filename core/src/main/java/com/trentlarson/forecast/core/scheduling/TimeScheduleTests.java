@@ -695,10 +695,10 @@ public class TimeScheduleTests {
          TimeScheduleDisplayPreferences.createForUser(1, 0, true, false, false, userKey, true, graph));
 
       out.println("<br><br>");
-      out.println("Tree for TEST-12 allowing modifications.<br>");
+      out.println("Tree for TEST_12 allowing modifications.<br>");
       TimeScheduleWriter.writeIssueTable
         (graph, out, sPrefs,
-         TimeScheduleDisplayPreferences.createForIssues(1, 0, false, false, false, new String[]{"TEST-12"}, true, graph));
+         TimeScheduleDisplayPreferences.createForIssues(1, 0, false, false, false, new String[]{"TEST_12"}, true, graph));
 
     }
 
@@ -708,60 +708,62 @@ public class TimeScheduleTests {
 
     out.println("<p>Adding dependency relationships...<p>");
 
-    testIssues.issue_6.addDependent(testIssues.issue_4);
-    testIssues.issue_5.addDependent(testIssues.issue_3);
-    testIssues.issue_4.addDependent(testIssues.issue_3);
-    testIssues.issue_4.addDependent(testIssues.issue_1);
-    testIssues.issue_3.addDependent(testIssues.issue_1);
-    testIssues.issue_2.addDependent(testIssues.issue_1);
-    testIssues.issue_1.addDependent(testIssues.issue0);
-    testIssues.issue0.addDependent(testIssues.issue1);
-    testIssues.issue0.addDependent(testIssues.issue12);
-    testIssues.issue0.addDependent(testIssues.issue14);
-    testIssues.issue1.addSubtask(testIssues.issue11);
-    testIssues.issue1.addSubtask(testIssues.issue12);
-    testIssues.issue1.addDependent(testIssues.issue4);
-    testIssues.issue1.addDependent(testIssues.issue13);
-    testIssues.issue2.addDependent(testIssues.issue13);
-    testIssues.issue2.addSubtask(testIssues.issue12);
-    testIssues.issue2.addSubtask(testIssues.issue14);
-    testIssues.issue2.addSubtask(testIssues.issue15);
-    testIssues.issue13.addSubtask(testIssues.issue13_1);
+    testIssues.issueTest_0.addDependent(testIssues.issueTest_2);
+    testIssues.issueTest_1.addDependent(testIssues.issueTest_3);
+    testIssues.issueTest_2.addDependent(testIssues.issueTest_3);
+    testIssues.issueTest_2.addDependent(testIssues.issueTest_5);
+    testIssues.issueTest_3.addDependent(testIssues.issueTest_5);
+    testIssues.issueTest_4.addDependent(testIssues.issueTest_5);
+    testIssues.issueTest_5.addDependent(testIssues.issueTest_6);
+    testIssues.issueTest_6.addDependent(testIssues.issueTest_7);
+    testIssues.issueTest_6.addDependent(testIssues.issueTest_12);
+    testIssues.issueTest_6.addDependent(testIssues.issueTest_15);
+    testIssues.issueTest_7.addSubtask(testIssues.issueTest_11);
+    testIssues.issueTest_7.addSubtask(testIssues.issueTest_12);
+    testIssues.issueTest_7.addDependent(testIssues.issueTest_10);
+    testIssues.issueTest_7.addDependent(testIssues.issueTest_13);
+    testIssues.issueTest_8.addDependent(testIssues.issueTest_13);
+    testIssues.issueTest_8.addSubtask(testIssues.issueTest_12);
+    testIssues.issueTest_8.addSubtask(testIssues.issueTest_15);
+    testIssues.issueTest_8.addSubtask(testIssues.issueTest_16);
+    testIssues.issueTest_13.addSubtask(testIssues.issueTest_14);
 
 
     /**
        GRAPH OF SUBTASKS (+) AND BLOCKED TASKS (|)
 
-. _6
-.     _5
-.  |----- _4
+. _0
+.     _1
+.  |----- _2
 .      |----- _3
 .          |- _3
-.          |--------- _1
-.              |----- _1
-.                 _2
-.                  |- _1
-.                      |-  0
-.                          |-  1
-.                              +---------------------------- 11
-.                              +-------------------------------- 12
-.                          |------------------------------------ 12
-.                          |-------------------------------------------- 14
-.                                  2
-.                                  +---------------------------- 12
-.                                  +------------------------------------ 14
-.                                  +---------------------------------------- 15
-.                              |---------  4
-.                              |------------------------------------ 13
-.                                  |-------------------------------- 13
-.                                                                     +_ 13_1
+.                 _4
+.          |--------- _5
+.              |----- _5
+.                  |- _5
+.                      |- _6
+.                          |- _7
+.                                 _8
+.                              |--------- _10
+.                              +---------------------------- _11
+.                              +-------------------------------- _12
+.                          |------------------------------------ _12
+.                                  +---------------------------- _12
+.                              |------------------------------------ _13
+.                                  |-------------------------------- _13
+.                                                                     +- _14
+.                          |-------------------------------------------- _15
+.                                  +------------------------------------ _15
+.                                  +---------------------------------------- _16
+. _17
     **/
 
+    // now must recalculate
     graph = IssueDigraph.schedulesForUserIssues3(userDetails, userWeeklyHours, sPrefs);
 
-    List branches1 = TimeScheduleSearch.findPredecessorBranches(testIssues.issue1);
+    List branches1 = TimeScheduleSearch.findPredecessorBranches(testIssues.issueTest_7);
     out.println("<br><br>");
-    out.println("All branches of TEST-1: ");
+    out.println("All branches of TEST_7: ");
     out.println(branches1);
 
     out.println("<br><br>");
@@ -770,7 +772,7 @@ public class TimeScheduleTests {
       (graph, out, sPrefs,
        TimeScheduleDisplayPreferences.createForIssues
        (1, 0, true, false, true,
-        new String[]{ testIssues.issue1.getKey(), testIssues.issue2.getKey() },
+        new String[]{ testIssues.issueTest_7.getKey(), testIssues.issueTest_8.getKey() },
         false, graph));
 
     out.println("<p>");
@@ -779,7 +781,7 @@ public class TimeScheduleTests {
       (graph, out, sPrefs,
        TimeScheduleDisplayPreferences.createForIssues
        (4, 0, true, false, true,
-        new String[]{ testIssues.issue1.getKey(), testIssues.issue2.getKey() },
+        new String[]{ testIssues.issueTest_7.getKey(), testIssues.issueTest_8.getKey() },
         false, graph));
 
     out.println("<p>");
@@ -788,7 +790,7 @@ public class TimeScheduleTests {
       (graph, out, sPrefs,
        TimeScheduleDisplayPreferences.createForIssues
        (1, 0, true, false, false,
-        new String[]{ testIssues.issue1.getKey() },
+        new String[]{ testIssues.issueTest_7.getKey() },
         false, graph));
 
     out.println("<p>");
@@ -848,10 +850,10 @@ public class TimeScheduleTests {
 
     {
       out.println("<p>");
-      out.println("Critical Path for " + Arrays.asList(testIssues.issue13_1.getKey()) + ".<br>");
+      out.println("Critical Path for " + Arrays.asList(testIssues.issueTest_14.getKey()) + ".<br>");
       TimeScheduleWriter.writeIssueTable
       (graph, out, sPrefs,
-       TimeScheduleDisplayPreferences.createForCriticalPaths(1, 0, false, false, new String[]{testIssues.issue13_1.getKey()}, graph));
+       TimeScheduleDisplayPreferences.createForCriticalPaths(1, 0, false, false, new String[]{testIssues.issueTest_14.getKey()}, graph));
     }
 
 
@@ -861,63 +863,63 @@ public class TimeScheduleTests {
 
     expected = 2 * 3600;
     out.println
-      ((testIssues.issue1.totalTimeSpent() == expected ? "pass" : "fail")
-       + " (totalColumns: expected " + expected + "; got " + testIssues.issue1.totalTimeSpent() + ")");
+      ((testIssues.issueTest_7.totalTimeSpent() == expected ? "pass" : "fail")
+       + " (totalColumns: expected " + expected + "; got " + testIssues.issueTest_7.totalTimeSpent() + ")");
     expected = 10 * 3600;
     out.println
-      ((testIssues.issue1.totalEstimate() == expected ? "pass" : "fail")
-       + " (totalColumns: expected " + expected + "; got " + testIssues.issue1.totalEstimate() + ")");
+      ((testIssues.issueTest_7.totalEstimate() == expected ? "pass" : "fail")
+       + " (totalColumns: expected " + expected + "; got " + testIssues.issueTest_7.totalEstimate() + ")");
 
     expected = 2 * 3600;
     out.println
-      ((testIssues.issue1.totalTimeSpent() == expected ? "pass" : "fail")
-       + " (totalColumns: expected " + expected + "; got " + testIssues.issue1.totalTimeSpent() + ")");
+      ((testIssues.issueTest_7.totalTimeSpent() == expected ? "pass" : "fail")
+       + " (totalColumns: expected " + expected + "; got " + testIssues.issueTest_7.totalTimeSpent() + ")");
     expected = 10 * 3600;
     out.println
-      ((testIssues.issue1.totalEstimate() == expected ? "pass" : "fail")
-       + " (totalColumns: expected " + expected + "; got " + testIssues.issue1.totalEstimate() + ")");
+      ((testIssues.issueTest_7.totalEstimate() == expected ? "pass" : "fail")
+       + " (totalColumns: expected " + expected + "; got " + testIssues.issueTest_7.totalEstimate() + ")");
 
 
     TimeSchedule.IssueSchedule sched13 =
-        graph.getIssueSchedules().get(testIssues.issue13.getKey());
+        graph.getIssueSchedules().get(testIssues.issueTest_13.getKey());
     Calendar acal = Calendar.getInstance();
     acal = sched13.getAdjustedBeginCal();
     expected = 28;
     out.println
       ((acal.get(Calendar.DATE) == expected ? "pass" : "fail")
-       + " (" + testIssues.issue13.getKey() + " should start on Apr " + expected + "; got "
+       + " (" + testIssues.issueTest_13.getKey() + " should start on Apr " + expected + "; got "
        + acal.get(Calendar.DATE) + ")");
     expected = 8;
     out.println
       ((acal.get(Calendar.HOUR_OF_DAY) == expected ? "pass" : "fail")
-       + " (" + testIssues.issue13.getKey() + " should start at " + expected + "; got " +
+       + " (" + testIssues.issueTest_13.getKey() + " should start at " + expected + "; got " +
        + acal.get(Calendar.HOUR_OF_DAY) + ")");
 
-    TimeSchedule.IssueSchedule sched_2 =
-        graph.getIssueSchedules().get(testIssues.issue_2.getKey());
-    boolean notBefore = !sched13.getBeginDate().before(sched_2.getEndDate());
+    TimeSchedule.IssueSchedule sched4 =
+        graph.getIssueSchedules().get(testIssues.issueTest_4.getKey());
+    boolean notBefore = !sched13.getBeginDate().before(sched4.getEndDate());
     out.println((notBefore ? "pass" : "fail")
-                + " (" + testIssues.issue13.getKey() + " should start after " + testIssues.issue_2.getKey() + " ends)");
+                + " (" + testIssues.issueTest_13.getKey() + " should start after " + testIssues.issueTest_4.getKey() + " ends)");
 
     TimeSchedule.IssueSchedule sched14 =
-        graph.getIssueSchedules().get(testIssues.issue14.getKey());
+        graph.getIssueSchedules().get(testIssues.issueTest_15.getKey());
     acal = sched14.getAdjustedBeginCal();
     expected = 12;
     out.println
       ((acal.get(Calendar.DATE) == expected ? "pass" : "fail")
-       + " (" + testIssues.issue14.getKey() + " should start on day " + expected + "; got " +
+       + " (" + testIssues.issueTest_15.getKey() + " should start on day " + expected + "; got " +
        + acal.get(Calendar.DATE) + ")");
 
-    TimeSchedule.IssueSchedule sched4 =
-        graph.getIssueSchedules().get(testIssues.issue4.getKey());
-    acal = sched4.getAdjustedBeginCal();
+    TimeSchedule.IssueSchedule sched10 =
+        graph.getIssueSchedules().get(testIssues.issueTest_10.getKey());
+    acal = sched10.getAdjustedBeginCal();
     expected = 15;
     out.println
       ((acal.get(Calendar.DATE) == expected ? "pass" : "fail")
-       + " (" + testIssues.issue4.getKey() + " should start on day " + expected + "; got " +
+       + " (" + testIssues.issueTest_10.getKey() + " should start on day " + expected + "; got " +
        + acal.get(Calendar.DATE) + ")");
 
-    List branches0 = TimeScheduleSearch.findPredecessorBranches(testIssues.issue0);
+    List branches0 = TimeScheduleSearch.findPredecessorBranches(testIssues.issueTest_6);
     out.println
       ((branches0.size() == 6 ? "pass" : "fail")
        + " (should be 6 branches preceding 0; got " + branches0.size() + ")");
@@ -925,7 +927,7 @@ public class TimeScheduleTests {
     out.println("</xmp>");
 
     out.println();
-    out.println("All branches of TEST-0: ");
+    out.println("All branches of TEST_6: ");
     out.println(branches0);
 
   }
@@ -933,93 +935,93 @@ public class TimeScheduleTests {
   public static TestIssues createTestIssues() throws Exception {
     TestIssues result = new TestIssues();
 
-    result.issue_6 =
+    result.issueTest_0 =
         new IssueTree
-            ("TEST--6", "Ancestor test issue", "trent", 1L,
+            ("TEST_0", "Ancestor test issue", "trent", 1L,
                 0 * 3600, 0 * 3600, 0.0, null, null, 1, false);
-    result.issue_5 =
+    result.issueTest_1 =
         new IssueTree
-            ("TEST--5", "Ancestor test issue", "trent", 1L,
+            ("TEST_1", "Ancestor test issue", "trent", 1L,
                 4 * 3600, 0 * 3600, 0.0, null, null, 1, false);
-    result.issue_4 =
+    result.issueTest_2 =
         new IssueTree
-            ("TEST--4", "Ancestor test issue", "ken", 1L,
+            ("TEST_2", "Ancestor test issue", "ken", 1L,
                 4 * 3600, 0 * 3600, 0.0, null, null, 1, false);
-    result.issue_3 =
+    result.issueTest_3 =
         new IssueTree
-            ("TEST--3", "Ancestor test issue", "brent", 1L,
+            ("TEST_3", "Ancestor test issue", "brent", 1L,
                 4 * 3600, 0 * 3600, 0.0, null, null, 1, false);
-    result.issue_2 =
+    result.issueTest_4 =
         new IssueTree
-            ("TEST--2", "Ancestor test issue", "trent", 1L,
+            ("TEST_4", "Ancestor test issue", "trent", 1L,
                 4 * 3600, 0 * 3600, 0.0, null, null, 1, false);
-    result.issue_1 =
+    result.issueTest_5 =
         new IssueTree
-            ("TEST--1", "Ancestor test issue", "ken", 1L,
+            ("TEST_5", "Ancestor test issue", "ken", 1L,
                 4 * 3600, 0 * 3600, 0.0, null, null, 1, false);
-    result.issue0 =
+    result.issueTest_6 =
         new IssueTree
-            ("TEST-0", "Grandparent test issue", "fred", 1L,
+            ("TEST_6", "Grandparent test issue", "fred", 1L,
                 8 * 3600, 0 * 3600, 0.0,
                 SLASH_DATE.parse("2005/01/01"), null, 1, false);
-    result.issue1 =
+    result.issueTest_7 =
         new IssueTree
-            ("TEST-1", "Parent test issue", "brent", 1L,
+            ("TEST_7", "Parent test issue", "brent", 1L,
                 10 * 3600, 0 * 3600, 0.0,
                 SLASH_DATE.parse("2005/04/01"), null, 1, false);
-    result.issue2 =
+    result.issueTest_8 =
         new IssueTree
-            ("TEST-2", "issue", "ken", 1L, 24 * 3600, 1 * 3600, 0.0,
+            ("TEST_8", "issue", "ken", 1L, 24 * 3600, 1 * 3600, 0.0,
                 SLASH_DATE.parse("2005/04/16"), null, 8, false);
-    result.issue4 =
+    result.issueTest_10 =
         new IssueTree
-            ("TEST-4", "top", "trent", 1L, 8 * 3600, 1 * 3600, 0.0,
+            ("TEST_10", "top", "trent", 1L, 8 * 3600, 1 * 3600, 0.0,
                 SLASH_DATE.parse("2005/04/13"), null, 4, false);
-    result.issue9 =
+    result.issueTest_9 =
         new IssueTree
-            ("TEST-9", "issue", "ken", 1L, 20 * 3600, 1 * 3600, 0.0,
+            ("TEST_9", "issue", "ken", 1L, 20 * 3600, 1 * 3600, 0.0,
                 SLASH_DATE.parse("2005/04/05"), null, 3, false);
-    result.issue11 =
+    result.issueTest_11 =
         new IssueTree
-            ("TEST-11", "sub issue", "trent", 1L, 4 * 3600, 1 * 3600, 0.0,
+            ("TEST_11", "sub issue", "trent", 1L, 4 * 3600, 1 * 3600, 0.0,
                 SLASH_DATE.parse("2005/04/15"), null, 3, true);
-    result.issue12 =
+    result.issueTest_12 =
         new IssueTree
-            ("TEST-12", "sub issue", "ken", 1L, 3 * 3600, 1 * 3600, 0.0,
+            ("TEST_12", "sub issue", "ken", 1L, 3 * 3600, 1 * 3600, 0.0,
                 SLASH_DATE.parse("2005/06/01"), null, 2, false);
-    result.issue13 =
+    result.issueTest_13 =
         new IssueTree
-            ("TEST-13", "after TEST-1,2", "trent", 1L, 10 * 3600, 1 * 3600, 0.0,
+            ("TEST_13", "after TEST_7,2", "trent", 1L, 10 * 3600, 1 * 3600, 0.0,
                 null, null, 2, true);
-    result.issue13_1 =
+    result.issueTest_14 =
         new IssueTree
-            ("TEST-13-1", "sub of TEST-13", "trent", 1L, 10 * 3600, 1 * 3600, 0.0,
+            ("TEST_14", "sub of TEST_13", "trent", 1L, 10 * 3600, 1 * 3600, 0.0,
                 null, null, 9, false);
-    result.issue14 =
+    result.issueTest_15 =
         new IssueTree
-            ("TEST-14", "dependant issue", "trent", 1L, 16 * 3600, 1 * 3600, 0.0,
+            ("TEST_15", "dependant issue", "trent", 1L, 16 * 3600, 1 * 3600, 0.0,
                 SLASH_DATE.parse("2005/06/01"), null, 4, false);
-    result.issue15 =
+    result.issueTest_16 =
         new IssueTree
-            ("TEST-15", "dependant issue", "trent", 1L, 4 * 3600, 1 * 3600, 0.0,
+            ("TEST_16", "dependant issue", "trent", 1L, 4 * 3600, 1 * 3600, 0.0,
                 SLASH_DATE.parse("2005/04/07"), null, 5, false);
-    result.issue16 =
+    result.issueTest_17 =
         new IssueTree
-            ("TEST-16", "some issue", "trent", 1L, 12 * 3600, 1 * 3600, 0.0,
+            ("TEST_17", "some issue", "trent", 1L, 12 * 3600, 1 * 3600, 0.0,
                 SLASH_DATE.parse("2005/04/15"), null, 6, false);
 
     return result;
   }
 
   public static class TestIssues {
-    IssueTree issue_6, issue_5, issue_4, issue_3, issue_2, issue_1,
-        issue0, issue1, issue2, issue4, issue9, issue11, issue12, issue13,
-        issue13_1, issue14, issue15, issue16;
+    IssueTree issueTest_0, issueTest_1, issueTest_2, issueTest_3, issueTest_4, issueTest_5,
+      issueTest_6, issueTest_7, issueTest_8, issueTest_9, issueTest_10, issueTest_11, issueTest_12,
+      issueTest_13, issueTest_14, issueTest_15, issueTest_16, issueTest_17;
     private IssueTree[] manyIssues() {
       return new IssueTree[]{
-          issue_6, issue_5, issue_4, issue_3, issue_2, issue_1, issue0, issue1,
-          issue2, issue4, issue9, issue11, issue12, issue13, issue13_1,
-          issue14, issue15, issue16
+          issueTest_0, issueTest_1, issueTest_2, issueTest_3, issueTest_4, issueTest_5, issueTest_6, issueTest_7,
+          issueTest_8, issueTest_9, issueTest_10, issueTest_11, issueTest_12, issueTest_13, issueTest_14,
+          issueTest_15, issueTest_16, issueTest_17
       };
     }
   }
