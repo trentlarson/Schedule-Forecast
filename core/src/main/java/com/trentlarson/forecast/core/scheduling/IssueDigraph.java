@@ -166,7 +166,7 @@ public class IssueDigraph {
 
   public void reschedule() {
 
-    // REFACTOR with TimeScheduleLoader.schedulesForUserIssues (lots of overlap)
+    // REFACTOR with IssueDigraph.schedulesForUserIssues (lots of overlap)
 
     UserDetailsAndHours newTimeDetails = adjustDetailsForAssignedHours
       (getAssignedUserDetails(), getUserWeeklyHoursAvailable(),
@@ -228,12 +228,62 @@ public class IssueDigraph {
 
   }
 
+  public static class ScheduleInput {
+    Map<Teams.AssigneeKey,List<IssueTree>> userDetails;
+    Map<Teams.UserTimeKey,TimeSchedule.WeeklyWorkHours> weeklyHoursFromKey;
+    TimeScheduleCreatePreferences sPrefs;
+    public ScheduleInput(Map<Teams.AssigneeKey,List<IssueTree>> userDetails_,
+                         Map<Teams.UserTimeKey,TimeSchedule.WeeklyWorkHours> weeklyHoursFromKey_,
+                         TimeScheduleCreatePreferences sPrefs_) {
+      userDetails = userDetails_;
+      weeklyHoursFromKey = weeklyHoursFromKey_;
+      sPrefs = sPrefs_;
+    }
+  }
+
+  public static IssueDigraph schedulesForUserIssues(ScheduleInput input) {
+    return schedulesForUserIssues(input.userDetails, input.weeklyHoursFromKey, input.sPrefs);
+  }
+
+  public static IssueDigraph schedulesForIssues(IssueTree[] issues) {
+    Map<Teams.AssigneeKey,List<IssueTree>> userDetails = createUserDetails(issues);
+    return schedulesForUserIssues(userDetails, null, null);
+  }
+
+  public static IssueDigraph schedulesForIssues(IssueTree[] issues, TimeScheduleCreatePreferences sPrefs) {
+    Map<Teams.AssigneeKey,List<IssueTree>> userDetails = createUserDetails(issues);
+    return schedulesForUserIssues(userDetails, null, sPrefs);
+  }
+
+  public static IssueDigraph schedulesForIssues(IssueTree[] issues, Map<Teams.UserTimeKey,List<TeamHours>> userWeeklyHours) {
+    return schedulesForIssues(issues, userWeeklyHours, null);
+  }
+
+  public static IssueDigraph schedulesForIssues(
+      IssueTree[] issues,
+      Map<Teams.UserTimeKey,List<TeamHours>> userWeeklyHours,
+      TimeScheduleCreatePreferences sPrefs) {
+    Map<Teams.AssigneeKey,List<IssueTree>> userDetails = createUserDetails(issues);
+    Map<Teams.UserTimeKey, SortedSet<TimeSchedule.HoursForTimeSpan>> userSpanHours =
+        teamToUserHours(userWeeklyHours);
+    Map<Teams.UserTimeKey,TimeSchedule.WeeklyWorkHours> weeklyHoursFromKey =
+        weeklyHoursToRange(userSpanHours);
+    return schedulesForUserIssues(userDetails, weeklyHoursFromKey, sPrefs);
+  }
+
   public static IssueDigraph schedulesForUserIssues
       (Map<Teams.AssigneeKey,List<IssueTree>> userDetails,
        Map<Teams.UserTimeKey,TimeSchedule.WeeklyWorkHours> weeklyHoursFromKey,
        TimeScheduleCreatePreferences sPrefs) {
 
     // (REFACTOR with IssueDigraph.reschedule (lots of overlap))
+
+    if (weeklyHoursFromKey == null) {
+      weeklyHoursFromKey = new TreeMap<Teams.UserTimeKey,TimeSchedule.WeeklyWorkHours>();
+    }
+    if (sPrefs == null) {
+      sPrefs = new TimeScheduleCreatePreferences();
+    }
 
     UserDetailsAndHours newTimeDetails =
         adjustDetailsForAssignedHours(userDetails, weeklyHoursFromKey,
@@ -476,5 +526,31 @@ public class IssueDigraph {
     }
     return newIssues;
   }
+
+  public static Map<Teams.AssigneeKey,List<IssueTree>> createUserDetails(IssueTree[] issues) {
+
+    Map<Teams.AssigneeKey,List<IssueTree>> userDetails = new HashMap();
+    for (int i = 0; i < issues.length; i++) {
+      addIssue(issues[i], userDetails);
+    }
+    return userDetails;
+  }
+
+  /**
+   Add issue to userDetails.
+   */
+  private static void addIssue
+  (IssueTree issue,
+   Map<Teams.AssigneeKey,List<IssueTree>> userDetails) {
+
+    Teams.AssigneeKey assignee = issue.getRawAssigneeKey();
+    List<IssueTree> userIssues = userDetails.get(assignee);
+    if (userIssues == null) {
+      userIssues = new ArrayList<IssueTree>();
+      userDetails.put(assignee, userIssues);
+    }
+    userIssues.add(issue);
+  }
+
 }
 

@@ -482,9 +482,20 @@ public class TimeSchedule {
     protected int priority = 1;
     protected Date dueDate = null, mustStartOnDate = null;
     // issues that "must be done before" this one
-    protected final SortedSet<T> precursors = new TreeSet<T>();
+    protected final SortedSet<T> precursors;
     // issues that "are part of" this one
-    protected final Set<T> subtasks = new TreeSet<T>();
+    protected final Set<T> subtasks;
+
+    /**
+     * for GSON deserialization
+     */
+    public IssueWorkDetailOriginal() {
+      this.key = "";
+      this.summary = "";
+      this.priority = 1;
+      this.precursors = new TreeSet<T>();
+      this.subtasks = new TreeSet<>();
+    }
 
     /**
        @param issueEstSecondsRaw_ estimate in seconds
@@ -494,6 +505,7 @@ public class TimeSchedule {
          int issueEstSecondsRaw_, double maxHoursPerWeek_,
          Date dueDate_, Date mustStartOnDate_,
          int priority_) {
+      this();
       this.key = key_;
       this.timeAssignee = timeAssignee_;
       this.summary = summary_;

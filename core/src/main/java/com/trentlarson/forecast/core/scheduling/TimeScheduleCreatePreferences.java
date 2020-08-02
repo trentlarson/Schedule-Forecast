@@ -31,10 +31,13 @@ public class TimeScheduleCreatePreferences {
      Create with date of this morning at midnight.
    */
   public TimeScheduleCreatePreferences(int timeWithoutEstimate_, double timeMultiplier_) {
-    this.timeWithoutEstimate = timeWithoutEstimate_;
+    this.timeWithoutEstimate = timeWithoutEstimate_; // I don't think we use this.
     this.startCal = new GregorianCalendar();
     adjustCalToMidnight();
     this.timeMultiplier = timeMultiplier_;
+  }
+  public TimeScheduleCreatePreferences() {
+    this(0,1);
   }
   private void adjustCalToMidnight() {
     this.startCal.set(Calendar.HOUR_OF_DAY, 0);

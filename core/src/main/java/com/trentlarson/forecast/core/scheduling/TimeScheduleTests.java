@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -99,13 +100,9 @@ public class TimeScheduleTests {
     hourList.add(new TeamHours(3L, null, username, SLASH_TIME.parse("2007/03/19 04:00"), 40.0));
     userWeeklyHours.put(new Teams.UserTimeKey(1L, username), hourList);
 
-    Map<Teams.AssigneeKey,List<IssueTree>> userDetails =
-      createUserDetails(manyIssues, userWeeklyHours);
     TimeScheduleCreatePreferences sPrefs =
       new TimeScheduleCreatePreferences(0, SLASH_DATE.parse("2006/12/03"), 1);
-    IssueDigraph graph =
-      IssueDigraph.schedulesForUserIssues3
-      (userDetails, userWeeklyHours, sPrefs);
+    IssueDigraph graph = IssueDigraph.schedulesForIssues(manyIssues, userWeeklyHours, sPrefs);
 
     Teams.AssigneeKey user = new Teams.AssigneeKey(1L, "matt");
 
@@ -138,9 +135,8 @@ public class TimeScheduleTests {
 
     Map<Teams.UserTimeKey,List<TeamHours>> userWeeklyHours = new TreeMap<Teams.UserTimeKey,List<TeamHours>>();
 
-    Map<Teams.AssigneeKey,List<IssueTree>> userDetails = createUserDetails(manyIssues, userWeeklyHours);
     TimeScheduleCreatePreferences sPrefs = new TimeScheduleCreatePreferences(0, SLASH_DATE.parse("2006/12/03"), 1);
-    IssueDigraph graph = IssueDigraph.schedulesForUserIssues3(userDetails, userWeeklyHours, sPrefs);
+    IssueDigraph graph = IssueDigraph.schedulesForIssues(manyIssues, userWeeklyHours, sPrefs);
 
     out.println("<br><br>");
     out.println("Unassigned user gantt chart, even though there are no team hours defined.<br>");
@@ -169,9 +165,8 @@ public class TimeScheduleTests {
     hourList.add(new TeamHours(1L, null, null, SLASH_TIME.parse("2006/12/03 00:00"), 80.0));
     userWeeklyHours.put(new Teams.UserTimeKey(null, null), hourList);
 
-    userDetails = createUserDetails(manyIssues, userWeeklyHours);
     sPrefs = new TimeScheduleCreatePreferences(0, SLASH_DATE.parse("2006/12/03"), 1);
-    graph = IssueDigraph.schedulesForUserIssues3(userDetails, userWeeklyHours, sPrefs);
+    graph = IssueDigraph.schedulesForIssues(manyIssues, userWeeklyHours, sPrefs);
 
     out.println("<br><br>");
     out.println("Unassigned user-team gantt chart, where 80 null-team hours are defined.<br>");
@@ -233,14 +228,10 @@ public class TimeScheduleTests {
     hourList.add(new TeamHours(0L, 1L, null, SLASH_DATE.parse("2005/04/04"), 120.0));
     userWeeklyHours.put(new Teams.UserTimeKey(1L, null), hourList);
 
-    Map<Teams.AssigneeKey,List<IssueTree>> userDetails =
-      createUserDetails(manyIssues, userWeeklyHours);
     TimeScheduleCreatePreferences sPrefs =
       new TimeScheduleCreatePreferences(0, SLASH_DATE.parse("2005/04/05"), 1);
-    IssueDigraph graph =
-      IssueDigraph.schedulesForUserIssues3
-      (userDetails, userWeeklyHours, sPrefs);
-      
+    IssueDigraph graph = IssueDigraph.schedulesForIssues(manyIssues, userWeeklyHours, sPrefs);
+
 
 
     // print out team Gantt chart
@@ -271,14 +262,10 @@ public class TimeScheduleTests {
       ("TEST-200.1", "5-day issue", "trent", 1L,
        5 * jira_day, 0 * jira_day, 0.0, null, null, 5, false);
 
-    userDetails =
-      createUserDetails(manyIssues, userWeeklyHours);
     sPrefs =
       new TimeScheduleCreatePreferences(0, SLASH_DATE.parse("2005/04/05"), 1);
-    graph =
-      IssueDigraph.schedulesForUserIssues3
-      (userDetails, userWeeklyHours, sPrefs);
-    
+    graph = IssueDigraph.schedulesForIssues(manyIssues, userWeeklyHours, sPrefs);
+
     user = new Teams.AssigneeKey(1L, null);
     out.println("<br><br>");
     out.println("Tree for " + user + ", which should now be shorter since 'trent' handles one task (TEST-200.1).<br>");
@@ -329,15 +316,9 @@ public class TimeScheduleTests {
        null, null, 7, false)
     };
     
-    Map<Teams.UserTimeKey,List<TeamHours>> userWeeklyHours =
-      new TreeMap<Teams.UserTimeKey,List<TeamHours>>();
-    Map<Teams.AssigneeKey,List<IssueTree>> userDetails =
-      createUserDetails(manyIssues, userWeeklyHours);
     TimeScheduleCreatePreferences sPrefs =
       new TimeScheduleCreatePreferences(0, SLASH_DATE.parse("2005/04/05"), 1);
-    IssueDigraph graph =
-      IssueDigraph.schedulesForUserIssues3
-      (userDetails, userWeeklyHours, sPrefs);
+    IssueDigraph graph = IssueDigraph.schedulesForIssues(manyIssues, sPrefs);
 
 
     // print out team Gantt chart
@@ -428,14 +409,9 @@ public class TimeScheduleTests {
     hourList.add(new TeamHours(3L, null, "trent", SLASH_DATE.parse("2005/04/18"), 30.0));
     userWeeklyHours.put(new Teams.UserTimeKey(null, "trent"), hourList);
 
-    Map<Teams.AssigneeKey,List<IssueTree>> userDetails =
-      createUserDetails(manyIssues, userWeeklyHours);
-
     TimeScheduleCreatePreferences sPrefs =
       new TimeScheduleCreatePreferences(0, SLASH_DATE.parse("2005/04/11"), 1);
-    IssueDigraph graph =
-      IssueDigraph.schedulesForUserIssues3
-      (userDetails, userWeeklyHours, sPrefs);
+    IssueDigraph graph = IssueDigraph.schedulesForIssues(manyIssues, userWeeklyHours, sPrefs);
 
     out.println("<br><br>");
     out.println("Trees with hours on teams with hours: " + graph.getUserWeeklyHoursAvailable());
@@ -450,6 +426,8 @@ public class TimeScheduleTests {
 
 
 
+
+    Map<Teams.AssigneeKey,List<IssueTree>> userDetails = IssueDigraph.createUserDetails(manyIssues);
 
     out.println("<br><br>");
     out.println("Schedule for trent on team 1");
@@ -534,16 +512,10 @@ public class TimeScheduleTests {
       };
 
 
-    Map<Teams.UserTimeKey,List<TeamHours>> userWeeklyHours =
-      new TreeMap<Teams.UserTimeKey,List<TeamHours>>();
-    Map<Teams.AssigneeKey,List<IssueTree>> userDetails =
-        createUserDetails(manyIssues, userWeeklyHours);
     List<TeamHours> hourList = new ArrayList();
     TimeScheduleCreatePreferences sPrefs =
       new TimeScheduleCreatePreferences(0, startDate, 2);
-    IssueDigraph graph =
-      IssueDigraph.schedulesForUserIssues3
-        (userDetails, userWeeklyHours, sPrefs);
+    IssueDigraph graph = IssueDigraph.schedulesForIssues(manyIssues, sPrefs);
 
 
 
@@ -551,6 +523,8 @@ public class TimeScheduleTests {
       String userPerson = "trent";
       Long userTeam = 1L;
       Teams.AssigneeKey userKey = new Teams.AssigneeKey(userTeam, userPerson);
+
+      Map<Teams.AssigneeKey,List<IssueTree>> userDetails = IssueDigraph.createUserDetails(manyIssues);
 
       // print out single-user table schedule
       List<TimeSchedule.IssueSchedule<IssueTree>> schedule = new ArrayList();
@@ -608,14 +582,9 @@ public class TimeScheduleTests {
 
     IssueTree[] manyIssues = { issue20, issue21, issue22 };
 
-    Map<Teams.AssigneeKey,List<IssueTree>> userDetails =
-        createUserDetails(manyIssues, new HashMap());
-
     TimeScheduleCreatePreferences sPrefs =
       new TimeScheduleCreatePreferences(0, startDate, 2);
-    IssueDigraph graph =
-      IssueDigraph.schedulesForUserIssues3
-      (userDetails, new HashMap(), sPrefs);
+    IssueDigraph graph = IssueDigraph.schedulesForIssues(manyIssues, sPrefs);
 
     TimeScheduleWriter.writeIssueTable
       (graph, out, sPrefs,
@@ -660,11 +629,10 @@ public class TimeScheduleTests {
       userWeeklyHours.put(new Teams.UserTimeKey(1L, "fred"), hourList);
     }
 
-    Map<Teams.AssigneeKey,List<IssueTree>> userDetails =
-        createUserDetails(testIssues.manyIssues(), userWeeklyHours);
+    Map<Teams.AssigneeKey,List<IssueTree>> userDetails = IssueDigraph.createUserDetails(testIssues.manyIssues());
     Date startDate = SLASH_DATE.parse("2005/04/05");
     TimeScheduleCreatePreferences sPrefs = new TimeScheduleCreatePreferences(0, startDate, 2);
-    IssueDigraph graph = IssueDigraph.schedulesForUserIssues3(userDetails, userWeeklyHours, sPrefs);
+    IssueDigraph graph = IssueDigraph.schedulesForIssues(testIssues.manyIssues(), userWeeklyHours, sPrefs);
 
     // print out single-user table schedule & Gantt chart
     {
@@ -679,6 +647,7 @@ public class TimeScheduleTests {
           (graph.getIssueSchedules().get
            (((TimeSchedule.IssueWorkDetail) userIssueList.get(i)).getKey()));
       }
+      Collections.sort(schedule);
       TimeSchedule.writeIssueSchedule
         (schedule, sPrefs.getTimeMultiplier(), true, out);
 
@@ -1024,33 +993,6 @@ public class TimeScheduleTests {
           issueTest_15, issueTest_16, issueTest_17
       };
     }
-  }
-
-  private static Map<Teams.AssigneeKey,List<IssueTree>> createUserDetails
-  (IssueTree[] issues, Map<Teams.UserTimeKey,List<TeamHours>> userWeeklyHours) {
-
-    Map<Teams.AssigneeKey,List<IssueTree>> userDetails = new HashMap();
-    for (int i = 0; i < issues.length; i++) {
-      addIssue(issues[i], userDetails, userWeeklyHours);
-    }
-    return userDetails;
-  }
-
-  /**
-     Add issue to userDetails.
-   */
-  private static void addIssue
-  (IssueTree issue,
-   Map<Teams.AssigneeKey,List<IssueTree>> userDetails,
-   Map<Teams.UserTimeKey,List<TeamHours>> userWeeklyHours) {
-
-    Teams.AssigneeKey assignee = issue.getRawAssigneeKey();
-    List<IssueTree> userIssues = userDetails.get(assignee);
-    if (userIssues == null) {
-      userIssues = new ArrayList<IssueTree>();
-      userDetails.put(assignee, userIssues);
-    }
-    userIssues.add(issue);
   }
 
 }

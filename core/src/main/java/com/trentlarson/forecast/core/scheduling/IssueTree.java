@@ -16,6 +16,14 @@ public class IssueTree extends TimeSchedule.IssueWorkDetailOriginal<IssueTree> i
   private Set<IssueTree> dependents = new TreeSet<IssueTree>();
 
   /**
+   * for GSON deserialization
+   */
+  public IssueTree() {
+    super();
+    this.dependents = new TreeSet();
+  }
+
+  /**
    * 
    * @param key_
    * @param summary_
