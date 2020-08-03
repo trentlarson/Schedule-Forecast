@@ -767,7 +767,8 @@ public class TimeScheduleTests {
     TimeScheduleWriter.writeIssueTable
     (graph, out, sPrefs,
        TimeScheduleDisplayPreferences.createForUser
-       (1, 0, true, false, true, new Teams.AssigneeKey(1L, "trent"),
+       (1, 0, true, false, true,
+        new Teams.AssigneeKey(1L, "trent"),
         false, graph));
 
     {
@@ -776,7 +777,9 @@ public class TimeScheduleTests {
       out.println("Tree for " + user + ".<br>");
       TimeScheduleWriter.writeIssueTable
         (graph, out, sPrefs,
-         TimeScheduleDisplayPreferences.createForUser(1, 0, true, false, false, user, false, graph));
+         TimeScheduleDisplayPreferences.createForUser
+           (1, 0, true, false, false,
+            user, false, graph));
 
     }
 
@@ -799,7 +802,8 @@ public class TimeScheduleTests {
       TimeScheduleWriter.writeIssueTable
         (graph, out, sPrefs,
          TimeScheduleDisplayPreferences.createForUser
-         (1, 0, true, false, true, user, false, graph));
+         (1, 0, true, false, true,
+          user, false, graph));
     }
 
     // print out single-user table schedule
@@ -822,7 +826,9 @@ public class TimeScheduleTests {
       out.println("Critical Path for " + Arrays.asList(testIssues.issueTest_14.getKey()) + ".<br>");
       TimeScheduleWriter.writeIssueTable
       (graph, out, sPrefs,
-       TimeScheduleDisplayPreferences.createForCriticalPaths(1, 0, false, false, new String[]{testIssues.issueTest_14.getKey()}, graph));
+       TimeScheduleDisplayPreferences.createForCriticalPaths
+           (1, 0, false, false,
+            new String[]{testIssues.issueTest_14.getKey()}, graph));
     }
 
 

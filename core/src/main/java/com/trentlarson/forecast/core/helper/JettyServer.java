@@ -33,7 +33,8 @@ class JettyServer {
     ServletHandler servletHandler = new ServletHandler();
     server.setHandler(servletHandler);
 
-    servletHandler.addServletWithMapping(BlockingServlet.class, "/status");
+    servletHandler.addServletWithMapping(BlockingServlet.class, "/graph");
+    servletHandler.addServletWithMapping(DisplayServlet.class, "/display");
 
     server.start();
 
