@@ -311,8 +311,8 @@ public class IssueDigraph {
                 sPrefs.getStartTime(), sPrefs.getTimeMultiplier(), sPrefs.getReversePriority());
 
     // for displaying things in that priority order
-    TimeSchedule.setInitialOrdering(userDetails); // This does change the ordering in some output... not sure why.
-    TimeSchedule.setInitialOrdering(newTimeDetails.timeDetails);
+    TimeSchedule.setInitialOrdering(userDetails, sPrefs.getReversePriority()); // Removing this does change the ordering in some output... not sure why.
+    TimeSchedule.setInitialOrdering(newTimeDetails.timeDetails, sPrefs.getReversePriority());
 
     return new IssueDigraph(schedules,
         userDetails, newTimeDetails.timeDetails,

@@ -8,6 +8,9 @@ public class TimeScheduleCreatePreferences {
   public final Calendar startCal;
   public final int timeWithoutEstimate;
   public final double timeMultiplier;
+  /**
+   * Makes the priority order descending (9 high) instead of ascending (9 low)
+   */
   public final boolean reversePriority;
   /**
      Note that this will adjust the time to midnight (morning).

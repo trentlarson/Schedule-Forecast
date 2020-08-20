@@ -622,7 +622,11 @@ public class TimeSchedule {
           // next determinant is the priority
           if (d1.getPriority() != d2.getPriority()) {
             // lower priority comes earlier
-            return (d1.getPriority() - d2.getPriority());
+            if (reversePriority) {
+              return (d2.getPriority() - d1.getPriority());
+            } else {
+              return (d1.getPriority() - d2.getPriority());
+            }
           // final determinant is the due-date
           } else if (d1.getDueDate() == null && d2.getDueDate() != null) {
             return 1;
@@ -1495,7 +1499,7 @@ public class TimeSchedule {
       log4jLog.debug("userDetails: " + userDetails);
     }
 
-    setInitialOrdering(userDetails);
+    setInitialOrdering(userDetails, reversePriority);
 
     // look through all the user issues, and repeat until all scheduled
     Map<String,IssueSchedule<T>> issueSchedules =

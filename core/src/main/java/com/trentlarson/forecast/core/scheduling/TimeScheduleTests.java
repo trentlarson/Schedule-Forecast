@@ -905,6 +905,22 @@ public class TimeScheduleTests {
     out.println("All branches of TEST_6: ");
     out.println(branches0);
 
+
+
+
+    out.println("<br/><br/>");
+    out.println("<p>Now let's reverse the priority order.<p>");
+    // must recalculate
+    sPrefs = new TimeScheduleCreatePreferences(startDate, true);
+    graph = IssueDigraph.schedulesForUserIssues3(userDetails, userWeeklyHours, sPrefs);
+    out.println("<p>");
+    out.println("Schedule for trent with reversed priority order.<br>");
+    TimeScheduleWriter.writeIssueTable
+        (graph, out, sPrefs,
+            TimeScheduleDisplayPreferences.createForUser
+                (1, 0, true, false, true,
+                    new Teams.AssigneeKey(1L, "trent"),
+                    false, graph));
   }
 
   public static TestIssues createTestIssues() throws Exception {

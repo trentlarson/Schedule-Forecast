@@ -1,7 +1,7 @@
 <P>
 <H1>Here are the scheduling tests for team tasks.</H2>
 <P>
-<H2>... around a daylight-savings time switch.</H2>
+<H2>... around a daylight-savings time switch:</H2>
 <table border='1'>
 <tr>
 <td>issue</td>
@@ -28,7 +28,7 @@
 </tr>
 </table>
 <P>
-<H2>... without any teams defined.</H2>
+<H2>... without any teams defined:</H2>
 <br><br>
 Unassigned user gantt chart, even though there are no team hours defined.<br>
 <table cellspacing='0'>
@@ -323,7 +323,7 @@ Unassigned user-team gantt chart, where 80 null-team hours are defined.<br>
   </tr>
 </table>
 <P>
-<H2>... for teams with various time availability.</H2>
+<H2>... for teams with various time availability:</H2>
 <br><br>
 Tree for User is Team 1, which should not be longer than 3 weeks.<br>
 <table cellspacing='0'>
@@ -1429,7 +1429,7 @@ Tree for User is Team 1, which should now be shorter since 'trent' handles one t
   </tr>
 </table>
 <P>
-<H2>... for issues with hours-per-week settings.</H2>
+<H2>... for issues with hours-per-week settings:</H2>
 <br><br>
 Tree for User is Team 1.<br>
 <table cellspacing='0'>
@@ -2694,7 +2694,7 @@ Tree for User is Team 1.<br>
 </tr>
 </table>
 <P>
-<H2>... for people split across teams.</H2>
+<H2>... for people split across teams:</H2>
 <br><br>
 Trees with hours on teams with hours: {User trent on Team 1=WeeklyWorkHours {Mon Apr 04 00:00:00 MDT 2005=8.0, Mon Apr 18 00:00:00 MDT 2005=16.0}, User trent on any Team=WeeklyWorkHours {Mon Apr 04 00:00:00 MDT 2005=8.0, Mon Apr 18 00:00:00 MDT 2005=30.0}}
 <br><br>
@@ -4011,7 +4011,7 @@ Schedule for trent on no team
 </tr>
 </table>
 <P>
-<H2>... for tasks with a starting time.</H2>
+<H2>... for tasks with a starting time:</H2>
 <table border='1'>
 <tr>
 <td>issue</td>
@@ -4358,7 +4358,7 @@ Tree for User trent on Team 1.<br>
   </tr>
 </table>
 <P>
-<H2>... for tasks blocked by a previous issue with a late subtask.</H2>
+<H2>... for tasks blocked by a previous issue with a late subtask:</H2>
 <br><br>
 (TEST-22 should be blocked until the 21st.)
 <table cellspacing='0'>
@@ -5105,7 +5105,7 @@ Tree for User trent on Team 1.<br>
 </table>
 Critical Path for issue TEST-22: follows precursor(s) [Critical Path for issue TEST-20: follows subtask(s) [Critical Path for issue TEST-21: none]]
 <P>
-<H2>... for tasks with complicated dependencies.</H2>
+<H2>... for tasks with complicated dependencies:</H2>
 <p>Creating issues without dependencies...<p>
 <table border='1'>
 <tr>
@@ -12419,6 +12419,645 @@ pass (should be 6 branches preceding 0; got 6)
 
 All branches of TEST_6: 
 [TEST_0>(1)>TEST_5(1), TEST_1>(0)>TEST_3(2), ..>TEST_2>(0)>TEST_3(2), TEST_3>(0)>TEST_5(1), TEST_4>(0)>TEST_5(1), TEST_5>(0)>TEST_6(0)]
+<br/><br/>
+<p>Now let's reverse the priority order.<p>
+<p>
+Schedule for trent with reversed priority order.<br>
+<table cellspacing='0'>
+  <tr>
+    <td>
+    </td>
+    <td>
+      Month
+    </td>
+    <td>
+    </td>
+    <td>A</td>
+    <td>
+    </td>
+    <td></td>
+    <td>
+    </td>
+    <td></td>
+    <td>
+    </td>
+    <td></td>
+    <td>
+    </td>
+    <td></td>
+    <td>
+    </td>
+    <td></td>
+    <td>
+    </td>
+    <td></td>
+    <td>
+    </td>
+    <td></td>
+    <td>
+    </td>
+    <td></td>
+    <td>
+    </td>
+    <td></td>
+    <td>
+    </td>
+    <td></td>
+    <td>
+    </td>
+    <td></td>
+    <td>
+    </td>
+    <td></td>
+    <td>
+    </td>
+    <td>S</td>
+    <td>
+    </td>
+    <td></td>
+    <td>
+    </td>
+    <td></td>
+    <td>
+    </td>
+  </tr>
+  <tr>
+    <td>
+    </td>
+    <td>
+      Date
+    </td>
+    <td>
+    </td>
+    <td>
+      19
+    </td>
+    <td>
+    </td>
+    <td>
+      20
+    </td>
+    <td>
+    </td>
+    <td>
+      21
+    </td>
+    <td>
+    </td>
+    <td bgcolor='yellow'>
+      22
+    </td>
+    <td>
+    </td>
+    <td bgcolor='yellow'>
+      23
+    </td>
+    <td>
+    </td>
+    <td>
+      24
+    </td>
+    <td>
+    </td>
+    <td>
+      25
+    </td>
+    <td>
+    </td>
+    <td>
+      26
+    </td>
+    <td>
+    </td>
+    <td>
+      27
+    </td>
+    <td>
+    </td>
+    <td>
+      28
+    </td>
+    <td>
+    </td>
+    <td bgcolor='yellow'>
+      29
+    </td>
+    <td>
+    </td>
+    <td bgcolor='yellow'>
+      30
+    </td>
+    <td>
+    </td>
+    <td>
+      31
+    </td>
+    <td>
+    </td>
+    <td>
+      &nbsp;1
+    </td>
+    <td>
+    </td>
+    <td>
+      &nbsp;2
+    </td>
+    <td>
+    </td>
+    <td>
+      &nbsp;3
+    </td>
+    <td>
+    </td>
+  </tr>
+  <tr>
+    <td>
+    </td>
+    <td>
+      Pri
+    </td>
+    <td>
+    </td>
+    <td></td>
+    <td>
+    </td>
+    <td>7<br>8</td>
+    <td>
+    </td>
+    <td>9</td>
+    <td>
+    </td>
+    <td>6</td>
+    <td>
+    </td>
+    <td></td>
+    <td>
+    </td>
+    <td></td>
+    <td>
+    </td>
+    <td>3<br>5</td>
+    <td>
+    </td>
+    <td>1</td>
+    <td>
+    </td>
+    <td></td>
+    <td>
+    </td>
+    <td></td>
+    <td>
+    </td>
+    <td></td>
+    <td>
+    </td>
+    <td></td>
+    <td>
+    </td>
+    <td></td>
+    <td>
+    </td>
+    <td>4</td>
+    <td>
+    </td>
+    <td></td>
+    <td>
+    </td>
+    <td>2</td>
+    <td>
+    </td>
+  </tr>
+  <tr>
+    <td>
+        <a href='/secure/ViewIssue.jspa?key=TEST_14'>TEST_14</a>
+        <br>
+        sub of TEST_13 -- User trent on Team 1
+   </td>
+   <td>
+   </td>
+   <td>
+   </td>
+   <td bgcolor='green'><a href='?issueKey=TEST_14' style='color:black' title='Focus on TEST_14: sub of TEST_13 -- User trent on Team 1'>+</a><br/><a href='?issueKey=TEST_14&show_critical_paths=on' style='color:black' title='Critical Path for TEST_14: sub of TEST_13 -- User trent on Team 1'>?</a><span id='TEST_14-start' style='display:block'></span><span id='TEST_14-middle' style='display:block'></span></td>
+   <td bgcolor='green'></td>
+   <td bgcolor='green'></td>
+   <td bgcolor='green'></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+  </tr>
+  <tr>
+    <td>
+        <a href='/secure/ViewIssue.jspa?key=TEST_17'>TEST_17</a>
+        <br>
+        some issue -- User trent on Team 1
+   </td>
+   <td>
+   </td>
+   <td bgcolor='red'>
+   </td>
+   <td></td>
+   <td></td>
+   <td bgcolor='red'><a href='?issueKey=TEST_17' style='color:black' title='Focus on TEST_17: some issue -- User trent on Team 1'>+</a><br/><a href='?issueKey=TEST_17&show_critical_paths=on' style='color:black' title='Critical Path for TEST_17: some issue -- User trent on Team 1'>?</a><span id='TEST_17-start' style='display:block'></span></td>
+   <td bgcolor='red'></td>
+   <td bgcolor='red'><span id='TEST_17-middle' style='display:block'></span></td>
+   <td bgcolor='red'></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+  </tr>
+  <tr>
+    <td>
+        <a href='/secure/ViewIssue.jspa?key=TEST_16'>TEST_16</a>
+        <br>
+        dependant issue -- User trent on Team 1
+   </td>
+   <td>
+   </td>
+   <td bgcolor='red'>
+   </td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td bgcolor='red'><a href='?issueKey=TEST_16' style='color:black' title='Focus on TEST_16: dependant issue -- User trent on Team 1'>+</a><br/><a href='?issueKey=TEST_16&show_critical_paths=on' style='color:black' title='Critical Path for TEST_16: dependant issue -- User trent on Team 1'>?</a><span id='TEST_16-start' style='display:block'></span></td>
+   <td bgcolor='red'></td>
+   <td bgcolor='pink'></td>
+   <td bgcolor='pink'></td>
+   <td bgcolor='pink'><span id='TEST_16-middle' style='display:block'></span></td>
+   <td bgcolor='pink'></td>
+   <td bgcolor='red'></td>
+   <td bgcolor='red'></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+  </tr>
+  <tr>
+    <td>
+        <strike><a href='/secure/ViewIssue.jspa?key=TEST_11'>TEST_11</a>
+        <br>
+        sub issue -- User trent on Team 1</strike>
+   </td>
+   <td>
+   </td>
+   <td bgcolor='red'>
+   </td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td bgcolor='black'><a href='?issueKey=TEST_11' style='color:black' title='Focus on TEST_11: sub issue -- User trent on Team 1'>+</a><br/><a href='?issueKey=TEST_11&show_critical_paths=on' style='color:black' title='Critical Path for TEST_11: sub issue -- User trent on Team 1'>?</a><span id='TEST_11-start' style='display:block'></span><span id='TEST_11-middle' style='display:block'></span></td>
+   <td bgcolor='black'></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+  </tr>
+  <tr>
+    <td>
+        <a href='/secure/ViewIssue.jspa?key=TEST_0'>TEST_0</a>
+        <br>
+        Ancestor test issue -- User trent on Team 1
+   </td>
+   <td>
+   </td>
+   <td>
+   </td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td bgcolor='green'><a href='?issueKey=TEST_0' style='color:black' title='Focus on TEST_0: Ancestor test issue -- User trent on Team 1'>+</a><br/><a href='?issueKey=TEST_0&show_critical_paths=on' style='color:black' title='Critical Path for TEST_0: Ancestor test issue -- User trent on Team 1'>?</a><span id='TEST_0-start' style='display:block'></span><span id='TEST_0-middle' style='display:block'></span><span rel='TEST_2-start' type='successor' style='display:block'></span></td>
+   <td bgcolor='green'></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+  </tr>
+  <tr>
+    <td>
+        <a href='/secure/ViewIssue.jspa?key=TEST_1'>TEST_1</a>
+        <br>
+        Ancestor test issue -- User trent on Team 1
+   </td>
+   <td>
+   </td>
+   <td>
+   </td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td bgcolor='green'><a href='?issueKey=TEST_1' style='color:black' title='Focus on TEST_1: Ancestor test issue -- User trent on Team 1'>+</a><br/><a href='?issueKey=TEST_1&show_critical_paths=on' style='color:black' title='Critical Path for TEST_1: Ancestor test issue -- User trent on Team 1'>?</a><span id='TEST_1-start' style='display:block'></span><span id='TEST_1-middle' style='display:block'></span><span rel='TEST_3-start' type='successor' style='display:block'></span></td>
+   <td bgcolor='green'></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+  </tr>
+  <tr>
+    <td>
+        <a href='/secure/ViewIssue.jspa?key=TEST_4'>TEST_4</a>
+        <br>
+        Ancestor test issue -- User trent on Team 1
+   </td>
+   <td>
+   </td>
+   <td>
+   </td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td bgcolor='green'><a href='?issueKey=TEST_4' style='color:black' title='Focus on TEST_4: Ancestor test issue -- User trent on Team 1'>+</a><br/><a href='?issueKey=TEST_4&show_critical_paths=on' style='color:black' title='Critical Path for TEST_4: Ancestor test issue -- User trent on Team 1'>?</a><span id='TEST_4-start' style='display:block'></span></td>
+   <td bgcolor='green'></td>
+   <td bgcolor='green'><span id='TEST_4-middle' style='display:block'></span><span rel='TEST_5-start' type='successor' style='display:block'></span></td>
+   <td bgcolor='green'></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+  </tr>
+  <tr>
+    <td>
+        <a href='/secure/ViewIssue.jspa?key=TEST_15'>TEST_15</a>
+        <br>
+        dependant issue -- User trent on Team 1
+   </td>
+   <td>
+   </td>
+   <td bgcolor='red'>
+   </td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td bgcolor='red'><a href='?issueKey=TEST_15' style='color:black' title='Focus on TEST_15: dependant issue -- User trent on Team 1'>+</a><br/><a href='?issueKey=TEST_15&show_critical_paths=on' style='color:black' title='Critical Path for TEST_15: dependant issue -- User trent on Team 1'>?</a><span id='TEST_15-start' style='display:block'></span></td>
+   <td bgcolor='red'></td>
+   <td bgcolor='red'><span id='TEST_15-middle' style='display:block'></span></td>
+   <td bgcolor='red'></td>
+   <td bgcolor='red'></td>
+   <td bgcolor='red'></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+  </tr>
+  <tr>
+    <td>
+        <strike><a href='/secure/ViewIssue.jspa?key=TEST_13'>TEST_13</a>
+        <br>
+        after TEST_7,2 -- User trent on Team 1</strike>
+   </td>
+   <td>
+   </td>
+   <td>
+   </td>
+   <td bgcolor='black'><a href='?issueKey=TEST_13' style='color:black' title='Focus on TEST_13: after TEST_7,2 -- User trent on Team 1'>+</a><br/><a href='?issueKey=TEST_13&show_critical_paths=on' style='color:black' title='Critical Path for TEST_13: after TEST_7,2 -- User trent on Team 1'>?</a><span id='TEST_13-start' style='display:block'></span></td>
+   <td bgcolor='black'></td>
+   <td bgcolor='black'></td>
+   <td bgcolor='black'></td>
+   <td bgcolor='black'></td>
+   <td bgcolor='black'></td>
+   <td bgcolor='black'></td>
+   <td bgcolor='black'></td>
+   <td bgcolor='black'></td>
+   <td bgcolor='black'></td>
+   <td bgcolor='black'></td>
+   <td bgcolor='black'></td>
+   <td bgcolor='black'></td>
+   <td bgcolor='black'></td>
+   <td bgcolor='black'><span id='TEST_13-middle' style='display:block'></span><span rel='TEST_14-middle' type='subtask' style='display:block'></span></td>
+   <td bgcolor='black'></td>
+   <td bgcolor='black'></td>
+   <td bgcolor='black'></td>
+   <td bgcolor='black'></td>
+   <td bgcolor='black'></td>
+   <td bgcolor='black'></td>
+   <td bgcolor='black'></td>
+   <td bgcolor='black'></td>
+   <td bgcolor='black'></td>
+   <td bgcolor='black'></td>
+   <td bgcolor='black'></td>
+   <td bgcolor='black'></td>
+   <td bgcolor='black'></td>
+   <td bgcolor='black'></td>
+   <td bgcolor='black'></td>
+   <td></td>
+   <td></td>
+  </tr>
+  <tr>
+    <td>
+        <a href='/secure/ViewIssue.jspa?key=TEST_10'>TEST_10</a>
+        <br>
+        top -- User trent on Team 1
+   </td>
+   <td>
+   </td>
+   <td bgcolor='red'>
+   </td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td bgcolor='red'><a href='?issueKey=TEST_10' style='color:black' title='Focus on TEST_10: top -- User trent on Team 1'>+</a><br/><a href='?issueKey=TEST_10&show_critical_paths=on' style='color:black' title='Critical Path for TEST_10: top -- User trent on Team 1'>?</a><span id='TEST_10-start' style='display:block'></span></td>
+   <td bgcolor='red'></td>
+   <td bgcolor='pink'></td>
+   <td bgcolor='pink'></td>
+   <td bgcolor='pink'><span id='TEST_10-middle' style='display:block'></span></td>
+   <td bgcolor='pink'></td>
+   <td bgcolor='red'></td>
+   <td bgcolor='red'></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+  </tr>
+</table>
 <P>
 <H1>Here are the basic TimeSchedule tests.</H2>
 <br>
