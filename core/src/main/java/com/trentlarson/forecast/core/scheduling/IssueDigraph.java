@@ -190,7 +190,8 @@ public class IssueDigraph {
       TimeSchedule.schedulesForUserIssues
       (issuesFromString, weeklyHoursFromString,
        getTimeScheduleCreatePreferences().getStartTime(),
-       getTimeScheduleCreatePreferences().getTimeMultiplier());
+       getTimeScheduleCreatePreferences().getTimeMultiplier(),
+       getTimeScheduleCreatePreferences().getReversePriority());
 
     this.issueSchedules = newSchedules;
     this.userWeeklyHoursAvailable = newTimeDetails.hours;
@@ -307,10 +308,10 @@ public class IssueDigraph {
     Map<String,TimeSchedule.IssueSchedule<IssueTree>> schedules =
         TimeSchedule.schedulesForUserIssues
             (assigneeStringToIssues, weeklyHoursFromString,
-                sPrefs.getStartTime(), sPrefs.getTimeMultiplier());
+                sPrefs.getStartTime(), sPrefs.getTimeMultiplier(), sPrefs.getReversePriority());
 
     // for displaying things in that priority order
-    TimeSchedule.setInitialOrdering(userDetails);
+    TimeSchedule.setInitialOrdering(userDetails); // This does change the ordering in some output... not sure why.
     TimeSchedule.setInitialOrdering(newTimeDetails.timeDetails);
 
     return new IssueDigraph(schedules,

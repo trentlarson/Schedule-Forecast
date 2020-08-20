@@ -33,7 +33,6 @@ public class DisplayServlet extends HttpServlet {
   
   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     try {
-      //String body = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
       GsonBuilder builder = new GsonBuilder();
       Gson creator = builder.create();
       IssueTree[] issues = creator.fromJson(request.getReader(), IssueTree[].class);

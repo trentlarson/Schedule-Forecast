@@ -83,7 +83,7 @@ public class TimeScheduleTests {
   public static void outputDaylightSavingsTestResults(PrintWriter out) throws Exception {
     
     out.println("<P>");
-    out.println("<H2>... around a daylight-savings time switch.</H2>");
+    out.println("<H2>... around a daylight-savings time switch:</H2>");
 
     String username = "matt";
     IssueTree[] manyIssues = {
@@ -125,7 +125,7 @@ public class TimeScheduleTests {
   public static void outputWithoutTeamHoursTestResults(PrintWriter out) throws Exception {
 
     out.println("<P>");
-    out.println("<H2>... without any teams defined.</H2>");
+    out.println("<H2>... without any teams defined:</H2>");
 
     IssueTree[] manyIssues = {
         new IssueTree
@@ -185,7 +185,7 @@ public class TimeScheduleTests {
   public static void outputVariableTimeTestResults(PrintWriter out) throws Exception {
 
     out.println("<P>");
-    out.println("<H2>... for teams with various time availability.</H2>");
+    out.println("<H2>... for teams with various time availability:</H2>");
 
     int jira_day = 8 * 60 * 60;
 
@@ -279,7 +279,7 @@ public class TimeScheduleTests {
   public static void outputTimePerWeekTestResults(PrintWriter out) throws Exception {
     
     out.println("<P>");
-    out.println("<H2>... for issues with hours-per-week settings.</H2>");
+    out.println("<H2>... for issues with hours-per-week settings:</H2>");
 
     int jira_day = 8 * 60 * 60;
 
@@ -347,7 +347,7 @@ public class TimeScheduleTests {
   public static void outputSplitTeamTestResults(PrintWriter out) throws Exception {
     
     out.println("<P>");
-    out.println("<H2>... for people split across teams.</H2>");
+    out.println("<H2>... for people split across teams:</H2>");
 
     int jira_day = 8 * 60 * 60;
 
@@ -491,7 +491,7 @@ public class TimeScheduleTests {
   public static void outputStartTimeTestResults(PrintWriter out) throws Exception {
 
     out.println("<P>");
-    out.println("<H2>... for tasks with a starting time.</H2>");
+    out.println("<H2>... for tasks with a starting time:</H2>");
 
     Date startDate = SLASH_DATE.parse("2005/04/05");
     int jira_day = 8 * 60 * 60;
@@ -557,7 +557,7 @@ public class TimeScheduleTests {
   public static void outputBlockedSubtaskTestResults(PrintWriter out) throws Exception {
 
     out.println("<P>");
-    out.println("<H2>... for tasks blocked by a previous issue with a late subtask.</H2>");
+    out.println("<H2>... for tasks blocked by a previous issue with a late subtask:</H2>");
 
     out.println("<br><br>");
     out.println("(TEST-22 should be blocked until the 21st.)");
@@ -603,7 +603,7 @@ public class TimeScheduleTests {
   public static void outputManyBlockedTestResults(PrintWriter out) throws Exception {
 
     out.println("<P>");
-    out.println("<H2>... for tasks with complicated dependencies.</H2>");
+    out.println("<H2>... for tasks with complicated dependencies:</H2>");
 
     out.println("<p>Creating issues without dependencies...<p>");
 

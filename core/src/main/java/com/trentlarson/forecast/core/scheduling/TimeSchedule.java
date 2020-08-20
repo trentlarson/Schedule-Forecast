@@ -601,6 +601,10 @@ public class TimeSchedule {
      sorts by start date, then priority, then due date
    */
   public static class DetailPriorityComparator<T extends IssueWorkDetail<T>> implements Comparator<T> {
+    private final boolean reversePriority;
+    public DetailPriorityComparator(boolean reversePriority_) {
+      this.reversePriority = reversePriority_;
+    }
     public int compare(T d1, T d2) {
       // first determinant is whether there's a start date on it
       if (d1.getMustStartOnDate() == null && d2.getMustStartOnDate() != null) {
@@ -618,12 +622,12 @@ public class TimeSchedule {
           // next determinant is the priority
           if (d1.getPriority() != d2.getPriority()) {
             // lower priority comes earlier
-            return 10 * (d1.getPriority() - d2.getPriority());
+            return (d1.getPriority() - d2.getPriority());
           // final determinant is the due-date
           } else if (d1.getDueDate() == null && d2.getDueDate() != null) {
-            return 100;
+            return 1;
           } else if (d1.getDueDate() != null && d2.getDueDate() == null) {
-            return -100;
+            return -1;
           } else {
             dateCompare = 0;
             if (d1.getDueDate() != null && d2.getDueDate() != null) {
@@ -1427,11 +1431,16 @@ public class TimeSchedule {
   }
 
   public static <T extends IssueWorkDetail> void setInitialOrdering(Map<?,List<T>> userDetails) {
+    setInitialOrdering(userDetails, false);
+  }
+  public static <T extends IssueWorkDetail> void setInitialOrdering(
+      Map<?,List<T>> userDetails, boolean reversePriority) {
+
     // put them in order by due date and then by priority
     for (Iterator users = userDetails.keySet().iterator(); users.hasNext(); ) {
       Collections.sort
         ((List<IssueWorkDetail>) userDetails.get(users.next()),
-         new DetailPriorityComparator());
+         new DetailPriorityComparator(reversePriority));
     }
 
     // since dependents must follow their precursors, make sure they come later
@@ -1475,8 +1484,8 @@ public class TimeSchedule {
   */
   public static <T extends IssueWorkDetail<T>> Map<String,IssueSchedule<T>> schedulesForUserIssues
     (Map<String,List<T>> userDetails,
-     Map<String,WeeklyWorkHours> userWeeklyHours, Date startDate,
-     double multiplier) {
+     Map<String,WeeklyWorkHours> userWeeklyHours,
+     Date startDate, double multiplier, boolean reversePriority) {
 
     //log4jLog.setLevel(org.apache.log4j.Level.DEBUG);
 

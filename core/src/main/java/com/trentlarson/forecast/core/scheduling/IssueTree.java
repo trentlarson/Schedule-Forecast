@@ -232,8 +232,6 @@ public class IssueTree extends TimeSchedule.IssueWorkDetailOriginal<IssueTree> i
   /**
      @return the estimate remaining on this issue or on sub-issues,
      whichever is greater
-     @param dPrefs is the preferences for filtering whether to use
-     issues (see displayIssue), or null if we want to check all issues
   */
   public int totalEstimate() {
     int total = 0;
