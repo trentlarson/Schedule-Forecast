@@ -18,7 +18,7 @@ import com.trentlarson.forecast.core.scheduling.IssueDigraph;
 import com.trentlarson.forecast.core.scheduling.IssueTree;
 import com.trentlarson.forecast.core.scheduling.TimeScheduleTests;
 
-public class BlockingServlet extends HttpServlet {
+public class ScheduleServlet extends HttpServlet {
 
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     response.setContentType("application/json");

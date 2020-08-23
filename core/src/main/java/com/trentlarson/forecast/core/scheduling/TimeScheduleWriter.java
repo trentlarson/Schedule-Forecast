@@ -71,8 +71,10 @@ public class TimeScheduleWriter {
 
 
   /**
-     @param issues List of IssueTree objects for all issues to be displayed
-     @param includeBlocked whether to account for dependent tasks
+     @param issueKeys List of issue keys to display
+     @param graph IssueDigraph for all issues to be displayed
+     @param startDate date to start scheduling
+     @param dPrefs display preferences
      @return the finish date for each priority (index in array == priority - 1)
   */
   private static Date[] priorityCompleteDates
@@ -85,7 +87,8 @@ public class TimeScheduleWriter {
       IssueTree detail = graph.getIssueTree(issueKey);
       detail.setPriorityCompleteDates(maxDateForPriority, graph, dPrefs);
     }
-    Date[] priorityDates = new Date[graph.getMaxPriority()];
+    int maxPriority = graph.getMaxPriority();
+    Date[] priorityDates = new Date[maxPriority > -1 ? maxPriority : 0];
     for (int i = 1; i <= graph.getMaxPriority(); i++) { // priority numbers are 1-based
       if (maxDateForPriority.get(new Integer(i)) == null) {
         priorityDates[i - 1] = startDate;
@@ -102,6 +105,7 @@ public class TimeScheduleWriter {
     throws IOException {
 
     out.write("<table cellspacing='0'>\n");
+    out.write("<tbody>\n");
 
     // calculate priority complete dates
     Date[] priorityDates =
@@ -180,6 +184,7 @@ public class TimeScheduleWriter {
            false, out, sPrefs.getStartTime(), dPrefs, shownAlready, false);
       }
     }
+    out.write("</tbody>\n");
     out.write("</table>\n");
     out.flush();
   }

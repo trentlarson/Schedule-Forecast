@@ -33,8 +33,11 @@ class JettyServer {
     ServletHandler servletHandler = new ServletHandler();
     server.setHandler(servletHandler);
 
-    servletHandler.addServletWithMapping(BlockingServlet.class, "/graph");
-    servletHandler.addServletWithMapping(DisplayServlet.class, "/display");
+    servletHandler.addServletWithMapping(ScheduleServlet.class, "/graph");
+    servletHandler.addServletWithMapping(ScheduleAndDisplayServlet.class, "/display");
+
+    // by default, all logs are at least at the debug level
+    //org.apache.log4j.BasicConfigurator.configure();
 
     server.start();
 

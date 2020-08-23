@@ -23,7 +23,7 @@ import com.trentlarson.forecast.core.scheduling.TimeScheduleDisplayPreferences;
 import com.trentlarson.forecast.core.scheduling.TimeScheduleTests;
 import com.trentlarson.forecast.core.scheduling.TimeScheduleWriter;
 
-public class DisplayServlet extends HttpServlet {
+public class ScheduleAndDisplayServlet extends HttpServlet {
 
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     response.setContentType("application/json");
@@ -35,19 +35,21 @@ public class DisplayServlet extends HttpServlet {
     try {
       GsonBuilder builder = new GsonBuilder();
       Gson creator = builder.create();
-      IssueTree[] issues = creator.fromJson(request.getReader(), IssueTree[].class);
-      System.out.println("Deserialized issues: " + Arrays.asList(issues));
-      IssueDigraph graph = IssueDigraph.schedulesForIssues(issues);
+      ForecastInterfaces.ScheduleAndDisplayInput input =
+          creator.fromJson(request.getReader(), ForecastInterfaces.ScheduleAndDisplayInput.class);
+      System.out.println("Deserialized issues: \n" + Arrays.asList(input.issues).stream().map(i -> i.treeString()).collect(Collectors.toList()));
+      IssueDigraph graph = IssueDigraph.schedulesForIssues(input.issues);
+      System.out.println("Schedule for issues: " + graph);
 
-      String[] keyArray = new String[issues.length];
+      String[] keyArray = new String[input.issues.length];
       String[] keys =
-          Arrays.asList(issues).stream().map(i -> i.getKey())
+          Arrays.asList(input.issues).stream().map(i -> i.getKey())
           .collect(Collectors.toList()).toArray(keyArray);
 
       response.setContentType("text/html");
       response.setStatus(HttpServletResponse.SC_OK);
 
-      TimeScheduleCreatePreferences sPrefs = new TimeScheduleCreatePreferences(0, 2);
+      TimeScheduleCreatePreferences sPrefs = new TimeScheduleCreatePreferences();
       TimeScheduleWriter.writeIssueTable
           (graph, response.getWriter(), sPrefs,
               TimeScheduleDisplayPreferences.createForIssues

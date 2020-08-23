@@ -312,6 +312,7 @@ public class IssueDigraph {
 
     // for displaying things in that priority order
     TimeSchedule.setInitialOrdering(userDetails, sPrefs.getReversePriority()); // Removing this does change the ordering in some output... not sure why.
+                                                                               // (I say that because the next line call the exact same method, so something's holding onto state.)
     TimeSchedule.setInitialOrdering(newTimeDetails.timeDetails, sPrefs.getReversePriority());
 
     return new IssueDigraph(schedules,
