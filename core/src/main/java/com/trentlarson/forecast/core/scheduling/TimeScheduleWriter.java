@@ -494,7 +494,8 @@ public class TimeScheduleWriter {
         
         //// Make some markers for lines drawn to link issues together.
         
-        // if this is the end of the issue time...
+        // If this is the end of the issue time...
+        // ... create a relationship link for successors.
         String successorRels = "";
         if ((calStartOfDay.getTime().before(issueEndTime)
              && calStartOfNextDay.getTime().after(issueEndTime))
@@ -505,7 +506,8 @@ public class TimeScheduleWriter {
           }
         }
         
-        // if this is the start of the issue time...
+        // If this is the start of the issue time...
+        // ... create link to refocus or show critical path on the issue.
         String domMarker = "";
         String focusIssueLink = "";
         if (calStartOfDay.getTime().equals(issueStartTime)
@@ -521,7 +523,8 @@ public class TimeScheduleWriter {
           focusIssueLink += "<a href='?" + TimeScheduleAction.ISSUE_KEY_REQ_NAME + "=" + detail.getKey() + "&" + TimeScheduleAction.SHOW_CRITICAL_PATHS_REQ_NAME + "=on' style='color:black' title='Critical Path for " + title + "'>?</a>";
         }
         
-        // if this is the middle of the issue time...
+        // If this is the middle of the issue time...
+        // ... create a relationship link for the subtasks.
         String subtaskRels = "";
         long halfwayMillis = issueStartTime.getTime() + ((issueEndTime.getTime() - issueStartTime.getTime()) / 2);
         if (halfwayMillis == calStartOfDay.getTime().getTime()

@@ -2,17 +2,10 @@ package com.trentlarson.forecast.core.scheduling.external;
 
 import java.io.PrintWriter;
 import java.sql.Connection;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
-import com.trentlarson.forecast.core.dao.TeamHours;
 import com.trentlarson.forecast.core.helper.ForecastUtil;
 import com.trentlarson.forecast.core.scheduling.IssueDigraph;
 import com.trentlarson.forecast.core.scheduling.IssueTree;
@@ -58,7 +51,7 @@ public class TimeScheduleIntegrationTests {
 
     Connection conn = ForecastUtil.getConnection();
 
-    TimeScheduleCreatePreferences sPrefs = new TimeScheduleCreatePreferences(0, new java.util.Date(), 1.0);
+    TimeScheduleCreatePreferences sPrefs = new TimeScheduleCreatePreferences(new java.util.Date(), 1.0);
     String mainIssueKey = "FOURU-1002";
     IssueDigraph graph = TimeScheduleLoader.getGraph("", new String[]{ mainIssueKey }, new String[0], sPrefs, conn);
 
@@ -120,7 +113,7 @@ public class TimeScheduleIntegrationTests {
     
     Connection conn = ForecastUtil.getConnection();
     
-    TimeScheduleCreatePreferences sPrefs = new TimeScheduleCreatePreferences(0, new java.util.Date(), 1.0);
+    TimeScheduleCreatePreferences sPrefs = new TimeScheduleCreatePreferences(new java.util.Date(), 1.0);
     String mainIssueKey = "MP-5";
     IssueDigraph graph = TimeScheduleLoader.getGraph(null, new String[]{ mainIssueKey }, new String[0], sPrefs, conn);
 

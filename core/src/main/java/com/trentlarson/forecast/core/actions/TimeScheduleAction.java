@@ -387,7 +387,7 @@ public class TimeScheduleAction {
     double multiple = Double.valueOf(request.getParameter(MULTIPLIER_REQ_NAME)).doubleValue();
     IssueDigraph workingGraph = getGraph();
     TimeScheduleCreatePreferences sPrefs = getGraph().getTimeScheduleCreatePreferences();
-    sPrefs = new TimeScheduleCreatePreferences(sPrefs.timeWithoutEstimate, sPrefs.startCal, multiple);
+    sPrefs = new TimeScheduleCreatePreferences(sPrefs.startCal, multiple);
     setSharedGraph(TimeScheduleLoader.reschedule(workingGraph, sPrefs));
     setChangedBy(request);
   }

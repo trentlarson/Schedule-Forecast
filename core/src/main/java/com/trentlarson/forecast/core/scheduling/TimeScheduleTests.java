@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -101,7 +100,7 @@ public class TimeScheduleTests {
     userWeeklyHours.put(new Teams.UserTimeKey(1L, username), hourList);
 
     TimeScheduleCreatePreferences sPrefs =
-      new TimeScheduleCreatePreferences(0, SLASH_DATE.parse("2006/12/03"), 1);
+      new TimeScheduleCreatePreferences(SLASH_DATE.parse("2006/12/03"), 1);
     IssueDigraph graph = IssueDigraph.schedulesForIssues(manyIssues, userWeeklyHours, sPrefs);
 
     Teams.AssigneeKey user = new Teams.AssigneeKey(1L, "matt");
@@ -135,7 +134,7 @@ public class TimeScheduleTests {
 
     Map<Teams.UserTimeKey,List<TeamHours>> userWeeklyHours = new TreeMap<Teams.UserTimeKey,List<TeamHours>>();
 
-    TimeScheduleCreatePreferences sPrefs = new TimeScheduleCreatePreferences(0, SLASH_DATE.parse("2006/12/03"), 1);
+    TimeScheduleCreatePreferences sPrefs = new TimeScheduleCreatePreferences(SLASH_DATE.parse("2006/12/03"), 1);
     IssueDigraph graph = IssueDigraph.schedulesForIssues(manyIssues, userWeeklyHours, sPrefs);
 
     out.println("<br><br>");
@@ -165,7 +164,7 @@ public class TimeScheduleTests {
     hourList.add(new TeamHours(1L, null, null, SLASH_TIME.parse("2006/12/03 00:00"), 80.0));
     userWeeklyHours.put(new Teams.UserTimeKey(null, null), hourList);
 
-    sPrefs = new TimeScheduleCreatePreferences(0, SLASH_DATE.parse("2006/12/03"), 1);
+    sPrefs = new TimeScheduleCreatePreferences(SLASH_DATE.parse("2006/12/03"), 1);
     graph = IssueDigraph.schedulesForIssues(manyIssues, userWeeklyHours, sPrefs);
 
     out.println("<br><br>");
@@ -229,7 +228,7 @@ public class TimeScheduleTests {
     userWeeklyHours.put(new Teams.UserTimeKey(1L, null), hourList);
 
     TimeScheduleCreatePreferences sPrefs =
-      new TimeScheduleCreatePreferences(0, SLASH_DATE.parse("2005/04/05"), 1);
+      new TimeScheduleCreatePreferences(SLASH_DATE.parse("2005/04/05"), 1);
     IssueDigraph graph = IssueDigraph.schedulesForIssues(manyIssues, userWeeklyHours, sPrefs);
 
 
@@ -263,7 +262,7 @@ public class TimeScheduleTests {
        5 * jira_day, 0 * jira_day, 0.0, null, null, 5, false);
 
     sPrefs =
-      new TimeScheduleCreatePreferences(0, SLASH_DATE.parse("2005/04/05"), 1);
+      new TimeScheduleCreatePreferences(SLASH_DATE.parse("2005/04/05"), 1);
     graph = IssueDigraph.schedulesForIssues(manyIssues, userWeeklyHours, sPrefs);
 
     user = new Teams.AssigneeKey(1L, null);
@@ -317,7 +316,7 @@ public class TimeScheduleTests {
     };
     
     TimeScheduleCreatePreferences sPrefs =
-      new TimeScheduleCreatePreferences(0, SLASH_DATE.parse("2005/04/05"), 1);
+      new TimeScheduleCreatePreferences(SLASH_DATE.parse("2005/04/05"), 1);
     IssueDigraph graph = IssueDigraph.schedulesForIssues(manyIssues, sPrefs);
 
 
@@ -410,7 +409,7 @@ public class TimeScheduleTests {
     userWeeklyHours.put(new Teams.UserTimeKey(null, "trent"), hourList);
 
     TimeScheduleCreatePreferences sPrefs =
-      new TimeScheduleCreatePreferences(0, SLASH_DATE.parse("2005/04/11"), 1);
+      new TimeScheduleCreatePreferences(SLASH_DATE.parse("2005/04/11"), 1);
     IssueDigraph graph = IssueDigraph.schedulesForIssues(manyIssues, userWeeklyHours, sPrefs);
 
     out.println("<br><br>");
@@ -514,7 +513,7 @@ public class TimeScheduleTests {
 
     List<TeamHours> hourList = new ArrayList();
     TimeScheduleCreatePreferences sPrefs =
-      new TimeScheduleCreatePreferences(0, startDate, 2);
+      new TimeScheduleCreatePreferences(startDate, 2);
     IssueDigraph graph = IssueDigraph.schedulesForIssues(manyIssues, sPrefs);
 
 
@@ -583,7 +582,7 @@ public class TimeScheduleTests {
     IssueTree[] manyIssues = { issue20, issue21, issue22 };
 
     TimeScheduleCreatePreferences sPrefs =
-      new TimeScheduleCreatePreferences(0, startDate, 2);
+      new TimeScheduleCreatePreferences(startDate, 2);
     IssueDigraph graph = IssueDigraph.schedulesForIssues(manyIssues, sPrefs);
 
     TimeScheduleWriter.writeIssueTable
@@ -631,7 +630,7 @@ public class TimeScheduleTests {
 
     Map<Teams.AssigneeKey,List<IssueTree>> userDetails = IssueDigraph.createUserDetails(testIssues.manyIssues());
     Date startDate = SLASH_DATE.parse("2005/04/05");
-    TimeScheduleCreatePreferences sPrefs = new TimeScheduleCreatePreferences(0, startDate, 2);
+    TimeScheduleCreatePreferences sPrefs = new TimeScheduleCreatePreferences(startDate, 2);
     IssueDigraph graph = IssueDigraph.schedulesForIssues(testIssues.manyIssues(), userWeeklyHours, sPrefs);
 
     // print out single-user table schedule & Gantt chart

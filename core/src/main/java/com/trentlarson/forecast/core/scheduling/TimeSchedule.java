@@ -23,7 +23,6 @@ import com.trentlarson.forecast.core.helper.DateUtil;
 
 public class TimeSchedule {
 
-
   public static final double MAX_WORKHOURS_PER_WORKDAY = 8.0;
   private static final int WORKDAYS_PER_WEEK = 5;
   public static final double TYPICAL_INDIVIDUAL_WORKHOURS_PER_WORKWEEK = WORKDAYS_PER_WEEK * MAX_WORKHOURS_PER_WORKDAY;

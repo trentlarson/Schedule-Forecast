@@ -3,24 +3,20 @@
 
 package com.trentlarson.forecast.core.helper;
 
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
-import com.google.gson.stream.MalformedJsonException;
 import com.trentlarson.forecast.core.scheduling.IssueDigraph;
-import com.trentlarson.forecast.core.scheduling.IssueTree;
-import com.trentlarson.forecast.core.scheduling.TimeScheduleCreatePreferences;
 import com.trentlarson.forecast.core.scheduling.TimeScheduleDisplayPreferences;
-import com.trentlarson.forecast.core.scheduling.TimeScheduleTests;
 import com.trentlarson.forecast.core.scheduling.TimeScheduleWriter;
 
 public class ScheduleAndDisplayServlet extends HttpServlet {
@@ -37,9 +33,9 @@ public class ScheduleAndDisplayServlet extends HttpServlet {
       Gson creator = builder.create();
       ForecastInterfaces.ScheduleAndDisplayInput input =
           creator.fromJson(request.getReader(), ForecastInterfaces.ScheduleAndDisplayInput.class);
-      System.out.println("Deserialized issues: \n" + Arrays.asList(input.issues).stream().map(i -> i.treeString()).collect(Collectors.toList()));
-      IssueDigraph graph = IssueDigraph.schedulesForIssues(input.issues);
-      System.out.println("Schedule for issues: " + graph);
+
+      // set the hourly schedule based on input hours
+      IssueDigraph graph = IssueDigraph.schedulesForIssues(input.issues, input.createPreferences);
 
       String[] keyArray = new String[input.issues.length];
       String[] keys =
@@ -49,9 +45,8 @@ public class ScheduleAndDisplayServlet extends HttpServlet {
       response.setContentType("text/html");
       response.setStatus(HttpServletResponse.SC_OK);
 
-      TimeScheduleCreatePreferences sPrefs = new TimeScheduleCreatePreferences();
       TimeScheduleWriter.writeIssueTable
-          (graph, response.getWriter(), sPrefs,
+          (graph, response.getWriter(), graph.getTimeScheduleCreatePreferences(),
               TimeScheduleDisplayPreferences.createForIssues
                   (1, 0, true, false, true,
                       keys, false, graph));

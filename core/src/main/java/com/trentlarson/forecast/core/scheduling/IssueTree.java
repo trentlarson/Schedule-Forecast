@@ -123,8 +123,8 @@ public class IssueTree extends TimeSchedule.IssueWorkDetailOriginal<IssueTree> i
     }
     return
       ("<li>" + (resolved ? "<strike>" : "") + key + (resolved ? "</strike>" : "")
-       + " " + summary + " " + getRawAssigneeKey() + " " + spent + "+" + getEstimate()
-       + " " + mustStartOnDate + " " + dueDate
+       + " " + summary + " - " + getRawAssigneeKey() + " - " + spent + "+" + getEstimate()
+       + " - " + mustStartOnDate + " " + dueDate
        + "<br> ---- <ul>" + treeString(subtasks.iterator()) + "</ul>"
        + "<br> >>>> <ul>" + treeString(dependents.iterator()) + "</ul>"
        + "<br> <<<< " + preds

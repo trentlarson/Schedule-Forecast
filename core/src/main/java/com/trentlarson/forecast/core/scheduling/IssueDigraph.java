@@ -169,8 +169,10 @@ public class IssueDigraph {
     // REFACTOR with IssueDigraph.schedulesForUserIssues (lots of overlap)
 
     UserDetailsAndHours newTimeDetails = adjustDetailsForAssignedHours
-      (getAssignedUserDetails(), getUserWeeklyHoursAvailable(),
-       getTimeScheduleCreatePreferences().getStartTime());
+      (getAssignedUserDetails(),
+       getUserWeeklyHoursAvailable(),
+       getTimeScheduleCreatePreferences().getStartTime(),
+       getTimeScheduleCreatePreferences().getDefaultAssigneeHoursPerWeek());
 
     Map<String,List<IssueTree>> issuesFromString =
       createMapFromAssigneeKeyStringToUserIssues(newTimeDetails.timeDetails);
@@ -265,7 +267,7 @@ public class IssueDigraph {
       Map<Teams.UserTimeKey,List<TeamHours>> userWeeklyHours,
       TimeScheduleCreatePreferences sPrefs) {
     Map<Teams.AssigneeKey,List<IssueTree>> userDetails = createUserDetails(issues);
-    Map<Teams.UserTimeKey, SortedSet<TimeSchedule.HoursForTimeSpan>> userSpanHours =
+    Map<Teams.UserTimeKey,SortedSet<TimeSchedule.HoursForTimeSpan>> userSpanHours =
         teamToUserHours(userWeeklyHours);
     Map<Teams.UserTimeKey,TimeSchedule.WeeklyWorkHours> weeklyHoursFromKey =
         weeklyHoursToRange(userSpanHours);
@@ -288,7 +290,7 @@ public class IssueDigraph {
 
     UserDetailsAndHours newTimeDetails =
         adjustDetailsForAssignedHours(userDetails, weeklyHoursFromKey,
-            sPrefs.getStartTime());
+            sPrefs.getStartTime(), sPrefs.getDefaultAssigneeHoursPerWeek());
 
     Map<String,List<IssueTree>> assigneeStringToIssues =
         createMapFromAssigneeKeyStringToUserIssues(newTimeDetails.timeDetails);
@@ -351,7 +353,7 @@ public class IssueDigraph {
   public static UserDetailsAndHours adjustDetailsForAssignedHours
   (Map<Teams.AssigneeKey,List<IssueTree>> detailsFromAssignee,
    Map<Teams.UserTimeKey,TimeSchedule.WeeklyWorkHours> hoursRange,
-   Date startDate) {
+   Date startDate, double defaultAssigneeHoursPerWeek) {
 
     Map<Teams.AssigneeKey,Teams.UserTimeKey> assigneeToAllocatedUsers = new HashMap<Teams.AssigneeKey, Teams.UserTimeKey>();
     Map<Teams.UserTimeKey,List<IssueTree>> newDetailsByTime = new HashMap<Teams.UserTimeKey,List<IssueTree>>();
@@ -375,7 +377,9 @@ public class IssueDigraph {
           detail.setTimeAssigneeKey(userKeyForTime);
         }
 
-        updateDetailAndLists(userKeyForTime, detail, newDetailsByTime, assigneeToAllocatedUsers, newHoursRanges, startDate);
+        updateDetailAndLists(
+            userKeyForTime, detail, newDetailsByTime, assigneeToAllocatedUsers, newHoursRanges,
+            startDate, defaultAssigneeHoursPerWeek);
       }
     }
     return new UserDetailsAndHours(assigneeToAllocatedUsers, newDetailsByTime, newHoursRanges);
@@ -407,13 +411,13 @@ public class IssueDigraph {
    Map<Teams.UserTimeKey,List<IssueTree>> detailMap,
    Map<Teams.AssigneeKey,Teams.UserTimeKey> assigneeToAllocatedUsers,
    Map<Teams.UserTimeKey,TimeSchedule.WeeklyWorkHours> hoursRanges,
-   Date startDate) {
+   Date startDate, double defaultAssigneeHoursPerWeek) {
 
     // add key if it doesn't already exist
     if (!hoursRanges.containsKey(assignee)) {
       log4jLog.debug("Adding default hours for " + assignee);
       TimeSchedule.WeeklyWorkHours defaultHours = new TimeSchedule.WeeklyWorkHours();
-      defaultHours.inject(startDate, TimeSchedule.TYPICAL_INDIVIDUAL_WORKHOURS_PER_WORKWEEK);
+      defaultHours.inject(startDate, defaultAssigneeHoursPerWeek);
       hoursRanges.put(assignee, defaultHours);
     }
 
