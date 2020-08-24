@@ -913,12 +913,12 @@ public class TimeScheduleTests {
     sPrefs = new TimeScheduleCreatePreferences(startDate, true);
     graph = IssueDigraph.schedulesForUserIssues3(userDetails, userWeeklyHours, sPrefs);
     out.println("<p>");
-    out.println("Schedule for trent with reversed priority order.<br>");
+    out.println("Tree for issues 1 and 2 with reversed priority order.<br>");
     TimeScheduleWriter.writeIssueTable
         (graph, out, sPrefs,
-            TimeScheduleDisplayPreferences.createForUser
+            TimeScheduleDisplayPreferences.createForIssues
                 (1, 0, true, false, true,
-                    new Teams.AssigneeKey(1L, "trent"),
+                    new String[]{ testIssues.issueTest_7.getKey(), testIssues.issueTest_8.getKey() },
                     false, graph));
   }
 
