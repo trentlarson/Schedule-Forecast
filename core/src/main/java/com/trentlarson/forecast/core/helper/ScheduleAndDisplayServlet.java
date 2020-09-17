@@ -37,19 +37,33 @@ public class ScheduleAndDisplayServlet extends HttpServlet {
       // set the hourly schedule based on input hours
       IssueDigraph graph = IssueDigraph.schedulesForIssues(input.issues, input.createPreferences);
 
-      String[] keyArray = new String[input.issues.length];
-      String[] keys =
-          Arrays.asList(input.issues).stream().map(i -> i.getKey())
-          .collect(Collectors.toList()).toArray(keyArray);
-
       response.setContentType("text/html");
       response.setStatus(HttpServletResponse.SC_OK);
 
+      TimeScheduleDisplayPreferences dPrefs = input.displayPreferences;
+      if (dPrefs == null
+          || (dPrefs.showIssues.size() == 0 && dPrefs.showUsersInOneRow.size() == 0)) {
+        // nothing is requested to be shown, so let's show all the keys
+        String[] keyArray = new String[input.issues.length];
+        String[] keys =
+            Arrays.asList(input.issues).stream().map(i -> i.getKey())
+                .collect(Collectors.toList()).toArray(keyArray);
+        if (dPrefs == null) {
+          // we'll guess at reasonable defaults
+          dPrefs = TimeScheduleDisplayPreferences.createForIssues(
+              1, 0, true, false,
+              true, keys, false, graph
+          );
+        } else {
+          dPrefs = TimeScheduleDisplayPreferences.createForIssues(
+              dPrefs.timeGranularity, dPrefs.timeMarker, dPrefs.showBlocked, dPrefs.hideDetails,
+              dPrefs.showResolved, keys, dPrefs.showChangeTools, graph
+          );
+        }
+      }
+
       TimeScheduleWriter.writeIssueTable
-          (graph, response.getWriter(), graph.getTimeScheduleCreatePreferences(),
-              TimeScheduleDisplayPreferences.createForIssues
-                  (1, 0, true, false, true,
-                      keys, false, graph));
+          (graph, response.getWriter(), graph.getTimeScheduleCreatePreferences(), dPrefs);
 
     } catch (JsonSyntaxException e) {
       response.setContentType("text/plain");
