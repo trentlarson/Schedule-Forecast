@@ -342,18 +342,41 @@ public class TimeScheduleWriter {
     calStartOfDay.add(Calendar.DAY_OF_YEAR, -dPrefs.timeGranularity);
     do {
       calStartOfDay.add(Calendar.DAY_OF_YEAR, dPrefs.timeGranularity);
-      String priorities = "";
-      for (int i = 0; i < priorityDates.length; i++) {
-        if (priorityDates[i] != null
+      String prioritiesToday = "";
+      int firstNonNullPriorityInSeq = -1; // to allow for grouping of sequential priorities
+      // remember: index is priority-1
+      // go one further so we can gather them up
+      for (int i = 0; i < priorityDates.length + 1; i++) {
+        if (i < priorityDates.length
+            && priorityDates[i] != null
             && priorityDates[i].before(calStartOfDay.getTime())) {
-          if (priorities.length() > 0) {
-            priorities += "<br>";
+          if (firstNonNullPriorityInSeq == -1) {
+            // this will be the first one in this sequence
+            firstNonNullPriorityInSeq = i + 1;
+          } else {
+            // we must be continuing with this sequence, so do nothing
           }
-          priorities += String.valueOf(i + 1);
           priorityDates[i] = null;
+        } else {
+          // this number is not one to list right now, so finish the previous sequence
+          if (firstNonNullPriorityInSeq == -1) {
+            // there is no previous index to list, so do nothing
+          } else {
+            // gotta record these new priorities
+            if (prioritiesToday.length() > 0) {
+              prioritiesToday += "<br>";
+            }
+            prioritiesToday += String.valueOf(firstNonNullPriorityInSeq);
+            if (firstNonNullPriorityInSeq < i) {
+              // the previous priority (i) is greater than firstNonNullPriorityInSeq
+              // so show that there's a range of values
+              prioritiesToday += "-" + String.valueOf(i);
+            }
+          }
+          firstNonNullPriorityInSeq = -1;
         }
       }
-      out.write("    <td>" + priorities + "</td>\n");
+      out.write("    <td>" + prioritiesToday + "</td>\n");
 
       // -- overdue and marker column
       out.write("    <td>\n");
