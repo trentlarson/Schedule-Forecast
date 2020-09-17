@@ -66,9 +66,8 @@ public class IssueTree extends TimeSchedule.IssueWorkDetailOriginal<IssueTree> i
   public Teams.AssigneeKey getRawAssigneeKey() {
     return new Teams.AssigneeKey(rawTeamId, rawPerson);
   }
-  public Teams.UserTimeKey getTimeAssigneeKey() {
-    return new Teams.UserTimeKey(timeTeamId, timePerson);
-  }
+  public Teams.UserTimeKey getTimeAssigneeKey() { return new Teams.UserTimeKey(timeTeamId, timePerson); }
+  public String getTimeAssignee() { return getTimeAssigneeKey().toString(); }
 
   public int  getTimeSpent() { return spent; }
   /** @see IssueWorkDetail#getPriority() */

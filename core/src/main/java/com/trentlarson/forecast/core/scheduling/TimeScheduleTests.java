@@ -10,8 +10,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.trentlarson.forecast.core.dao.TeamHours;
+import com.trentlarson.forecast.core.helper.ForecastInterfaces;
 
 public class TimeScheduleTests {
 
@@ -49,7 +53,12 @@ public class TimeScheduleTests {
   public static void unitMain(PrintWriter out) throws Exception {
 
     out.println("<P>");
-    out.println("<H1>Here are the scheduling tests for team tasks.</H2>");
+    out.println("<H1>Here are the JSON scheduling tests.</H2>");
+
+    outputJsonNullAssigneeTestResults(out);
+
+    out.println("<P>");
+    out.println("<H1>Here are the raw scheduling tests.</H2>");
 
     // another test: allow start/end times outside 0-8 AM range
     // another test: I believe the lighter colors don't work for teams
@@ -75,6 +84,36 @@ public class TimeScheduleTests {
     TimeSchedule.outputTestResults(out);
 
   }
+
+
+  public static void outputJsonNullAssigneeTestResults(PrintWriter out) throws Exception {
+
+    out.println("<P>");
+    out.println("<H2>... for JSON tasks with null assignee:</H2>");
+
+    GsonBuilder builder = new GsonBuilder();
+    Gson creator = builder.create();
+    ForecastInterfaces.ScheduleAndDisplayInput input =
+        creator.fromJson(
+            "{issues:[{\"key\":\"0\",\"summary\":\"load history file from list & show relationship +#genealogy\",\"issueEstSecondsRaw\":7200,\"dueDate\":null},{\"key\":\"1\", \"summary\":\"Something else\", \"dueDate\":\"2020-09-17\"}]}",
+            ForecastInterfaces.ScheduleAndDisplayInput.class);
+
+    IssueDigraph graph = IssueDigraph.schedulesForIssues(input.issues, input.createPreferences);
+
+    String[] keyArray = new String[input.issues.length];
+    String[] keys =
+        Arrays.asList(input.issues).stream().map(i -> i.getKey())
+            .collect(Collectors.toList()).toArray(keyArray);
+
+    TimeScheduleWriter.writeIssueTable
+        (graph, out, graph.getTimeScheduleCreatePreferences(),
+            TimeScheduleDisplayPreferences.createForIssues
+                (1, 0, true, false, true,
+                    keys, false, graph));
+
+  }
+
+
 
   /**
      A case with a very long task (which broke this).
