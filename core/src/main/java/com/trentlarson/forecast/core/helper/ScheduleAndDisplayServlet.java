@@ -66,9 +66,11 @@ public class ScheduleAndDisplayServlet extends HttpServlet {
           (graph, response.getWriter(), graph.getTimeScheduleCreatePreferences(), dPrefs);
 
     } catch (JsonSyntaxException e) {
+      String message = e.getMessage() + " ... due to: " + (e.getCause() == null ? "" : e.getCause().getMessage());
+      System.out.println("Client JsonSyntaxException: " + message);
       response.setContentType("text/plain");
       response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-      response.getWriter().println(e.getMessage());
+      response.getWriter().println(message);
     }
   }
 }
