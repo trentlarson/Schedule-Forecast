@@ -95,10 +95,18 @@ public class TimeScheduleTests {
     Gson creator = builder.create();
     ForecastInterfaces.ScheduleAndDisplayInput input =
         creator.fromJson(
-            "{issues:[{\"key\":\"0\",\"summary\":\"load history file from list & show relationship +#genealogy\",\"issueEstSecondsRaw\":7200,\"dueDate\":null},{\"key\":\"1\", \"summary\":\"Something else\", \"dueDate\":\"2020-09-17\"}]}",
+            "{"
+            + "issues:[{\"key\":\"0\",\"summary\":\"load history file from list & show relationship +#genealogy\",\"issueEstSecondsRaw\":7200,\"dueDate\":null},{\"key\":\"1\", \"summary\":\"Something else\", \"dueDate\":\"2020-09-17\"}]"
+            + ","
+            + "createPreferences:{startDate:\"2020-09-16\"}"
+            +"}",
             ForecastInterfaces.ScheduleAndDisplayInput.class);
 
-    IssueDigraph graph = IssueDigraph.schedulesForIssues(input.issues, input.createPreferences);
+    TimeScheduleCreatePreferences cPrefs = new TimeScheduleCreatePreferences();
+    if (input.createPreferences != null) {
+      cPrefs = input.createPreferences.getTimeScheduleCreatePreferences();
+    }
+    IssueDigraph graph = IssueDigraph.schedulesForIssues(input.issues, cPrefs);
 
     String[] keyArray = new String[input.issues.length];
     String[] keys =
@@ -774,7 +782,7 @@ public class TimeScheduleTests {
     out.println(branches1);
 
     out.println("<br><br>");
-    out.println("Tree for issues 1 and 2.<br>");
+    out.println("Tree for issues 7 and 8.<br>");
     TimeScheduleWriter.writeIssueTable
       (graph, out, sPrefs,
        TimeScheduleDisplayPreferences.createForIssues
@@ -783,7 +791,7 @@ public class TimeScheduleTests {
         false, graph));
 
     out.println("<p>");
-    out.println("Squished schedule for issues 1 and 2.<br>");
+    out.println("Squished schedule for issues 7 and 8.<br>");
     TimeScheduleWriter.writeIssueTable
       (graph, out, sPrefs,
        TimeScheduleDisplayPreferences.createForIssues
@@ -792,7 +800,7 @@ public class TimeScheduleTests {
         false, graph));
 
     out.println("<p>");
-    out.println("Tree for issue 1, w/o resolved.<br>");
+    out.println("Tree for issue 7, w/o resolved.<br>");
     TimeScheduleWriter.writeIssueTable
       (graph, out, sPrefs,
        TimeScheduleDisplayPreferences.createForIssues
@@ -952,7 +960,7 @@ public class TimeScheduleTests {
     sPrefs = new TimeScheduleCreatePreferences(startDate, true);
     graph = IssueDigraph.schedulesForUserIssues3(userDetails, userWeeklyHours, sPrefs);
     out.println("<p>");
-    out.println("Tree for issues 1 and 2 with reversed priority order.<br>");
+    out.println("Tree for issues 7 and 8 with reversed priority order.<br>");
     TimeScheduleWriter.writeIssueTable
         (graph, out, sPrefs,
             TimeScheduleDisplayPreferences.createForIssues

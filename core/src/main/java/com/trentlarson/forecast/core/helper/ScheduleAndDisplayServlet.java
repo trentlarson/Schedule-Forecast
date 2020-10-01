@@ -16,6 +16,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.trentlarson.forecast.core.scheduling.IssueDigraph;
+import com.trentlarson.forecast.core.scheduling.TimeScheduleCreatePreferences;
 import com.trentlarson.forecast.core.scheduling.TimeScheduleDisplayPreferences;
 import com.trentlarson.forecast.core.scheduling.TimeScheduleWriter;
 
@@ -35,7 +36,7 @@ public class ScheduleAndDisplayServlet extends HttpServlet {
           creator.fromJson(request.getReader(), ForecastInterfaces.ScheduleAndDisplayInput.class);
 
       // set the hourly schedule based on input hours
-      IssueDigraph graph = IssueDigraph.schedulesForIssues(input.issues, input.createPreferences);
+      IssueDigraph graph = IssueDigraph.schedulesForIssues(input.issues, input.createPreferences.getTimeScheduleCreatePreferences());
 
       response.setContentType("text/html");
       response.setStatus(HttpServletResponse.SC_OK);

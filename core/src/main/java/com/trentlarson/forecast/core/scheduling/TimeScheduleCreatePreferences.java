@@ -9,6 +9,8 @@ public class TimeScheduleCreatePreferences {
   public final double timeMultiplier;
   /**
    * The work hours per week that is assumed for assignee if not explicitly given.
+   * If not given, the default is TimeSchedule.TYPICAL_INDIVIDUAL_WORKHOURS_PER_WORKWEEK
+   * @see TimeSchedule.TYPICAL_INDIVIDUAL_WORKHOURS_PER_WORKWEEK
    */
   public final double defaultAssigneeHoursPerWeek;
   /**

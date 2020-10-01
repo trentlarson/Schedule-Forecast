@@ -248,7 +248,7 @@ public class TimeScheduleWriter {
       if (monthMarker != null
           && (calStartOfDay.getTime().equals(monthMarker.getTime())
               || calStartOfDay.getTime().after(monthMarker.getTime()))) {
-        content = String.valueOf(monthOf.format(calStartOfDay.getTime()).charAt(0));
+        content = String.valueOf(monthOf.format(calStartOfDay.getTime()).substring(0,3));
         monthMarker.add(Calendar.MONTH, 1);
       }
       out.write("    <td>" + content + "</td>\n");
@@ -333,7 +333,7 @@ public class TimeScheduleWriter {
     out.write("    </td>\n");
     // -- header label column
     out.write("    <td>\n");
-    out.write("      Pri\n");
+    out.write("      Priority\n");
     out.write("    </td>\n");
     // -- first overdue and marker column
     out.write("    <td>\n");
