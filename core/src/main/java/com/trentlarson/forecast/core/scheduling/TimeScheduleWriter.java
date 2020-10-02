@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import org.apache.log4j.Category;
 
@@ -118,8 +119,37 @@ public class TimeScheduleWriter {
       }
     }
 
+    // These two together add up to the total indentation.
+    int maxAllPredecessorDist = 0;
+    int maxAllSuccessorDist = 0;
+    Map<String, List<TimeScheduleSearch.DependencyBranch<IssueTree>>> allPredBranches = new TreeMap<>();
+    if (dPrefs.showHierarchically) {
+      for (int i = 0; i < dPrefs.showIssues.size(); i++) {
+        IssueTree tree = graph.getIssueTree(dPrefs.showIssues.get(i));
+        List<TimeScheduleSearch.DependencyBranch<IssueTree>> predBranches = TimeScheduleSearch.findPredecessorBranches(tree);
+        allPredBranches.put(tree.key, predBranches);
+
+        // to figure out the overall indentation, first get maximum predecessors for all issues
+        for (Iterator<TimeScheduleSearch.DependencyBranch<IssueTree>> predBranch = predBranches.iterator(); predBranch.hasNext(); ) {
+          TimeScheduleSearch.DependencyBranch<IssueTree> branch = predBranch.next();
+          if (branch.getLongestDistanceFromTarget() > maxAllPredecessorDist) {
+            maxAllPredecessorDist = branch.getLongestDistanceFromTarget();
+          }
+        }
+
+        // to figure out the overall indentation, next get maximum successors for all issues
+        if (dPrefs.showBlocked) {
+          int nextDepth = TimeScheduleSearch.maxSuccessorDepth(tree);
+          if (nextDepth > maxAllSuccessorDist) {
+            maxAllSuccessorDist = nextDepth;
+          }
+        }
+      }
+    }
+
     // headers
-    int numDays = writeHeaderInfo(out, sPrefs.getStartTime(), maxEndDate, priorityDates, dPrefs);
+    int numDays = writeHeaderInfo(out, sPrefs.getStartTime(), maxEndDate, priorityDates, dPrefs,
+                                  maxAllPredecessorDist + 1 + maxAllSuccessorDist);
 
     // finally, the actual schedule
     if (dPrefs.showEachUserOnOneRow()) {
@@ -140,17 +170,17 @@ public class TimeScheduleWriter {
       for (int i = 0; i < dPrefs.showIssues.size(); i++) {
         IssueTree tree = graph.getIssueTree(dPrefs.showIssues.get(i));
 
-        int maxDist = 0;
+        int maxPredDistThisissue = 0;
 
         // display predecessors of the main issue
         if (dPrefs.showHierarchically) {
-          List<TimeScheduleSearch.DependencyBranch<IssueTree>> predBranches = TimeScheduleSearch.findPredecessorBranches(tree);
+          List<TimeScheduleSearch.DependencyBranch<IssueTree>> predBranches = allPredBranches.get(tree.key);
 
-          // to figure out the indentation, we need the maximum distance from the issue
+          // to figure out the indentation for this issue, get maximum distance from the issue
           for (Iterator<TimeScheduleSearch.DependencyBranch<IssueTree>> predBranch = predBranches.iterator(); predBranch.hasNext(); ) {
             TimeScheduleSearch.DependencyBranch<IssueTree> branch = predBranch.next();
-            if (branch.getLongestDistanceFromTarget() > maxDist) {
-              maxDist = branch.getLongestDistanceFromTarget();
+            if (branch.getLongestDistanceFromTarget() > maxPredDistThisissue) {
+              maxPredDistThisissue = branch.getLongestDistanceFromTarget();
             }
           }
 
@@ -166,10 +196,11 @@ public class TimeScheduleWriter {
               IssueTree issueDetail = branch.getBranchList().get(branchNum);
               IssueTree predTree = graph.getIssueTree(issueDetail.getKey());
               int thisDist = branch.getLongestDistanceFromTarget() - branchNum;
+              int maxSuccessorAndOtherDistThisissue = maxAllPredecessorDist + maxAllSuccessorDist - maxPredDistThisissue;
               writeIssueRows
                 (predTree, graph.getUserWeeklyHoursAvailable(),
                  graph.getIssueSchedules(), maxEndDate, priorityDates.length,
-                 maxDist, - thisDist, 0,
+                 maxPredDistThisissue, - thisDist, maxSuccessorAndOtherDistThisissue,0,
                     false, out, sPrefs.getStartTime(), dPrefs2, shownAlready, true);
             }
           }
@@ -178,9 +209,11 @@ public class TimeScheduleWriter {
         // display the requested issues (and successors)
         log4jLog.debug("Writing issue: stopAtTargetDistance=false; showBlocked=" + dPrefs.showBlocked);
 
+        int maxSuccessorAndOtherDistThisissue = maxAllPredecessorDist + maxAllSuccessorDist - maxPredDistThisissue;
         writeIssueRows
           (tree, graph.getUserWeeklyHoursAvailable(),
-           graph.getIssueSchedules(), maxEndDate, priorityDates.length, maxDist, 0, 0,
+           graph.getIssueSchedules(), maxEndDate, priorityDates.length,
+              maxPredDistThisissue, 0, maxSuccessorAndOtherDistThisissue,0,
               false, out, sPrefs.getStartTime(), dPrefs, shownAlready, false);
       }
     }
@@ -199,7 +232,8 @@ public class TimeScheduleWriter {
 
   /** @return the number of days to display
    */
-  private static int writeHeaderInfo(Writer out, Date startTime, Date maxEndDate, Date[] priorityDates, TimeScheduleDisplayPreferences dPrefs)
+  private static int writeHeaderInfo(Writer out, Date startTime, Date maxEndDate, Date[] priorityDates,
+                                     TimeScheduleDisplayPreferences dPrefs, int allIssueColumns)
     throws IOException {
 
     // first, the header rows
@@ -207,9 +241,13 @@ public class TimeScheduleWriter {
     // the month letters
     out.write("  <tr>\n");
 
-    // -- issue detail column
+    // -- issue detail columns
     out.write("    <td>\n");
     out.write("    </td>\n");
+    for (int i = 1; dPrefs.showDependenciesInSeparateColumns && i < allIssueColumns; i++) {
+      out.write("    <td>\n");
+      out.write("    </td>\n");
+    }
 
     // -- header label column
     out.write("    <td>\n");
@@ -264,9 +302,13 @@ public class TimeScheduleWriter {
     // the day numbers
     out.write("  <tr>\n");
 
-    // -- issue detail column
+    // -- issue detail columns
     out.write("    <td>\n");
     out.write("    </td>\n");
+    for (int i = 1; dPrefs.showDependenciesInSeparateColumns && i < allIssueColumns; i++) {
+      out.write("    <td>\n");
+      out.write("    </td>\n");
+    }
 
     // -- header label column
     out.write("    <td>\n");
@@ -328,9 +370,13 @@ public class TimeScheduleWriter {
 
     // write the dates when priorities get finished
     out.write("  <tr>\n");
-    // -- issue detail column
+    // -- issue detail columns
     out.write("    <td>\n");
     out.write("    </td>\n");
+    for (int i = 1; dPrefs.showDependenciesInSeparateColumns && i < allIssueColumns; i++) {
+      out.write("    <td>\n");
+      out.write("    </td>\n");
+    }
     // -- header label column
     out.write("    <td>\n");
     out.write("      Priority\n");
@@ -402,8 +448,9 @@ public class TimeScheduleWriter {
   (IssueTree detail,
    Map<Teams.UserTimeKey, TimeSchedule.WeeklyWorkHours> allUserWeeklyHours,
    Map<String, TimeSchedule.IssueSchedule<IssueTree>> issueSchedules,
-   Date maxEndDate, int maxPriority, int maxPredecessorDepth, int dist, int subtaskDepth,
-   boolean isSubtask, Writer out, Date startTime,
+   Date maxEndDate, int maxPriority, int maxPredecessorDepth, int dist, int maxSuccessorAndOtherDistThisissue,
+   int subtaskDepth, boolean isSubtask,
+   Writer out, Date startTime,
    TimeScheduleDisplayPreferences dPrefs, Set<String> shownAlready, boolean showingBlockingPredecessors)
     throws IOException {
 
@@ -430,10 +477,20 @@ public class TimeScheduleWriter {
 
       out.write("  <tr>\n");
 
-      // issue detail column
+      // issue detail columns
+      if (dPrefs.showDependenciesInSeparateColumns) {
+        for (int i = 0; i < maxPredecessorDepth + dist; i++) {
+            out.write("    <td>\n");
+            out.write("    </td>\n");
+          }
+      }
       out.write("    <td>\n");
       // -- indent it to the right depth
-      for (int i = 0; i < (maxPredecessorDepth + dist + subtaskDepth); i++ ) {
+      int indentLevel = maxPredecessorDepth + dist + subtaskDepth;
+      if (dPrefs.showDependenciesInSeparateColumns) {
+        indentLevel = subtaskDepth;
+      }
+      for (int i = 0; i < indentLevel; i++ ) {
         out.write("      <ul>\n");
       }
       if (isSubtask) {
@@ -453,10 +510,17 @@ public class TimeScheduleWriter {
         out.write("        </li>\n");
       }
       // -- indent it to the right depth
-      for (int i = 0; i < (maxPredecessorDepth + dist + subtaskDepth); i++ ) {
+      for (int i = 0; i < indentLevel; i++ ) {
         out.write("      </ul>\n");
       }
       out.write("   </td>\n");
+      if (dPrefs.showDependenciesInSeparateColumns) {
+        // draw all the rest of the columns which may have successors later
+        for (int i = 0; i < (maxPredecessorDepth + maxSuccessorAndOtherDistThisissue) - (maxPredecessorDepth + dist); i++) {
+          out.write("    <td>\n");
+          out.write("    </td>\n");
+        }
+      }
 
       // header label column
       out.write("   <td>\n");
@@ -644,16 +708,18 @@ public class TimeScheduleWriter {
         IssueTree subIssue = i.next();
         writeIssueRows
           (subIssue, allUserWeeklyHours, issueSchedules, maxEndDate, maxPriority,
-              maxPredecessorDepth, dist, subtaskDepth + 1,
-              true, out, startTime, dPrefs, shownAlready, showingBlockingPredecessors);
+              maxPredecessorDepth, dist, maxSuccessorAndOtherDistThisissue,
+              subtaskDepth + 1,true,
+              out, startTime, dPrefs, shownAlready, showingBlockingPredecessors);
       }
       if (dPrefs.showBlocked) {
         for (Iterator<IssueTree> i = detail.getDependents().iterator(); i.hasNext(); ) {
           IssueTree current = i.next();
           writeIssueRows
             (current, allUserWeeklyHours, issueSchedules, maxEndDate, maxPriority,
-                maxPredecessorDepth, dist + 1, subtaskDepth,
-                false, out, startTime, dPrefs, shownAlready, false);
+                maxPredecessorDepth, dist + 1, maxSuccessorAndOtherDistThisissue - 1,
+                subtaskDepth,false,
+                out, startTime, dPrefs, shownAlready, false);
         }
       }
     }

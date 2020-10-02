@@ -19,9 +19,11 @@ public class TimeScheduleDisplayPreferences {
   public final boolean showBlocked;
   public final boolean hideDetails;
   public final boolean showResolved;
-  public final boolean showChangeTools;
   /** whether to drill down into subtasks as rendering continues */
   public final boolean showHierarchically;
+  /** whether to show predecessor/successor issues in separate columns (as opposed to same column with various indentation), usually just when when showhierarchically */
+  public final boolean showDependenciesInSeparateColumns;
+  public final boolean showChangeTools;
   /** List of users to display, each on one row; may be null */
   public final List<Teams.AssigneeKey> showUsersInOneRow;
   /** List of issue key Strings to display individually; may be empty list, but never null */
@@ -37,7 +39,8 @@ public class TimeScheduleDisplayPreferences {
   */
   private TimeScheduleDisplayPreferences
     (int timeGranularity_, int timeMarker_, boolean showBlocked_,
-     boolean hideDetails_, boolean showResolved_, boolean showHierarchically_,
+     boolean hideDetails_, boolean showResolved_,
+     boolean showHierarchically_, boolean showDependenciesInSeparateColumns_,
      boolean showChangeTools_,
      List<Teams.AssigneeKey> showUsersInOneRow_,
      List<String> showIssues_) {
@@ -46,18 +49,21 @@ public class TimeScheduleDisplayPreferences {
     this.showBlocked = showBlocked_;
     this.hideDetails = hideDetails_;
     this.showResolved = showResolved_;
-    this.showChangeTools = showChangeTools_;
     this.showHierarchically = showHierarchically_;
+    this.showDependenciesInSeparateColumns = showDependenciesInSeparateColumns_;
+    this.showChangeTools = showChangeTools_;
     this.showUsersInOneRow = showUsersInOneRow_;
     this.showIssues = showIssues_;
   }
 
   private TimeScheduleDisplayPreferences
-    (int timeGranularity_, int timeMarker_, boolean showBlocked_,
-     boolean hideDetails_, boolean showResolved_, boolean showHierarchically_,
-     boolean showChangeTools_) {
+      (int timeGranularity_, int timeMarker_, boolean showBlocked_,
+       boolean hideDetails_, boolean showResolved_, boolean showHierarchically_,
+       boolean showDependenciesInSeparateColumns_, boolean showChangeTools_) {
     this(timeGranularity_, timeMarker_, showBlocked_,
-         hideDetails_, showResolved_, showHierarchically_, showChangeTools_,
+         hideDetails_, showResolved_, showHierarchically_,
+         showDependenciesInSeparateColumns_,
+         showChangeTools_,
          new ArrayList<Teams.AssigneeKey>(), new ArrayList<String>());
   }
 
@@ -74,7 +80,7 @@ public class TimeScheduleDisplayPreferences {
     TimeScheduleDisplayPreferences prefs =
       new TimeScheduleDisplayPreferences
       (timeGranularity_, timeMarker_, showBlocked_, hideDetails_, showResolved_, 
-       false, showChangeTools_);
+       false, false, showChangeTools_);
 
     List<IssueTree> issues = graph.getAssignedUserDetails().get(showUserAndTeam);
     for (IssueTree issue : issues) {
@@ -93,7 +99,7 @@ public class TimeScheduleDisplayPreferences {
     TimeScheduleDisplayPreferences prefs =
       new TimeScheduleDisplayPreferences
       (timeGranularity_, timeMarker_, showBlocked_, hideDetails_, showResolved_, 
-       false, showChangeTools_);
+       false, false, showChangeTools_);
 
     Set<Teams.UserTimeKey> addedAlready = new TreeSet<Teams.UserTimeKey>();
     for (Teams.AssigneeKey userKey : graph.getAssignedUserDetails().keySet()) {
@@ -123,7 +129,7 @@ public class TimeScheduleDisplayPreferences {
     TimeScheduleDisplayPreferences prefs =
       new TimeScheduleDisplayPreferences
       (timeGranularity_, timeMarker_, showBlocked_, hideDetails_, showResolved_, 
-       false, showChangeTools_);
+       false, false, showChangeTools_);
 
     Set<Teams.UserTimeKey> addedAlready = new TreeSet<Teams.UserTimeKey>();
     for (Teams.AssigneeKey userKey : graph.getAssignedUserDetails().keySet()) {
@@ -151,7 +157,7 @@ public class TimeScheduleDisplayPreferences {
       new TimeScheduleDisplayPreferences
       // (REFACTOR because some of these should always be false)
       (timeGranularity_, timeMarker_, showBlocked_, hideDetails_, showResolved_, 
-       false, false);
+       false, false, false);
 
     prefs.showUsersInOneRow.addAll(Arrays.asList(showUsersInOneRow_));
     for (int useri = 0; useri < showUsersInOneRow_.length; useri++) {
@@ -171,7 +177,7 @@ public class TimeScheduleDisplayPreferences {
     TimeScheduleDisplayPreferences prefs =
       new TimeScheduleDisplayPreferences
       (timeGranularity_, timeMarker_, showBlocked_, hideDetails_, showResolved_, 
-       true, showChangeTools_);
+       true, true, showChangeTools_);
 
     for (int keyi = 0; keyi < issueKeys.length; keyi++) {
       if (graph.getIssueSchedule(issueKeys[keyi]) != null) {
@@ -190,7 +196,7 @@ public class TimeScheduleDisplayPreferences {
     TimeScheduleDisplayPreferences prefs =
       new TimeScheduleDisplayPreferences
       (timeGranularity_, timeMarker_, showBlocked_, hideDetails_, showResolved_, 
-       false, showChangeTools_);
+       false, false, showChangeTools_);
 
     // use the whole graph, just check for overdue issues
     for (String treeKey : graph.getIssueSchedules().keySet()) {
@@ -211,7 +217,7 @@ public class TimeScheduleDisplayPreferences {
     TimeScheduleDisplayPreferences prefs =
       new TimeScheduleDisplayPreferences
       (timeGranularity_, timeMarker_, false, hideDetails_, false, 
-          false, showChangeTools_);
+          false, false, showChangeTools_);
 
     for (String issueKey : issueKeys) {
       // just show the issues in the critical path
@@ -228,8 +234,16 @@ public class TimeScheduleDisplayPreferences {
     return new TimeScheduleDisplayPreferences
       (this.timeGranularity, this.timeMarker, showBlocked_,
        this.hideDetails, this.showResolved, this.showHierarchically,
-       this.showChangeTools,
+       this.showDependenciesInSeparateColumns, this.showChangeTools,
        this.showUsersInOneRow, this.showIssues);
+  }
+
+  public TimeScheduleDisplayPreferences cloneButShowSeparateColumns(boolean showDependencieInSeparateColumns_) {
+    return new TimeScheduleDisplayPreferences
+        (this.timeGranularity, this.timeMarker, this.showBlocked,
+            this.hideDetails, this.showResolved, this.showHierarchically,
+            showDependencieInSeparateColumns_, this.showChangeTools,
+            this.showUsersInOneRow, this.showIssues);
   }
 
 
@@ -271,8 +285,9 @@ public class TimeScheduleDisplayPreferences {
     public boolean showBlocked;
     public boolean hideDetails;
     public boolean showResolved;
-    public boolean showChangeTools;
     public boolean showHierarchically;
+    public boolean showDependenciesInSeparateColumns;
+    public boolean showChangeTools;
     public List<Teams.AssigneeKey> showUsersInOneRow = new ArrayList<Teams.AssigneeKey>();
     public List<String> showIssues = new ArrayList<String>();
     public int getTimeGranularity() {
@@ -305,24 +320,24 @@ public class TimeScheduleDisplayPreferences {
     public void setShowResolved(boolean showResolved) {
       this.showResolved = showResolved;
     }
-    public boolean isShowChangeTools() {
-      return showChangeTools;
-    }
-    public void setShowChangeTools(boolean showChangeTools) {
-      this.showChangeTools = showChangeTools;
-    }
     public boolean isShowHierarchically() {
       return showHierarchically;
     }
     public void setShowHierarchically(boolean showHierarchically) {
       this.showHierarchically = showHierarchically;
     }
+    public boolean isShowDependenciesInSeparateColumns() { return showDependenciesInSeparateColumns; }
+    public void setShowDependenciesInSeparateColumns(boolean showDependenciesInSeparateColumns) { this.showDependenciesInSeparateColumns = showDependenciesInSeparateColumns; }
+    public boolean isShowChangeTools() {
+      return showChangeTools;
+    }
+    public void setShowChangeTools(boolean showChangeTools) {
+      this.showChangeTools = showChangeTools;
+    }
     public List<Teams.AssigneeKey> getShowUsersInOneRow() {
       return showUsersInOneRow;
     }
-    public void setShowUsersInOneRow(List<Teams.AssigneeKey> showUsersInOneRow) {
-      this.showUsersInOneRow = showUsersInOneRow;
-    }
+    public void setShowUsersInOneRow(List<Teams.AssigneeKey> showUsersInOneRow) { this.showUsersInOneRow = showUsersInOneRow; }
     public List<String> getShowIssues() {
       return showIssues;
     }
@@ -330,7 +345,7 @@ public class TimeScheduleDisplayPreferences {
       this.showIssues = showIssues;
     }
     public TimeScheduleDisplayPreferences getPrefs() {
-      return new TimeScheduleDisplayPreferences(timeGranularity, timeMarker, showBlocked, hideDetails, showResolved, showHierarchically, showChangeTools, showUsersInOneRow, showIssues);
+      return new TimeScheduleDisplayPreferences(timeGranularity, timeMarker, showBlocked, hideDetails, showResolved, showHierarchically, showChangeTools,  showDependenciesInSeparateColumns, showUsersInOneRow, showIssues);
     }
   }
   

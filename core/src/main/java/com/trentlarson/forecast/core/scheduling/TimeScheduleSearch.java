@@ -3,6 +3,7 @@ package com.trentlarson.forecast.core.scheduling;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -97,6 +98,25 @@ public class TimeScheduleSearch {
       branchesDiscovered.add(thisBranch);
     }
     return branchesDiscovered;
+  }
+
+
+
+  /**
+   *
+   * @param tree issue to search
+   * @return the maximum depth of all dependent/successor branches, starting with 0 for none
+   */
+  protected static int maxSuccessorDepth(IssueTree tree) {
+    int maxDepth = 0;
+    for (Iterator<IssueTree> i = tree.getDependents().iterator(); i.hasNext(); ) {
+      IssueTree next = i.next();
+      int nextDepth = 1 + maxSuccessorDepth(next);
+      if (nextDepth > maxDepth) {
+        maxDepth = nextDepth;
+      }
+    }
+    return maxDepth;
   }
 
 

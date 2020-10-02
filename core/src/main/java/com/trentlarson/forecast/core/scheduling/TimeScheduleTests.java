@@ -961,12 +961,12 @@ public class TimeScheduleTests {
     graph = IssueDigraph.schedulesForUserIssues3(userDetails, userWeeklyHours, sPrefs);
     out.println("<p>");
     out.println("Tree for issues 7 and 8 with reversed priority order.<br>");
-    TimeScheduleWriter.writeIssueTable
-        (graph, out, sPrefs,
-            TimeScheduleDisplayPreferences.createForIssues
-                (1, 0, true, false, true,
-                    new String[]{ testIssues.issueTest_7.getKey(), testIssues.issueTest_8.getKey() },
-                    false, graph));
+    TimeScheduleDisplayPreferences dPrefs = TimeScheduleDisplayPreferences.createForIssues
+        (1, 0, true, false, true,
+            new String[]{ testIssues.issueTest_7.getKey(), testIssues.issueTest_8.getKey() },
+            false, graph);
+    dPrefs = dPrefs.cloneButShowSeparateColumns(false);
+    TimeScheduleWriter.writeIssueTable(graph, out, sPrefs, dPrefs);
   }
 
   public static TestIssues createTestIssues() throws Exception {
