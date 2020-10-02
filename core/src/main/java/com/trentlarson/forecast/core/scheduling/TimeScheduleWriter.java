@@ -169,7 +169,7 @@ public class TimeScheduleWriter {
               writeIssueRows
                 (predTree, graph.getUserWeeklyHoursAvailable(),
                  graph.getIssueSchedules(), maxEndDate, priorityDates.length,
-                 maxDist - thisDist, - thisDist,
+                 maxDist - thisDist, 0, - thisDist,
                  false, out, sPrefs.getStartTime(), dPrefs2, shownAlready, true);
             }
           }
@@ -180,7 +180,7 @@ public class TimeScheduleWriter {
 
         writeIssueRows
           (tree, graph.getUserWeeklyHoursAvailable(),
-           graph.getIssueSchedules(), maxEndDate, priorityDates.length, maxDist, 0,
+           graph.getIssueSchedules(), maxEndDate, priorityDates.length, maxDist, 0, 0,
            false, out, sPrefs.getStartTime(), dPrefs, shownAlready, false);
       }
     }
@@ -390,21 +390,24 @@ public class TimeScheduleWriter {
 
 
   /**
-     @param detail is the issue to write next (depending on the display preferences)
-     @param issueSchedules is all the issues with their scheduling detail; see IssueDigraph.getIssueSchedules()
-     @param dist is predecessor (negative) or dependent (positive) distance away from target
-     @param stopAtTargetDistance is whether to stop rendering issues on this branch when 0 dist is hit
-  */
+   * @param detail is the issue to write next (depending on the display preferences)
+   * @param issueSchedules is all the issues with their scheduling detail; see IssueDigraph.getIssueSchedules()
+   * @param successorDepth is the indent level from the very first predecessor issue, counting dependents
+   * @param subtaskDepth is the indent level from the very first supertask issue, counting subtask levels
+   * @param dist is predecessor (negative) or dependent (positive) distance away from target
+   * @param stopAtTargetDistance is whether to stop rendering issues on this branch when 0 dist is hit
+   */
   private static void writeIssueRows
-    (IssueTree detail,
-     Map<Teams.UserTimeKey,TimeSchedule.WeeklyWorkHours> allUserWeeklyHours,
-     Map<String,TimeSchedule.IssueSchedule<IssueTree>> issueSchedules,
-     Date maxEndDate, int maxPriority, int indentDepth, int dist,
-     boolean isSubtask, Writer out, Date startTime,
-     TimeScheduleDisplayPreferences dPrefs, Set<String> shownAlready, boolean stopAtTargetDistance)
+
+  (IssueTree detail,
+   Map<Teams.UserTimeKey, TimeSchedule.WeeklyWorkHours> allUserWeeklyHours,
+   Map<String, TimeSchedule.IssueSchedule<IssueTree>> issueSchedules,
+   Date maxEndDate, int maxPriority, int successorDepth, int subtaskDepth, int dist,
+   boolean isSubtask, Writer out, Date startTime,
+   TimeScheduleDisplayPreferences dPrefs, Set<String> shownAlready, boolean stopAtTargetDistance)
     throws IOException {
 
-    log4jLog.debug("Writing issue row: " + detail.getKey() + ", indent " + indentDepth + ", dist " + dist);
+    log4jLog.debug("Writing issue row: " + detail.getKey() + ", indent " + (successorDepth + subtaskDepth) + ", dist " + dist);
     if (dPrefs.displayIssue(detail)) {
 
       TimeSchedule.IssueSchedule<IssueTree> schedule = issueSchedules.get(detail.getKey());
@@ -430,7 +433,7 @@ public class TimeScheduleWriter {
       // issue detail column
       out.write("    <td>\n");
       // -- indent it to the right depth
-      for (int i = 0; i < indentDepth; i++ ) {
+      for (int i = 0; i < (successorDepth + subtaskDepth); i++ ) {
         out.write("      <ul>\n");
       }
       if (isSubtask) {
@@ -450,7 +453,7 @@ public class TimeScheduleWriter {
         out.write("        </li>\n");
       }
       // -- indent it to the right depth
-      for (int i = 0; i < indentDepth; i++ ) {
+      for (int i = 0; i < (successorDepth + subtaskDepth); i++ ) {
         out.write("      </ul>\n");
       }
       out.write("   </td>\n");
@@ -641,7 +644,7 @@ public class TimeScheduleWriter {
         IssueTree subIssue = i.next();
         writeIssueRows
           (subIssue, allUserWeeklyHours, issueSchedules, maxEndDate, maxPriority,
-           indentDepth + 1, dist,
+              successorDepth, subtaskDepth + 1, dist,
            true, out, startTime, dPrefs, shownAlready, stopAtTargetDistance);
       }
       if (dPrefs.showBlocked) {
@@ -649,7 +652,7 @@ public class TimeScheduleWriter {
           IssueTree current = i.next();
           writeIssueRows
             (current, allUserWeeklyHours, issueSchedules, maxEndDate, maxPriority,
-             indentDepth + 1, dist + 1,
+                successorDepth + 1, subtaskDepth, dist + 1,
              false, out, startTime, dPrefs, shownAlready, stopAtTargetDistance);
         }
       }
