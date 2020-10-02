@@ -169,8 +169,8 @@ public class TimeScheduleWriter {
               writeIssueRows
                 (predTree, graph.getUserWeeklyHoursAvailable(),
                  graph.getIssueSchedules(), maxEndDate, priorityDates.length,
-                 maxDist - thisDist, 0, - thisDist,
-                 false, out, sPrefs.getStartTime(), dPrefs2, shownAlready, true);
+                 maxDist, - thisDist, 0,
+                    false, out, sPrefs.getStartTime(), dPrefs2, shownAlready, true);
             }
           }
         }
@@ -181,7 +181,7 @@ public class TimeScheduleWriter {
         writeIssueRows
           (tree, graph.getUserWeeklyHoursAvailable(),
            graph.getIssueSchedules(), maxEndDate, priorityDates.length, maxDist, 0, 0,
-           false, out, sPrefs.getStartTime(), dPrefs, shownAlready, false);
+              false, out, sPrefs.getStartTime(), dPrefs, shownAlready, false);
       }
     }
     out.write("</tbody>\n");
@@ -392,22 +392,22 @@ public class TimeScheduleWriter {
   /**
    * @param detail is the issue to write next (depending on the display preferences)
    * @param issueSchedules is all the issues with their scheduling detail; see IssueDigraph.getIssueSchedules()
-   * @param successorDepth is the indent level from the very first predecessor issue, counting dependents
-   * @param subtaskDepth is the indent level from the very first supertask issue, counting subtask levels
+   * @param maxPredecessorDepth is the distance from the very first predecessor issue to the target, counting dependent levels
    * @param dist is predecessor (negative) or dependent (positive) distance away from target
-   * @param stopAtTargetDistance is whether to stop rendering issues on this branch when 0 dist is hit
+   * @param subtaskDepth is the indent level from the very first supertask issue, counting subtask levels
+   * @param showingBlockingPredecessors is whether we're rendering relevant predecessor issues
    */
   private static void writeIssueRows
 
   (IssueTree detail,
    Map<Teams.UserTimeKey, TimeSchedule.WeeklyWorkHours> allUserWeeklyHours,
    Map<String, TimeSchedule.IssueSchedule<IssueTree>> issueSchedules,
-   Date maxEndDate, int maxPriority, int successorDepth, int subtaskDepth, int dist,
+   Date maxEndDate, int maxPriority, int maxPredecessorDepth, int dist, int subtaskDepth,
    boolean isSubtask, Writer out, Date startTime,
-   TimeScheduleDisplayPreferences dPrefs, Set<String> shownAlready, boolean stopAtTargetDistance)
+   TimeScheduleDisplayPreferences dPrefs, Set<String> shownAlready, boolean showingBlockingPredecessors)
     throws IOException {
 
-    log4jLog.debug("Writing issue row: " + detail.getKey() + ", indent " + (successorDepth + subtaskDepth) + ", dist " + dist);
+    log4jLog.debug("Writing issue row: " + detail.getKey() + ", indent " + (maxPredecessorDepth + dist + subtaskDepth) + ", dist " + dist);
     if (dPrefs.displayIssue(detail)) {
 
       TimeSchedule.IssueSchedule<IssueTree> schedule = issueSchedules.get(detail.getKey());
@@ -433,7 +433,7 @@ public class TimeScheduleWriter {
       // issue detail column
       out.write("    <td>\n");
       // -- indent it to the right depth
-      for (int i = 0; i < (successorDepth + subtaskDepth); i++ ) {
+      for (int i = 0; i < (maxPredecessorDepth + dist + subtaskDepth); i++ ) {
         out.write("      <ul>\n");
       }
       if (isSubtask) {
@@ -453,7 +453,7 @@ public class TimeScheduleWriter {
         out.write("        </li>\n");
       }
       // -- indent it to the right depth
-      for (int i = 0; i < (successorDepth + subtaskDepth); i++ ) {
+      for (int i = 0; i < (maxPredecessorDepth + dist + subtaskDepth); i++ ) {
         out.write("      </ul>\n");
       }
       out.write("   </td>\n");
@@ -637,23 +637,23 @@ public class TimeScheduleWriter {
     }
 
     boolean goDeeper =
-      dPrefs.showHierarchically && (!stopAtTargetDistance || dist != 0);
+      dPrefs.showHierarchically && (showingBlockingPredecessors || (dPrefs.showBlocked && dist >= 0));
     if (goDeeper) {
       // write all subtask and dependent issue rows
       for (Iterator<IssueTree> i = detail.getSubtasks().iterator(); i.hasNext(); ) {
         IssueTree subIssue = i.next();
         writeIssueRows
           (subIssue, allUserWeeklyHours, issueSchedules, maxEndDate, maxPriority,
-              successorDepth, subtaskDepth + 1, dist,
-           true, out, startTime, dPrefs, shownAlready, stopAtTargetDistance);
+              maxPredecessorDepth, dist, subtaskDepth + 1,
+              true, out, startTime, dPrefs, shownAlready, showingBlockingPredecessors);
       }
       if (dPrefs.showBlocked) {
         for (Iterator<IssueTree> i = detail.getDependents().iterator(); i.hasNext(); ) {
           IssueTree current = i.next();
           writeIssueRows
             (current, allUserWeeklyHours, issueSchedules, maxEndDate, maxPriority,
-                successorDepth + 1, subtaskDepth, dist + 1,
-             false, out, startTime, dPrefs, shownAlready, stopAtTargetDistance);
+                maxPredecessorDepth, dist + 1, subtaskDepth,
+                false, out, startTime, dPrefs, shownAlready, false);
         }
       }
     }
