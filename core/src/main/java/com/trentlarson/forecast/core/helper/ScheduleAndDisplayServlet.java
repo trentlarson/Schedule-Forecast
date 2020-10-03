@@ -43,8 +43,12 @@ public class ScheduleAndDisplayServlet extends HttpServlet {
 
       TimeScheduleDisplayPreferences dPrefs = input.displayPreferences;
       if (dPrefs == null
-          || (dPrefs.showIssues.size() == 0 && dPrefs.showUsersInOneRow.size() == 0)) {
-        // nothing is requested to be shown, so let's show all the keys
+          || ((dPrefs.showIssues == null
+               || dPrefs.showIssues.size() == 0)
+              &&
+              (dPrefs.showUsersInOneRow == null
+               || dPrefs.showUsersInOneRow.size() == 0))) {
+        // nothing is requested to be shown, so let's be nice and show all the keys
         String[] keyArray = new String[input.issues.length];
         String[] keys =
             Arrays.asList(input.issues).stream().map(i -> i.getKey())
