@@ -60,8 +60,12 @@ public class ScheduleAndDisplayServlet extends HttpServlet {
               true, keys, false, false, graph
           );
         } else {
+          int timeGranularity = dPrefs.timeGranularity;
+          if (timeGranularity == 0) {
+            timeGranularity = 1;
+          }
           dPrefs = TimeScheduleDisplayPreferences.createForIssues(
-              dPrefs.timeGranularity, dPrefs.timeMarker, dPrefs.showBlocked, dPrefs.hideDetails,
+              timeGranularity, dPrefs.timeMarker, dPrefs.showBlocked, dPrefs.hideDetails,
               dPrefs.showResolved, keys, dPrefs.showChangeTools, dPrefs.embedJiraLinks, graph
           );
         }
