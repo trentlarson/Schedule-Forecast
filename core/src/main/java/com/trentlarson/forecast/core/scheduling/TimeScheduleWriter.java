@@ -496,8 +496,12 @@ public class TimeScheduleWriter {
       if (isSubtask) {
         out.write("        <li>\n");
       }
-      out.write("        " + prefix + "<a href='/secure/ViewIssue.jspa?key="
-                + detail.getKey() + "'>" + detail.getKey() + "</a>\n");
+      String idHtml = "<a id='issue_id_" + detail.getKey() + "'";
+      if (dPrefs.embedJiraLinks) {
+        idHtml += " href='/secure/ViewIssue.jspa?key=" + detail.getKey() + "'";
+      }
+      idHtml += ">" + detail.getKey() + "</a>";
+      out.write("        " + prefix + idHtml + "\n");
       if (!dPrefs.hideDetails) {
         out.write("        <br>\n");
         out.write("        " + detail.getSummary() + " -- "
@@ -606,11 +610,20 @@ public class TimeScheduleWriter {
           // set the start-point DOM ID (for a visual pointer if it follows a previous issue)
           domMarker = "<span id='" + detail.getKey() + "-start' style='display:block'></span>";
           String title = detail.getKey() + ": " + detail.getSummary() + " -- " + detail.getTimeAssigneeKey().toString();
-          focusIssueLink = "<a href='?" + TimeScheduleAction.ISSUE_KEY_REQ_NAME + "=" + detail.getKey() + "' style='color:black' title='Focus on " + title + "'>+</a>";
-          if (!dPrefs.hideDetails) {
-            focusIssueLink += "<br/>";
+          String focusLink = "<a id='schedule_start_" + detail.getKey() + "'";
+          if (dPrefs.embedJiraLinks) {
+            focusLink += " href='?" + TimeScheduleAction.ISSUE_KEY_REQ_NAME + "=" + detail.getKey() + "' style='color:black' title='Focus on " + title + "'>+";
+          } else {
+            focusLink += ">";
           }
-          focusIssueLink += "<a href='?" + TimeScheduleAction.ISSUE_KEY_REQ_NAME + "=" + detail.getKey() + "&" + TimeScheduleAction.SHOW_CRITICAL_PATHS_REQ_NAME + "=on' style='color:black' title='Critical Path for " + title + "'>?</a>";
+          focusLink += "</a>";
+          focusIssueLink += focusLink;
+          if (dPrefs.embedJiraLinks) {
+            if (!dPrefs.hideDetails) {
+              focusIssueLink += "<br/>";
+            }
+            focusIssueLink += "<a href='?" + TimeScheduleAction.ISSUE_KEY_REQ_NAME + "=" + detail.getKey() + "&" + TimeScheduleAction.SHOW_CRITICAL_PATHS_REQ_NAME + "=on' style='color:black' title='Critical Path for " + title + "'>?</a>";
+          }
         }
         
         // If this is the middle of the issue time...

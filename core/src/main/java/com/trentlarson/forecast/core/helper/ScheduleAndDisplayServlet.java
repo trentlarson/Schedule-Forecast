@@ -53,12 +53,12 @@ public class ScheduleAndDisplayServlet extends HttpServlet {
           // we'll guess at reasonable defaults
           dPrefs = TimeScheduleDisplayPreferences.createForIssues(
               1, 0, true, false,
-              true, keys, false, graph
+              true, keys, false, false, graph
           );
         } else {
           dPrefs = TimeScheduleDisplayPreferences.createForIssues(
               dPrefs.timeGranularity, dPrefs.timeMarker, dPrefs.showBlocked, dPrefs.hideDetails,
-              dPrefs.showResolved, keys, dPrefs.showChangeTools, graph
+              dPrefs.showResolved, keys, dPrefs.showChangeTools, dPrefs.embedJiraLinks, graph
           );
         }
       }

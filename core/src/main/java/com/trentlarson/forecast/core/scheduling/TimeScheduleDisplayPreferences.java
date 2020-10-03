@@ -24,6 +24,7 @@ public class TimeScheduleDisplayPreferences {
   /** whether to show predecessor/successor issues in separate columns (as opposed to same column with various indentation), usually just when when showhierarchically */
   public final boolean showDependenciesInSeparateColumns;
   public final boolean showChangeTools;
+  public final boolean embedJiraLinks;
   /** List of users to display, each on one row; may be null */
   public final List<Teams.AssigneeKey> showUsersInOneRow;
   /** List of issue key Strings to display individually; may be empty list, but never null */
@@ -38,12 +39,12 @@ public class TimeScheduleDisplayPreferences {
      For cloning.
   */
   private TimeScheduleDisplayPreferences
-    (int timeGranularity_, int timeMarker_, boolean showBlocked_,
-     boolean hideDetails_, boolean showResolved_,
-     boolean showHierarchically_, boolean showDependenciesInSeparateColumns_,
-     boolean showChangeTools_,
-     List<Teams.AssigneeKey> showUsersInOneRow_,
-     List<String> showIssues_) {
+  (int timeGranularity_, int timeMarker_, boolean showBlocked_,
+   boolean hideDetails_, boolean showResolved_,
+   boolean showHierarchically_, boolean showDependenciesInSeparateColumns_,
+   boolean showChangeTools_, boolean embedJiraLinks_,
+   List<Teams.AssigneeKey> showUsersInOneRow_,
+   List<String> showIssues_) {
     this.timeGranularity = timeGranularity_;
     this.timeMarker = timeMarker_;
     this.showBlocked = showBlocked_;
@@ -52,6 +53,7 @@ public class TimeScheduleDisplayPreferences {
     this.showHierarchically = showHierarchically_;
     this.showDependenciesInSeparateColumns = showDependenciesInSeparateColumns_;
     this.showChangeTools = showChangeTools_;
+    this.embedJiraLinks = embedJiraLinks_;
     this.showUsersInOneRow = showUsersInOneRow_;
     this.showIssues = showIssues_;
   }
@@ -59,12 +61,12 @@ public class TimeScheduleDisplayPreferences {
   private TimeScheduleDisplayPreferences
       (int timeGranularity_, int timeMarker_, boolean showBlocked_,
        boolean hideDetails_, boolean showResolved_, boolean showHierarchically_,
-       boolean showDependenciesInSeparateColumns_, boolean showChangeTools_) {
+       boolean showDependenciesInSeparateColumns_, boolean showChangeTools_, boolean embedJiraLinks) {
     this(timeGranularity_, timeMarker_, showBlocked_,
          hideDetails_, showResolved_, showHierarchically_,
          showDependenciesInSeparateColumns_,
-         showChangeTools_,
-         new ArrayList<Teams.AssigneeKey>(), new ArrayList<String>());
+         showChangeTools_, embedJiraLinks,
+        new ArrayList<Teams.AssigneeKey>(), new ArrayList<String>());
   }
 
   public boolean showEachUserOnOneRow() {
@@ -73,14 +75,14 @@ public class TimeScheduleDisplayPreferences {
 
 
   public static TimeScheduleDisplayPreferences createForUser
-    (int timeGranularity_, int timeMarker_, boolean showBlocked_,
-     boolean hideDetails_, boolean showResolved_, Teams.AssigneeKey showUserAndTeam,
-     boolean showChangeTools_, IssueDigraph graph) {
+      (int timeGranularity_, int timeMarker_, boolean showBlocked_,
+       boolean hideDetails_, boolean showResolved_, Teams.AssigneeKey showUserAndTeam,
+       boolean showChangeTools_, boolean embedJiraLinks, IssueDigraph graph) {
 
     TimeScheduleDisplayPreferences prefs =
       new TimeScheduleDisplayPreferences
       (timeGranularity_, timeMarker_, showBlocked_, hideDetails_, showResolved_, 
-       false, false, showChangeTools_);
+       false, false, showChangeTools_, embedJiraLinks);
 
     List<IssueTree> issues = graph.getAssignedUserDetails().get(showUserAndTeam);
     for (IssueTree issue : issues) {
@@ -92,14 +94,14 @@ public class TimeScheduleDisplayPreferences {
 
 
   public static TimeScheduleDisplayPreferences createForUser
-    (int timeGranularity_, int timeMarker_, boolean showBlocked_,
-     boolean hideDetails_, boolean showResolved_, String showUser,
-     boolean showChangeTools_, IssueDigraph graph) {
+      (int timeGranularity_, int timeMarker_, boolean showBlocked_,
+       boolean hideDetails_, boolean showResolved_, String showUser,
+       boolean showChangeTools_, boolean embedJiraLinks, IssueDigraph graph) {
 
     TimeScheduleDisplayPreferences prefs =
       new TimeScheduleDisplayPreferences
       (timeGranularity_, timeMarker_, showBlocked_, hideDetails_, showResolved_, 
-       false, false, showChangeTools_);
+       false, false, showChangeTools_, embedJiraLinks);
 
     Set<Teams.UserTimeKey> addedAlready = new TreeSet<Teams.UserTimeKey>();
     for (Teams.AssigneeKey userKey : graph.getAssignedUserDetails().keySet()) {
@@ -123,13 +125,13 @@ public class TimeScheduleDisplayPreferences {
 
 
   public static TimeScheduleDisplayPreferences createForTeam
-    (int timeGranularity_, int timeMarker_, boolean showBlocked_,
-     boolean hideDetails_, boolean showResolved_, Long showTeamId,
-     boolean showChangeTools_, IssueDigraph graph) {
+      (int timeGranularity_, int timeMarker_, boolean showBlocked_,
+       boolean hideDetails_, boolean showResolved_, Long showTeamId,
+       boolean showChangeTools_, IssueDigraph graph) {
     TimeScheduleDisplayPreferences prefs =
       new TimeScheduleDisplayPreferences
       (timeGranularity_, timeMarker_, showBlocked_, hideDetails_, showResolved_, 
-       false, false, showChangeTools_);
+       false, false, showChangeTools_, false);
 
     Set<Teams.UserTimeKey> addedAlready = new TreeSet<Teams.UserTimeKey>();
     for (Teams.AssigneeKey userKey : graph.getAssignedUserDetails().keySet()) {
@@ -149,15 +151,15 @@ public class TimeScheduleDisplayPreferences {
 
   /** This is for displaying all user data in one row. */
   public static TimeScheduleDisplayPreferences createForUsers
-    (int timeGranularity_, int timeMarker_, boolean showBlocked_,
-     boolean hideDetails_, boolean showResolved_,
-     Teams.AssigneeKey[] showUsersInOneRow_,
-     IssueDigraph graph) {
+  (int timeGranularity_, int timeMarker_, boolean showBlocked_,
+   boolean hideDetails_, boolean showResolved_,
+   Teams.AssigneeKey[] showUsersInOneRow_,
+   IssueDigraph graph) {
     TimeScheduleDisplayPreferences prefs =
       new TimeScheduleDisplayPreferences
       // (REFACTOR because some of these should always be false)
       (timeGranularity_, timeMarker_, showBlocked_, hideDetails_, showResolved_, 
-       false, false, false);
+       false, false, false, false);
 
     prefs.showUsersInOneRow.addAll(Arrays.asList(showUsersInOneRow_));
     for (int useri = 0; useri < showUsersInOneRow_.length; useri++) {
@@ -173,11 +175,11 @@ public class TimeScheduleDisplayPreferences {
   public static TimeScheduleDisplayPreferences createForIssues
     (int timeGranularity_, int timeMarker_, boolean showBlocked_,
      boolean hideDetails_, boolean showResolved_, String[] issueKeys,
-     boolean showChangeTools_, IssueDigraph graph) {
+     boolean showChangeTools_, boolean embedJiraLinks_, IssueDigraph graph) {
     TimeScheduleDisplayPreferences prefs =
       new TimeScheduleDisplayPreferences
       (timeGranularity_, timeMarker_, showBlocked_, hideDetails_, showResolved_, 
-       true, true, showChangeTools_);
+       true, true, showChangeTools_, embedJiraLinks_);
 
     for (int keyi = 0; keyi < issueKeys.length; keyi++) {
       if (graph.getIssueSchedule(issueKeys[keyi]) != null) {
@@ -192,11 +194,11 @@ public class TimeScheduleDisplayPreferences {
   public static TimeScheduleDisplayPreferences createForDate
     (int timeGranularity_, int timeMarker_, boolean showBlocked_,
      boolean hideDetails_, boolean showResolved_, Date dueBefore,
-     boolean showChangeTools_, IssueDigraph graph) {
+     boolean showChangeTools_, boolean embedJiraLinks_, IssueDigraph graph) {
     TimeScheduleDisplayPreferences prefs =
       new TimeScheduleDisplayPreferences
       (timeGranularity_, timeMarker_, showBlocked_, hideDetails_, showResolved_, 
-       false, false, showChangeTools_);
+       false, false, showChangeTools_, embedJiraLinks_);
 
     // use the whole graph, just check for overdue issues
     for (String treeKey : graph.getIssueSchedules().keySet()) {
@@ -212,12 +214,12 @@ public class TimeScheduleDisplayPreferences {
 
   public static TimeScheduleDisplayPreferences createForCriticalPaths
     (int timeGranularity_, int timeMarker_, boolean hideDetails_, 
-     boolean showChangeTools_, String[] issueKeys, IssueDigraph graph) {
+     boolean showChangeTools_, boolean embedJiraLinks_, String[] issueKeys, IssueDigraph graph) {
     
     TimeScheduleDisplayPreferences prefs =
       new TimeScheduleDisplayPreferences
       (timeGranularity_, timeMarker_, false, hideDetails_, false, 
-          false, false, showChangeTools_);
+          false, false, showChangeTools_, embedJiraLinks_);
 
     for (String issueKey : issueKeys) {
       // just show the issues in the critical path
@@ -234,15 +236,15 @@ public class TimeScheduleDisplayPreferences {
     return new TimeScheduleDisplayPreferences
       (this.timeGranularity, this.timeMarker, showBlocked_,
        this.hideDetails, this.showResolved, this.showHierarchically,
-       this.showDependenciesInSeparateColumns, this.showChangeTools,
-       this.showUsersInOneRow, this.showIssues);
+       this.showDependenciesInSeparateColumns, this.showChangeTools, this.embedJiraLinks,
+          this.showUsersInOneRow, this.showIssues);
   }
 
-  public TimeScheduleDisplayPreferences cloneButShowSeparateColumns(boolean showDependencieInSeparateColumns_) {
+  public TimeScheduleDisplayPreferences cloneButShowSeparateColumns(boolean showDependenciesInSeparateColumns_) {
     return new TimeScheduleDisplayPreferences
         (this.timeGranularity, this.timeMarker, this.showBlocked,
             this.hideDetails, this.showResolved, this.showHierarchically,
-            showDependencieInSeparateColumns_, this.showChangeTools,
+            showDependenciesInSeparateColumns_, this.showChangeTools, this.embedJiraLinks,
             this.showUsersInOneRow, this.showIssues);
   }
 
@@ -288,6 +290,7 @@ public class TimeScheduleDisplayPreferences {
     public boolean showHierarchically;
     public boolean showDependenciesInSeparateColumns;
     public boolean showChangeTools;
+    public boolean embedJiraLinks;
     public List<Teams.AssigneeKey> showUsersInOneRow = new ArrayList<Teams.AssigneeKey>();
     public List<String> showIssues = new ArrayList<String>();
     public int getTimeGranularity() {
@@ -334,6 +337,8 @@ public class TimeScheduleDisplayPreferences {
     public void setShowChangeTools(boolean showChangeTools) {
       this.showChangeTools = showChangeTools;
     }
+    public boolean isEmbedJiraLinks() { return embedJiraLinks; }
+    public void setEmbedJiraLinks(boolean embedJiraLinks) { this.embedJiraLinks = embedJiraLinks; }
     public List<Teams.AssigneeKey> getShowUsersInOneRow() {
       return showUsersInOneRow;
     }
@@ -345,7 +350,9 @@ public class TimeScheduleDisplayPreferences {
       this.showIssues = showIssues;
     }
     public TimeScheduleDisplayPreferences getPrefs() {
-      return new TimeScheduleDisplayPreferences(timeGranularity, timeMarker, showBlocked, hideDetails, showResolved, showHierarchically, showChangeTools,  showDependenciesInSeparateColumns, showUsersInOneRow, showIssues);
+      return new TimeScheduleDisplayPreferences(timeGranularity, timeMarker, showBlocked, hideDetails, showResolved,
+          showHierarchically, showDependenciesInSeparateColumns, showChangeTools, embedJiraLinks,
+          showUsersInOneRow, showIssues);
     }
   }
   

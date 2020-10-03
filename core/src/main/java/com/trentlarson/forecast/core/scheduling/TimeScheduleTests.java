@@ -117,7 +117,7 @@ public class TimeScheduleTests {
         (graph, out, graph.getTimeScheduleCreatePreferences(),
             TimeScheduleDisplayPreferences.createForIssues
                 (1, 0, true, false, true,
-                    keys, false, graph));
+                    keys, false, false, graph));
 
   }
 
@@ -189,7 +189,7 @@ public class TimeScheduleTests {
     TimeScheduleWriter.writeIssueTable
     (graph, out, sPrefs,
      TimeScheduleDisplayPreferences
-     .createForUser(1, 0, true, false, false, (String)null, false, graph));
+     .createForUser(1, 0, true, false, false, (String)null, false, false, graph));
 
     out.println("<br><br>");
     out.println("Schedule table, even though there are no team hours defined.<br>");
@@ -219,7 +219,7 @@ public class TimeScheduleTests {
     TimeScheduleWriter.writeIssueTable
       (graph, out, sPrefs,
        TimeScheduleDisplayPreferences
-       .createForUser(1, 0, true, false, false, user, false, graph));
+       .createForUser(1, 0, true, false, false, user, false, false, graph));
 
   }
 
@@ -287,7 +287,7 @@ public class TimeScheduleTests {
     TimeScheduleWriter.writeIssueTable
       (graph, out, sPrefs,
        TimeScheduleDisplayPreferences
-       .createForUser(1, 0, true, false, false, user, false, graph));
+       .createForUser(1, 0, true, false, false, user, false, true, graph));
 
     // print out team table schedule
     List<TimeSchedule.IssueSchedule<IssueTree>> schedule = new ArrayList();
@@ -318,7 +318,7 @@ public class TimeScheduleTests {
     TimeScheduleWriter.writeIssueTable
       (graph, out, sPrefs,
        TimeScheduleDisplayPreferences
-       .createForUser(1, 0, true, false, false, user, false, graph));
+       .createForUser(1, 0, true, false, false, user, false, true, graph));
   
   }
 
@@ -374,7 +374,7 @@ public class TimeScheduleTests {
     TimeScheduleWriter.writeIssueTable
       (graph, out, sPrefs,
        TimeScheduleDisplayPreferences
-       .createForUser(1, 0, true, false, false, user, false, graph));
+       .createForUser(1, 0, true, false, false, user, false, false, graph));
     
     
     // print out team table schedule
@@ -468,7 +468,7 @@ public class TimeScheduleTests {
     TimeScheduleWriter.writeIssueTable
       (graph, out, sPrefs,
        TimeScheduleDisplayPreferences
-       .createForUser(1, 0, true, false, true, userKey.getUsername(), false, graph));
+       .createForUser(1, 0, true, false, true, userKey.getUsername(), false, true, graph));
 
 
 
@@ -589,7 +589,7 @@ public class TimeScheduleTests {
       TimeScheduleWriter.writeIssueTable
         (graph, out, sPrefs,
          TimeScheduleDisplayPreferences
-         .createForUser(1, 0, true, false, false, userKey, false, graph));
+         .createForUser(1, 0, true, false, false, userKey, false, false, graph));
     }
 
   }
@@ -637,10 +637,10 @@ public class TimeScheduleTests {
        TimeScheduleDisplayPreferences
        .createForIssues(1, 0, true, false, false,
                         new String[]{"TEST-22"},
-                        false, graph));
+                        false, true, graph));
 
     TimeScheduleWriter.writeIssueTable
-      (graph, out, sPrefs, TimeScheduleDisplayPreferences.createForCriticalPaths(1, 0, false, false, new String[]{"TEST-22"}, graph));
+      (graph, out, sPrefs, TimeScheduleDisplayPreferences.createForCriticalPaths(1, 0, false, false, true, new String[]{"TEST-22"}, graph));
 
     out.println(TimeScheduleSearch.criticalPathFor(issue22, graph).toString());
     
@@ -701,19 +701,19 @@ public class TimeScheduleTests {
       out.println("Tree for " + userKey + ".<br>");
       TimeScheduleWriter.writeIssueTable
         (graph, out, sPrefs,
-         TimeScheduleDisplayPreferences.createForUser(1, 0, true, false, false, userKey, false, graph));
+         TimeScheduleDisplayPreferences.createForUser(1, 0, true, false, false, userKey, false, true, graph));
 
       out.println("<br><br>");
       out.println("Tree for " + userKey + " allowing modifications.<br>");
       TimeScheduleWriter.writeIssueTable
         (graph, out,sPrefs,
-         TimeScheduleDisplayPreferences.createForUser(1, 0, true, false, false, userKey, true, graph));
+         TimeScheduleDisplayPreferences.createForUser(1, 0, true, false, false, userKey, true, true, graph));
 
       out.println("<br><br>");
       out.println("Tree for TEST_12 allowing modifications.<br>");
       TimeScheduleWriter.writeIssueTable
         (graph, out, sPrefs,
-         TimeScheduleDisplayPreferences.createForIssues(1, 0, false, false, false, new String[]{"TEST_12"}, true, graph));
+         TimeScheduleDisplayPreferences.createForIssues(1, 0, false, false, false, new String[]{"TEST_12"}, true, true, graph));
 
     }
 
@@ -788,7 +788,7 @@ public class TimeScheduleTests {
        TimeScheduleDisplayPreferences.createForIssues
        (1, 0, true, false, true,
         new String[]{ testIssues.issueTest_7.getKey(), testIssues.issueTest_8.getKey() },
-        false, graph));
+        false, true, graph));
 
     out.println("<p>");
     out.println("Squished schedule for issues 7 and 8.<br>");
@@ -797,7 +797,7 @@ public class TimeScheduleTests {
        TimeScheduleDisplayPreferences.createForIssues
        (4, 0, true, false, true,
         new String[]{ testIssues.issueTest_7.getKey(), testIssues.issueTest_8.getKey() },
-        false, graph));
+        false, true, graph));
 
     out.println("<p>");
     out.println("Tree for issue 7, w/o resolved.<br>");
@@ -806,7 +806,7 @@ public class TimeScheduleTests {
        TimeScheduleDisplayPreferences.createForIssues
        (1, 0, true, false, false,
         new String[]{ testIssues.issueTest_7.getKey() },
-        false, graph));
+        false, true,graph));
 
     out.println("<p>");
     out.println("Schedule for trent.<br>");
@@ -815,7 +815,7 @@ public class TimeScheduleTests {
        TimeScheduleDisplayPreferences.createForUser
        (1, 0, true, false, true,
         new Teams.AssigneeKey(1L, "trent"),
-        false, graph));
+        false, false, graph));
 
     {
       Teams.AssigneeKey user = new Teams.AssigneeKey(1L, "fred");
@@ -825,7 +825,7 @@ public class TimeScheduleTests {
         (graph, out, sPrefs,
          TimeScheduleDisplayPreferences.createForUser
            (1, 0, true, false, false,
-            user, false, graph));
+            user, false, true, graph));
 
     }
 
@@ -849,7 +849,7 @@ public class TimeScheduleTests {
         (graph, out, sPrefs,
          TimeScheduleDisplayPreferences.createForUser
          (1, 0, true, false, true,
-          user, false, graph));
+          user, false, true, graph));
     }
 
     // print out single-user table schedule
@@ -873,7 +873,7 @@ public class TimeScheduleTests {
       TimeScheduleWriter.writeIssueTable
       (graph, out, sPrefs,
        TimeScheduleDisplayPreferences.createForCriticalPaths
-           (1, 0, false, false,
+           (1, 0, false, false, true,
             new String[]{testIssues.issueTest_14.getKey()}, graph));
     }
 
@@ -964,7 +964,7 @@ public class TimeScheduleTests {
     TimeScheduleDisplayPreferences dPrefs = TimeScheduleDisplayPreferences.createForIssues
         (1, 0, true, false, true,
             new String[]{ testIssues.issueTest_7.getKey(), testIssues.issueTest_8.getKey() },
-            false, graph);
+            false, true, graph);
     dPrefs = dPrefs.cloneButShowSeparateColumns(false);
     TimeScheduleWriter.writeIssueTable(graph, out, sPrefs, dPrefs);
   }

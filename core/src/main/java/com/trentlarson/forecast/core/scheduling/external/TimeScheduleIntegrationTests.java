@@ -74,7 +74,7 @@ public class TimeScheduleIntegrationTests {
     out.println("Gantt for " + mainIssueKey + ".<br>");
     TimeScheduleDisplayPreferences dPrefs =
       TimeScheduleDisplayPreferences.createForIssues
-      (2, Calendar.MONTH, true, false, false, new String[]{ mainIssueKey }, false, graph);
+      (2, Calendar.MONTH, true, false, false, new String[]{ mainIssueKey }, false, true, graph);
 
     TimeScheduleWriter.writeIssueTable(graph, out, sPrefs, dPrefs);
     
@@ -86,21 +86,25 @@ public class TimeScheduleIntegrationTests {
     // Show that the first team has a lot of work while the second putters around.
     out.println("Gantt for team overloaded and underloaded teams.<br>");
     out.println("Team " + TimeScheduleTestSetup.team1Id + "<br>");
-    dPrefs = TimeScheduleDisplayPreferences.createForTeam(2, 0, true, false, false, TimeScheduleTestSetup.team1Id, false, graph);
+    dPrefs = TimeScheduleDisplayPreferences.createForTeam(2, 0, true, false, false, TimeScheduleTestSetup.team1Id, false,
+        graph);
     TimeScheduleWriter.writeIssueTable(graph, out, sPrefs, dPrefs);
 
     out.println("Team " + TimeScheduleTestSetup.team2Id + "<br>");
-    dPrefs = TimeScheduleDisplayPreferences.createForTeam(2, 0, true, false, false, TimeScheduleTestSetup.team2Id, false, graph);
+    dPrefs = TimeScheduleDisplayPreferences.createForTeam(2, 0, true, false, false, TimeScheduleTestSetup.team2Id, false,
+        graph);
     TimeScheduleWriter.writeIssueTable(graph, out, sPrefs, dPrefs);
     
     // Show that two teams get work done... in the same way, because we currently only allow one team to work on each project.
     out.println("Gantt for balanced teamwork -- BROKEN!<br>");
     out.println("Team " + TimeScheduleTestSetup.team3Id + "<br>");
-    dPrefs = TimeScheduleDisplayPreferences.createForTeam(2, 0, true, false, false, TimeScheduleTestSetup.team3Id, false, graph);
+    dPrefs = TimeScheduleDisplayPreferences.createForTeam(2, 0, true, false, false, TimeScheduleTestSetup.team3Id, false,
+        graph);
     TimeScheduleWriter.writeIssueTable(graph, out, sPrefs, dPrefs);
 
     out.println("Team " + TimeScheduleTestSetup.team4Id + "<br>");
-    dPrefs = TimeScheduleDisplayPreferences.createForTeam(2, 0, true, false, false, TimeScheduleTestSetup.team4Id, false, graph);
+    dPrefs = TimeScheduleDisplayPreferences.createForTeam(2, 0, true, false, false, TimeScheduleTestSetup.team4Id, false,
+        graph);
     TimeScheduleWriter.writeIssueTable(graph, out, sPrefs, dPrefs);
     
   }
@@ -126,7 +130,7 @@ public class TimeScheduleIntegrationTests {
     out.println("Gantt for " + mainIssueKey + ".  See code commentary for more info.<br>");
     TimeScheduleDisplayPreferences dPrefs =
       TimeScheduleDisplayPreferences.createForIssues
-      (2, Calendar.MONTH, true, false, false, new String[]{ mainIssueKey }, false, graph);
+      (2, Calendar.MONTH, true, false, false, new String[]{ mainIssueKey }, false, true, graph);
 
     TimeScheduleWriter.writeIssueTable(graph, out, sPrefs, dPrefs);
 
