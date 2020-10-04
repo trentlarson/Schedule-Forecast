@@ -4,7 +4,13 @@
 package com.trentlarson.forecast.core.helper;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import javax.servlet.ServletException;
@@ -16,6 +22,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.trentlarson.forecast.core.scheduling.IssueDigraph;
+import com.trentlarson.forecast.core.scheduling.IssueTree;
 import com.trentlarson.forecast.core.scheduling.TimeScheduleCreatePreferences;
 import com.trentlarson.forecast.core.scheduling.TimeScheduleDisplayPreferences;
 import com.trentlarson.forecast.core.scheduling.TimeScheduleWriter;
@@ -35,8 +42,14 @@ public class ScheduleAndDisplayServlet extends HttpServlet {
       ForecastInterfaces.ScheduleAndDisplayInput input =
           creator.fromJson(request.getReader(), ForecastInterfaces.ScheduleAndDisplayInput.class);
 
+      // walk the input and link any dependents / subtasks at the top level of the list for scheduling
+      IssueTree[] inputIssues = linkAllAtTopOfList(Arrays.asList(input.issues)).toArray(new IssueTree[]{});
+
+      TimeScheduleCreatePreferences cPrefs = input.createPreferences != null
+          ? input.createPreferences.getTimeScheduleCreatePreferences()
+          : new TimeScheduleCreatePreferences();
       // set the hourly schedule based on input hours
-      IssueDigraph graph = IssueDigraph.schedulesForIssues(input.issues, input.createPreferences.getTimeScheduleCreatePreferences());
+      IssueDigraph graph = IssueDigraph.schedulesForIssues(inputIssues, input.createPreferences.getTimeScheduleCreatePreferences());
 
       response.setContentType("text/html");
       response.setStatus(HttpServletResponse.SC_OK);
@@ -80,6 +93,30 @@ public class ScheduleAndDisplayServlet extends HttpServlet {
       response.setContentType("text/plain");
       response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
       response.getWriter().println(message);
+    }
+  }
+
+  /**
+   *
+   * @param issues a list of issue, with dependents & subtasks embedded
+   * @return a set where all issues in the tree are listed
+   */
+  private Set<IssueTree> linkAllAtTopOfList(List<IssueTree> issues) {
+    SortedSet<IssueTree> masterSet = new TreeSet<IssueTree>();
+    Set<IssueTree> moreToCheck = new TreeSet<IssueTree>();
+    moreToCheck.addAll(issues);
+    linkAllAtTopOfList(masterSet, moreToCheck);
+    return masterSet;
+  }
+  private void linkAllAtTopOfList(SortedSet<IssueTree> masterSet, Set<IssueTree> moreToCheck) {
+    for (Iterator<IssueTree> issueIter =  moreToCheck.iterator(); issueIter.hasNext();) {
+      IssueTree issue = issueIter.next();
+      if (!masterSet.contains(issue)) {
+        masterSet.add(issue);
+        linkAllAtTopOfList(masterSet, issue.getDependents());
+        linkAllAtTopOfList(masterSet, issue.getPrecursors());
+        linkAllAtTopOfList(masterSet, issue.getSubtasks());
+      }
     }
   }
 }
