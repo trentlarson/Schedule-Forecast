@@ -253,6 +253,10 @@ public class TimeScheduleDisplayPreferences {
 
 
   protected boolean displayIssue(IssueTree issue) {
+    return displayIssue(issue, new TreeSet<String>());
+  }
+
+  protected boolean displayIssue(IssueTree issue, Set<String> shownAlready) {
     // if it's resolved, we'll only show if subtasks are supposed to be shown
     boolean resolvedOK =
       showResolved
@@ -266,7 +270,7 @@ public class TimeScheduleDisplayPreferences {
        // it's one of the items in showIssues
        && (showIssues.indexOf(issue.getKey()) > -1
            // or we're showing the full hierarchy
-           || (showHierarchically)));// && !shownAlready.contains(issue.getKey()))));
+           || (showHierarchically && !shownAlready.contains(issue.getKey()))));
     if (log4jLog.isDebugEnabled()) {
       log4jLog.debug("Display " + issue.getKey() + " = " + displayOK 
                      + ": (showResolved = " + showResolved

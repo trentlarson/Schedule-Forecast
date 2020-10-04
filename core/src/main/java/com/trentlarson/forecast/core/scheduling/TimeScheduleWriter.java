@@ -503,10 +503,15 @@ public class TimeScheduleWriter {
       idHtml += ">" + detail.getKey() + "</a>";
       out.write("        " + prefix + idHtml + "\n");
       if (!dPrefs.hideDetails) {
-        out.write("        <br>\n");
-        out.write("        " + detail.getSummary() + " -- "
-                  + detail.getTimeAssigneeKey().toString() + postfix + "\n");
+        if (shownAlready.contains(detail.getKey())) {
+          out.write("...");
+        } else {
+          out.write("        <br>\n");
+          out.write("        " + detail.getSummary() + " -- "
+                    + detail.getTimeAssigneeKey().toString());
+        }
       }
+      out.write(postfix + "\n");
       if (dPrefs.showChangeTools) {
         TimeScheduleModifyWriter.writeChangeTools(detail, maxPriority, out);
       }
