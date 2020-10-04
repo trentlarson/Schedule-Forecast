@@ -4,7 +4,6 @@
 package com.trentlarson.forecast.core.helper;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -39,53 +38,18 @@ public class ScheduleAndDisplayServlet extends HttpServlet {
     try {
       GsonBuilder builder = new GsonBuilder();
       Gson creator = builder.create();
-      ForecastInterfaces.ScheduleAndDisplayInput input =
-          creator.fromJson(request.getReader(), ForecastInterfaces.ScheduleAndDisplayInput.class);
+      InputInterfaces.ScheduleAndDisplayInput input =
+          creator.fromJson(request.getReader(), InputInterfaces.ScheduleAndDisplayInput.class);
 
-      // walk the input and link any dependents / subtasks at the top level of the list for scheduling
-      IssueTree[] inputIssues = linkAllAtTopOfList(Arrays.asList(input.issues)).toArray(new IssueTree[]{});
+      InputInterfaces.ScheduleAndDisplayAfterChecks checked = input.check();
 
-      TimeScheduleCreatePreferences cPrefs = input.createPreferences != null
-          ? input.createPreferences.getTimeScheduleCreatePreferences()
-          : new TimeScheduleCreatePreferences();
-      // set the hourly schedule based on input hours
-      IssueDigraph graph = IssueDigraph.schedulesForIssues(inputIssues, input.createPreferences.getTimeScheduleCreatePreferences());
+      TimeScheduleWriter.writeIssueTable
+          (checked.graph, response.getWriter(),
+              checked.graph.getTimeScheduleCreatePreferences(),
+              checked.displayPreferences);
 
       response.setContentType("text/html");
       response.setStatus(HttpServletResponse.SC_OK);
-
-      TimeScheduleDisplayPreferences dPrefs = input.displayPreferences;
-      if (dPrefs == null
-          || ((dPrefs.showIssues == null
-               || dPrefs.showIssues.size() == 0)
-              &&
-              (dPrefs.showUsersInOneRow == null
-               || dPrefs.showUsersInOneRow.size() == 0))) {
-        // nothing is requested to be shown, so let's be nice and show all the keys
-        String[] keyArray = new String[input.issues.length];
-        String[] keys =
-            Arrays.asList(input.issues).stream().map(i -> i.getKey())
-                .collect(Collectors.toList()).toArray(keyArray);
-        if (dPrefs == null) {
-          // we'll guess at reasonable defaults
-          dPrefs = TimeScheduleDisplayPreferences.createForIssues(
-              1, 0, true, false,
-              true, keys, false, false, graph
-          );
-        } else {
-          int timeGranularity = dPrefs.timeGranularity;
-          if (timeGranularity == 0) {
-            timeGranularity = 1;
-          }
-          dPrefs = TimeScheduleDisplayPreferences.createForIssues(
-              timeGranularity, dPrefs.timeMarker, dPrefs.showBlocked, dPrefs.hideDetails,
-              dPrefs.showResolved, keys, dPrefs.showChangeTools, dPrefs.embedJiraLinks, graph
-          );
-        }
-      }
-
-      TimeScheduleWriter.writeIssueTable
-          (graph, response.getWriter(), graph.getTimeScheduleCreatePreferences(), dPrefs);
 
     } catch (JsonSyntaxException e) {
       String message = e.getMessage() + " ... due to: " + (e.getCause() == null ? "" : e.getCause().getMessage());
@@ -96,27 +60,4 @@ public class ScheduleAndDisplayServlet extends HttpServlet {
     }
   }
 
-  /**
-   *
-   * @param issues a list of issue, with dependents & subtasks embedded
-   * @return a set where all issues in the tree are listed
-   */
-  private Set<IssueTree> linkAllAtTopOfList(List<IssueTree> issues) {
-    SortedSet<IssueTree> masterSet = new TreeSet<IssueTree>();
-    Set<IssueTree> moreToCheck = new TreeSet<IssueTree>();
-    moreToCheck.addAll(issues);
-    linkAllAtTopOfList(masterSet, moreToCheck);
-    return masterSet;
-  }
-  private void linkAllAtTopOfList(SortedSet<IssueTree> masterSet, Set<IssueTree> moreToCheck) {
-    for (Iterator<IssueTree> issueIter =  moreToCheck.iterator(); issueIter.hasNext();) {
-      IssueTree issue = issueIter.next();
-      if (!masterSet.contains(issue)) {
-        masterSet.add(issue);
-        linkAllAtTopOfList(masterSet, issue.getDependents());
-        linkAllAtTopOfList(masterSet, issue.getPrecursors());
-        linkAllAtTopOfList(masterSet, issue.getSubtasks());
-      }
-    }
-  }
 }

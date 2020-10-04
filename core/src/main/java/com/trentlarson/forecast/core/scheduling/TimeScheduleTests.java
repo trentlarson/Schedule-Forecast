@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.trentlarson.forecast.core.dao.TeamHours;
-import com.trentlarson.forecast.core.helper.ForecastInterfaces;
+import com.trentlarson.forecast.core.helper.InputInterfaces;
 
 public class TimeScheduleTests {
 
@@ -57,6 +57,8 @@ public class TimeScheduleTests {
 
     outputJsonNullAssigneeTestResults(out);
 
+    outputJsonNullPriorityTestResults(out);
+
     out.println("<P>");
     out.println("<H1>Here are the raw scheduling tests.</H2>");
 
@@ -93,31 +95,46 @@ public class TimeScheduleTests {
 
     GsonBuilder builder = new GsonBuilder();
     Gson creator = builder.create();
-    ForecastInterfaces.ScheduleAndDisplayInput input =
+    InputInterfaces.ScheduleAndDisplayInput input =
         creator.fromJson(
             "{"
             + "issues:[{\"key\":\"0\",\"summary\":\"load history file from list & show relationship +#genealogy\",\"issueEstSecondsRaw\":7200,\"dueDate\":null},{\"key\":\"1\", \"summary\":\"Something else\", \"dueDate\":\"2020-09-17\"}]"
             + ","
             + "createPreferences:{startDate:\"2020-09-16\"}"
             +"}",
-            ForecastInterfaces.ScheduleAndDisplayInput.class);
+            InputInterfaces.ScheduleAndDisplayInput.class);
 
-    TimeScheduleCreatePreferences cPrefs = new TimeScheduleCreatePreferences();
-    if (input.createPreferences != null) {
-      cPrefs = input.createPreferences.getTimeScheduleCreatePreferences();
-    }
-    IssueDigraph graph = IssueDigraph.schedulesForIssues(input.issues, cPrefs);
-
-    String[] keyArray = new String[input.issues.length];
-    String[] keys =
-        Arrays.asList(input.issues).stream().map(i -> i.getKey())
-            .collect(Collectors.toList()).toArray(keyArray);
+    InputInterfaces.ScheduleAndDisplayAfterChecks checked = input.check();
 
     TimeScheduleWriter.writeIssueTable
-        (graph, out, graph.getTimeScheduleCreatePreferences(),
-            TimeScheduleDisplayPreferences.createForIssues
-                (1, 0, true, false, true,
-                    keys, false, false, graph));
+        (checked.graph, out, checked.graph.getTimeScheduleCreatePreferences(), checked.displayPreferences);
+
+  }
+
+
+
+  public static void outputJsonNullPriorityTestResults(PrintWriter out) throws Exception {
+
+    out.println("<P>");
+    out.println("<H2>... for JSON tasks with null priority:</H2>");
+
+    GsonBuilder builder = new GsonBuilder();
+    Gson creator = builder.create();
+    InputInterfaces.ScheduleAndDisplayInput input =
+        creator.fromJson(
+            "{"
+                + "issues:[{\"key\":\"0\",\"summary\":\"get accounting reports done\",\"priority\":0,\"issueEstSecondsRaw\":57600,\"dueDate\":null,\"mustStartOnDate\":null,\"dependents\":[{\"key\":\"leave-work\",\"summary\":\"id:leave-work due:2020-10-09T16:00:00+0600\",\"priority\":0,\"issueEstSecondsRaw\":3600,\"dueDate\":\"2020-10-09T16:00:00+0600\",\"mustStartOnDate\":null,\"dependents\":[],\"subtasks\":[]}],\"subtasks\":[]}]"
+                + ","
+                + "createPreferences:{startDate:\"2020-09-27\",\"defaultAssigneeHoursPerWeek\":40,\"reversePriority\":true}"
+                + ","
+                + "displayPreferences:{\"embedJiraLinks\":false,\"showBlocked\":true,\"showDependenciesInSeparateColumns\":true,\"showHierarchically\":true}"
+                +"}",
+            InputInterfaces.ScheduleAndDisplayInput.class);
+
+    InputInterfaces.ScheduleAndDisplayAfterChecks checked = input.check();
+
+    TimeScheduleWriter.writeIssueTable
+        (checked.graph, out, checked.graph.getTimeScheduleCreatePreferences(), checked.displayPreferences);
 
   }
 
