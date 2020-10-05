@@ -45,9 +45,6 @@ public class TimeScheduleDisplayPreferences {
    boolean showChangeTools_, boolean embedJiraLinks_,
    List<Teams.AssigneeKey> showUsersInOneRow_,
    List<String> showIssues_) {
-    if (timeGranularity_ == 0) {
-      throw new IllegalArgumentException("Cannot render a schedule with display preference timeGranularity of 0.");
-    }
     this.timeGranularity = timeGranularity_;
     this.timeMarker = timeMarker_;
     this.showBlocked = showBlocked_;

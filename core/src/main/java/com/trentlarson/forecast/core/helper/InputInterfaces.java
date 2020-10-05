@@ -38,10 +38,10 @@ public class InputInterfaces {
       TimeScheduleDisplayPreferences dPrefs = displayPreferences;
       if (dPrefs == null
           || ((dPrefs.showIssues == null
-          || dPrefs.showIssues.size() == 0)
-          &&
-          (dPrefs.showUsersInOneRow == null
-              || dPrefs.showUsersInOneRow.size() == 0))) {
+               || dPrefs.showIssues.size() == 0)
+             &&
+              (dPrefs.showUsersInOneRow == null
+               || dPrefs.showUsersInOneRow.size() == 0))) {
         // nothing is requested to be shown, so let's be nice and show all the keys
         String[] keyArray = new String[issues.length];
         String[] keys =
@@ -54,16 +54,22 @@ public class InputInterfaces {
               true, keys, false, false, graph
           );
         } else {
-          int timeGranularity = dPrefs.timeGranularity;
-          if (timeGranularity == 0) {
-            timeGranularity = 1;
-          }
           dPrefs = TimeScheduleDisplayPreferences.createForIssues(
-              timeGranularity, dPrefs.timeMarker, dPrefs.showBlocked, dPrefs.hideDetails,
+              dPrefs.timeGranularity, dPrefs.timeMarker, dPrefs.showBlocked, dPrefs.hideDetails,
               dPrefs.showResolved, keys, dPrefs.showChangeTools, dPrefs.embedJiraLinks, graph
           );
         }
       }
+      // now fix if timeGranularity isn't supplied
+      int timeGranularity = dPrefs.timeGranularity;
+      if (timeGranularity == 0) {
+        timeGranularity = 1;
+      }
+      dPrefs = TimeScheduleDisplayPreferences.createForIssues(
+          timeGranularity, dPrefs.timeMarker, dPrefs.showBlocked, dPrefs.hideDetails,
+          dPrefs.showResolved, dPrefs.showIssues.toArray(new String[]{}), dPrefs.showChangeTools,
+          dPrefs.embedJiraLinks, graph
+      );
 
       return new ScheduleAndDisplayAfterChecks(graph, dPrefs);
     }

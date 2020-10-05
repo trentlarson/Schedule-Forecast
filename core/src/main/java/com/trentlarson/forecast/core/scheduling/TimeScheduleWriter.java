@@ -105,6 +105,10 @@ public class TimeScheduleWriter {
      TimeScheduleCreatePreferences sPrefs, TimeScheduleDisplayPreferences dPrefs)
     throws IOException {
 
+    if (dPrefs.timeGranularity == 0) {
+      throw new IllegalArgumentException("Cannot render a table with timeGranularity of 0.");
+    }
+
     out.write("<table cellspacing='0'>\n");
     out.write("<tbody>\n");
 
