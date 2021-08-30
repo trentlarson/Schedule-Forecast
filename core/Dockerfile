@@ -7,7 +7,7 @@ RUN apt -y upgrade
 RUN DEBIAN_FRONTEND=noninteractive \
     TZ=America/Denver \
     apt install -y git maven
-RUN git clone https://github.com/trentlarson/Schedule-Forecast.git
+RUN git clone -b v0.1.0 https://github.com/trentlarson/Schedule-Forecast.git
 
 WORKDIR Schedule-Forecast/core
 RUN mvn package
