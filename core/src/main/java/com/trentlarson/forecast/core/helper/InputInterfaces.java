@@ -33,7 +33,7 @@ public class InputInterfaces {
           : new TimeScheduleCreatePreferences();
       // set the hourly schedule based on input hours
       IssueDigraph graph = IssueDigraph
-          .schedulesForIssues(inputIssues, createPreferences.getTimeScheduleCreatePreferences());
+          .schedulesForIssues(inputIssues, cPrefs);
 
       TimeScheduleDisplayPreferences dPrefs = displayPreferences;
       if (dPrefs == null
