@@ -20,6 +20,12 @@ mvn package; java -classpath target/forecast-core-0.1-SNAPSHOT.jar:lib/commons-l
 - Test it
 curl -X POST localhost:8090/display -d '{issues:[{"key":"issue_6", "summary":"Run this issue", "dueDate":"2020-09-17"}]}'
 
+- Dockerize
+docker build -t schedule-forecast:0.1.0 .
+
+- run docker
+docker run --name caster -p 8090:8090 -it schedule-forecast:0.1.0
+
 
 ________________________________________________________________________________
 
