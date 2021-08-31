@@ -112,13 +112,17 @@ public class TimeScheduleWriter {
     out.write("<table cellspacing='0'>\n");
     out.write("<tbody>\n");
 
+    // calculate priority complete dates
+    Date[] priorityDates =
+        priorityCompleteDates(dPrefs.showIssues, graph, sPrefs.getStartTime(), dPrefs);
+
     // find the maximum date for this display
     Date maxEndDate = sPrefs.getStartTime();
-    Iterator<String> keys = graph.getIssueSchedules().keySet().iterator();
-    while (keys.hasNext()) {
-      Date nextEndDate = graph.getIssueSchedules().get(keys.next()).getEndDate();
-      if (nextEndDate.after(maxEndDate)) {
-        maxEndDate = nextEndDate;
+    // (At one point we used getEndDate() from all the issue scheduled,
+    //  but that ended up showing dates past the end of displayed issues.)
+    for (int i = 0; i < priorityDates.length; i++) {
+      if (priorityDates[i].after(maxEndDate)) {
+        maxEndDate = priorityDates[i];
       }
     }
 
@@ -149,10 +153,6 @@ public class TimeScheduleWriter {
         }
       }
     }
-
-    // calculate priority complete dates
-    Date[] priorityDates =
-        priorityCompleteDates(dPrefs.showIssues, graph, sPrefs.getStartTime(), dPrefs);
 
     // headers
     int numDays = writeHeaderInfo(out, sPrefs.getStartTime(), maxEndDate, priorityDates, dPrefs,
