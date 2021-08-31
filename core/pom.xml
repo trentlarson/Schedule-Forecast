@@ -10,7 +10,7 @@
 	<groupId>com.trentlarson.forecast</groupId>
 	<artifactId>forecast-core</artifactId>
 	<packaging>jar</packaging>
-	<version>0.1.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<!--<url>http://10.0.2.13:8090/artifacts/forecast-core</url>-->
 	
 	<!-- Without a license, 'mvn repository:bundle-create' fails.

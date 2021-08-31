@@ -16,24 +16,44 @@ import com.trentlarson.forecast.core.scheduling.TimeScheduleDisplayPreferences;
 
 public class InputInterfaces {
 
-  public class ScheduleAndDisplayInput {
+  private static IssueTree[] linkIssues(IssueTree[] issues) {
+    // walk the input and link any dependents / subtasks at the top level of the list for scheduling
+    Set<IssueTree> inputIssueSet = linkAllAtTopOfList(Arrays.asList(issues));
+    setAllPrecursors(inputIssueSet);
+    return inputIssueSet.toArray(new IssueTree[] {});
+  }
+
+  public static class ScheduleInput {
+    public IssueTree[] issues;
+    public TimeScheduleCreatePreferencesForGsonInput createPreferences;
+
+    public IssueDigraph check() {
+      IssueTree[] inputIssues = linkIssues(issues);
+
+      TimeScheduleCreatePreferences cPrefs = createPreferences != null
+          ? createPreferences.getTimeScheduleCreatePreferences()
+          : new TimeScheduleCreatePreferences();
+      // set the hourly schedule based on input hours
+      IssueDigraph graph = IssueDigraph.schedulesForIssues(inputIssues, cPrefs);
+
+      return graph;
+    }
+  }
+
+  public static class ScheduleAndDisplayInput {
     public IssueTree[] issues;
     public TimeScheduleCreatePreferencesForGsonInput createPreferences;
     public TimeScheduleDisplayPreferences displayPreferences;
 
     public ScheduleAndDisplayAfterChecks check() {
 
-      // walk the input and link any dependents / subtasks at the top level of the list for scheduling
-      Set<IssueTree> inputIssueSet = linkAllAtTopOfList(Arrays.asList(issues));
-      setAllPrecursors(inputIssueSet);
-      IssueTree[] inputIssues = inputIssueSet.toArray(new IssueTree[] {});
+      IssueTree[] inputIssues = linkIssues(issues);
 
       TimeScheduleCreatePreferences cPrefs = createPreferences != null
           ? createPreferences.getTimeScheduleCreatePreferences()
           : new TimeScheduleCreatePreferences();
       // set the hourly schedule based on input hours
-      IssueDigraph graph = IssueDigraph
-          .schedulesForIssues(inputIssues, cPrefs);
+      IssueDigraph graph = IssueDigraph.schedulesForIssues(inputIssues, cPrefs);
 
       TimeScheduleDisplayPreferences dPrefs = displayPreferences;
       if (dPrefs == null
@@ -76,7 +96,7 @@ public class InputInterfaces {
 
   }
 
-  public class ScheduleAndDisplayAfterChecks {
+  public static class ScheduleAndDisplayAfterChecks {
     public IssueDigraph graph;
     public TimeScheduleDisplayPreferences displayPreferences;
     ScheduleAndDisplayAfterChecks(IssueDigraph graph_,
@@ -89,8 +109,8 @@ public class InputInterfaces {
 
   /**
    *
-   * @param issues a list of issue, with dependents & subtasks embedded
-   * @return a set where all issues in the tree are listed
+   * @param issues a list of issues, with dependents & subtasks embedded
+   * @return a set where all issues in the tree are linked
    */
   private static Set<IssueTree> linkAllAtTopOfList(List<IssueTree> issues) {
     SortedSet<IssueTree> masterSet = new TreeSet<IssueTree>();

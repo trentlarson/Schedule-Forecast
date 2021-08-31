@@ -30,16 +30,19 @@ public class ScheduleServlet extends HttpServlet {
     try {
       //String body = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
       GsonBuilder builder = new GsonBuilder();
-      IssueTree[] issues = builder.create().fromJson(request.getReader(), IssueTree[].class);
-      System.out.println("Deserialized issues: " + Arrays.asList(issues));
-      IssueDigraph graph = IssueDigraph.schedulesForIssues(issues);
+      InputInterfaces.ScheduleInput graphInput =
+          builder.create().fromJson(request.getReader(), InputInterfaces.ScheduleInput.class);
+      IssueDigraph graph = graphInput.check();
       response.setContentType("application/json");
       response.setStatus(HttpServletResponse.SC_OK);
       response.getWriter().println(builder.create().toJson(graph));
+
     } catch (JsonSyntaxException e) {
+      String message = e.getMessage() + " ... due to: " + (e.getCause() == null ? "" : e.getCause().getMessage());
+      System.out.println("Client JsonSyntaxException: " + message);
       response.setContentType("text/plain");
       response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-      response.getWriter().println(e.getMessage());
+      response.getWriter().println(message);
     }
   }
 }

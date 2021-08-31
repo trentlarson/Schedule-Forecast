@@ -2,29 +2,36 @@ ________________________________________________________________________________
 
 Note that I updated core but I haven't tested with jira-plugin or war
 
+export VERSION=1.0.0
 
 For tests:
 - Run the TimeScheduleTests unit test (in core):
-mvn package; java -classpath target/forecast-core-0.1-SNAPSHOT.jar:lib/commons-logging-1.1.1.jar:lib/hibernate-3.2.6.ga.jar:lib/hsqldb-1.8.0.jar:lib/log4j-1.2.15.jar:$HOME/.m2/repository/com/google/code/gson/gson/2.8.6/gson-2.8.6.jar com.trentlarson.forecast.core.scheduling.TimeScheduleTests > target/gantt-test2.html
+mvn package; java -classpath target/forecast-core-$VERSION.jar:lib/commons-logging-1.1.1.jar:lib/hibernate-3.2.6.ga.jar:lib/hsqldb-1.8.0.jar:lib/log4j-1.2.15.jar:$HOME/.m2/repository/com/google/code/gson/gson/2.8.6/gson-2.8.6.jar com.trentlarson.forecast.core.scheduling.TimeScheduleTests > target/gantt-test2.html
 - Compare the output with src/test/resources/gantt-test.html
 - Redirect the jira-test-db.sql into a test DB, eg: 
 mysql -u jira --password=jirapass  -D test_forecast_jira < ~/dev/scheduling/Schedule-Forecast/core/src/test/resources/jira-test-db.sql 
-- Run the TimeScheduleSetup (in core):
-mvn package; java -classpath target/forecast-core-0.1-SNAPSHOT.jar:lib/commons-logging-1.1.1.jar:lib/hibernate-3.2.6.ga.jar:lib/hsqldb-1.8.0.jar:lib/log4j-1.2.15.jar:lib/mysql-connector-java-8.0.21.jar com.trentlarson.forecast.core.scheduling.external.TimeScheduleTestSetup
-- Run the TimeScheduleTests integration test (in core):
+- Run the TimeScheduleSetup (in core, requires DB):
+mvn package; java -classpath target/forecast-core-$VERSION.jar:lib/commons-logging-1.1.1.jar:lib/hibernate-3.2.6.ga.jar:lib/hsqldb-1.8.0.jar:lib/log4j-1.2.15.jar:lib/mysql-connector-java-8.0.21.jar com.trentlarson.forecast.core.scheduling.external.TimeScheduleTestSetup
+- Run the TimeScheduleTests integration test (in core, requires DB):
 mvn package; java -classpath target/forecast-core-0.1-SNAPSHOT.jar:lib/commons-logging-1.1.1.jar:lib/hibernate-3.2.6.ga.jar:lib/hsqldb-1.8.0.jar:lib/log4j-1.2.15.jar:lib/mysql-connector-java-8.0.21.jar com.trentlarson.forecast.core.scheduling.external.TimeScheduleIntegrationTests > target/gantt-test-db.html
 - Compare the output with src/test/resources/gantt-test-db.html
 
 - Run the time-graphing server (in core):
-mvn package; java -classpath target/forecast-core-0.1-SNAPSHOT.jar:lib/commons-logging-1.1.1.jar:lib/hibernate-3.2.6.ga.jar:lib/hsqldb-1.8.0.jar:lib/log4j-1.2.15.jar:$HOME/.m2/repository/org/eclipse/jetty/jetty-server/9.4.3.v20170317/jetty-server-9.4.3.v20170317.jar:$HOME/.m2/repository/org/eclipse/jetty/jetty-servlet/9.4.3.v20170317/jetty-servlet-9.4.3.v20170317.jar:$HOME/.m2/repository/org/eclipse/jetty/jetty-util/9.4.3.v20170317/jetty-util-9.4.3.v20170317.jar:$HOME/.m2/repository/org/eclipse/jetty/jetty-http/9.4.3.v20170317/jetty-http-9.4.3.v20170317.jar:$HOME/.m2/repository/org/eclipse/jetty/jetty-io/9.4.3.v20170317/jetty-io-9.4.3.v20170317.jar:$HOME/.m2/repository/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0.jar:$HOME/.m2/repository/com/google/code/gson/gson/2.8.6/gson-2.8.6.jar com.trentlarson.forecast.core.helper.JettyServer
+mvn package; java -classpath target/forecast-core-$VERSION.jar:lib/commons-logging-1.1.1.jar:lib/hibernate-3.2.6.ga.jar:lib/hsqldb-1.8.0.jar:lib/log4j-1.2.15.jar:$HOME/.m2/repository/org/eclipse/jetty/jetty-server/9.4.3.v20170317/jetty-server-9.4.3.v20170317.jar:$HOME/.m2/repository/org/eclipse/jetty/jetty-servlet/9.4.3.v20170317/jetty-servlet-9.4.3.v20170317.jar:$HOME/.m2/repository/org/eclipse/jetty/jetty-util/9.4.3.v20170317/jetty-util-9.4.3.v20170317.jar:$HOME/.m2/repository/org/eclipse/jetty/jetty-http/9.4.3.v20170317/jetty-http-9.4.3.v20170317.jar:$HOME/.m2/repository/org/eclipse/jetty/jetty-io/9.4.3.v20170317/jetty-io-9.4.3.v20170317.jar:$HOME/.m2/repository/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0.jar:$HOME/.m2/repository/com/google/code/gson/gson/2.8.6/gson-2.8.6.jar com.trentlarson.forecast.core.helper.JettyServer
 - Test it
 curl -X POST localhost:8090/display -d '{issues:[{"key":"issue_6", "summary":"Run this issue", "dueDate":"2020-09-17"}]}'
+curl -X POST localhost:8090/graph -d '{issues:[{"key":"issue_6", "summary":"Run this issue", "dueDate":"2020-09-17"}]}'
 
 - Dockerize
-docker build -t schedule-forecast:0.1.0 .
+docker build -t schedule-forecast:$VERSION .
 
-- run docker
-docker run --name caster -p 8090:8090 -it schedule-forecast:0.1.0
+- Run docker
+docker run --name caster -p 8090:8090 -it schedule-forecast:$VERSION
+
+- Push to a repository, eg. GitHub's ghcr.io
+echo $PERSONAL_ACCESS_TOKEN | docker login ghcr.io -u trentlarson --password-stdin
+docker image tag schedule-forecast:$VERSION ghcr.io/trentlarson/schedule-forecast:$VERSION
+docker push ghcr.io/trentlarson/schedule-forecast:$VERSION
 
 
 ________________________________________________________________________________
