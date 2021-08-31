@@ -1,0 +1,3 @@
+- verify that subtask priorities come before the supertask's successors
+- purify HTML (eg. console complaints from React on distrinet)
+- refactor precursors: remove either those or dependents from InputTree(?)
