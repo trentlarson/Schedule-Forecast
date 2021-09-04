@@ -56,8 +56,9 @@ public class TimeScheduleTests {
     out.println("<H1>Here are the JSON scheduling tests.</H2>");
 
     outputJsonNullAssigneeTestResults(out);
-
+    outputJsonZeroPriorityTestResults(out);
     outputJsonNullPriorityTestResults(out);
+    outputJsonUndefinedPriorityTestResults(out);
 
     out.println("<P>");
     out.println("<H1>Here are the raw scheduling tests.</H2>");
@@ -86,6 +87,7 @@ public class TimeScheduleTests {
     TimeSchedule.outputTestResults(out);
 
   }
+
 
 
   public static void outputJsonNullAssigneeTestResults(PrintWriter out) throws Exception {
@@ -123,7 +125,61 @@ public class TimeScheduleTests {
     InputInterfaces.ScheduleAndDisplayInput input =
         creator.fromJson(
             "{"
+                + "issues:[{\"key\":\"0\",\"summary\":\"get accounting reports done\",\"priority\":null,\"issueEstSecondsRaw\":57600,\"dueDate\":null,\"mustStartOnDate\":null,\"dependents\":[{\"key\":\"leave-work\",\"summary\":\"id:leave-work due:2020-10-09T16:00:00+0600\",\"priority\":null,\"issueEstSecondsRaw\":3600,\"dueDate\":\"2020-10-09T16:00:00+0600\",\"mustStartOnDate\":null,\"dependents\":[],\"subtasks\":[]}],\"subtasks\":[]}]"
+                + ","
+                + "createPreferences:{startDate:\"2020-09-27\",\"defaultAssigneeHoursPerWeek\":40,\"reversePriority\":true}"
+                + ","
+                + "displayPreferences:{\"embedJiraLinks\":false,\"showBlocked\":true,\"showDependenciesInSeparateColumns\":true,\"showHierarchically\":true}"
+                +"}",
+            InputInterfaces.ScheduleAndDisplayInput.class);
+
+    InputInterfaces.ScheduleAndDisplayAfterChecks checked = input.check();
+
+    TimeScheduleWriter.writeIssueTable
+        (checked.graph, out, checked.graph.getTimeScheduleCreatePreferences(), checked.displayPreferences);
+
+  }
+
+
+
+  public static void outputJsonZeroPriorityTestResults(PrintWriter out) throws Exception {
+
+    out.println("<P>");
+    out.println("<H2>... for JSON tasks with zero priority:</H2>");
+
+    GsonBuilder builder = new GsonBuilder();
+    Gson creator = builder.create();
+    InputInterfaces.ScheduleAndDisplayInput input =
+        creator.fromJson(
+            "{"
                 + "issues:[{\"key\":\"0\",\"summary\":\"get accounting reports done\",\"priority\":0,\"issueEstSecondsRaw\":57600,\"dueDate\":null,\"mustStartOnDate\":null,\"dependents\":[{\"key\":\"leave-work\",\"summary\":\"id:leave-work due:2020-10-09T16:00:00+0600\",\"priority\":0,\"issueEstSecondsRaw\":3600,\"dueDate\":\"2020-10-09T16:00:00+0600\",\"mustStartOnDate\":null,\"dependents\":[],\"subtasks\":[]}],\"subtasks\":[]}]"
+                + ","
+                + "createPreferences:{startDate:\"2020-09-27\",\"defaultAssigneeHoursPerWeek\":40,\"reversePriority\":true}"
+                + ","
+                + "displayPreferences:{\"embedJiraLinks\":false,\"showBlocked\":true,\"showDependenciesInSeparateColumns\":true,\"showHierarchically\":true}"
+                +"}",
+            InputInterfaces.ScheduleAndDisplayInput.class);
+
+    InputInterfaces.ScheduleAndDisplayAfterChecks checked = input.check();
+
+    TimeScheduleWriter.writeIssueTable
+        (checked.graph, out, checked.graph.getTimeScheduleCreatePreferences(), checked.displayPreferences);
+
+  }
+
+
+
+  public static void outputJsonUndefinedPriorityTestResults(PrintWriter out) throws Exception {
+
+    out.println("<P>");
+    out.println("<H2>... for JSON tasks with undefined priority:</H2>");
+
+    GsonBuilder builder = new GsonBuilder();
+    Gson creator = builder.create();
+    InputInterfaces.ScheduleAndDisplayInput input =
+        creator.fromJson(
+            "{"
+                + "issues:[{\"key\":\"0\",\"summary\":\"get accounting reports done\",\"issueEstSecondsRaw\":57600,\"dueDate\":null,\"mustStartOnDate\":null,\"dependents\":[{\"key\":\"leave-work\",\"summary\":\"id:leave-work due:2020-10-09T16:00:00+0600\",\"issueEstSecondsRaw\":3600,\"dueDate\":\"2020-10-09T16:00:00+0600\",\"mustStartOnDate\":null,\"dependents\":[],\"subtasks\":[]}],\"subtasks\":[]}]"
                 + ","
                 + "createPreferences:{startDate:\"2020-09-27\",\"defaultAssigneeHoursPerWeek\":40,\"reversePriority\":true}"
                 + ","

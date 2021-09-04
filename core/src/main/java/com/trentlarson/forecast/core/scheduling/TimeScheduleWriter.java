@@ -3,6 +3,7 @@ package com.trentlarson.forecast.core.scheduling;
 import java.io.IOException;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -70,6 +71,13 @@ public class TimeScheduleWriter {
   }
 
 
+  private static Iterable<IssueTree> issuesFromKeys(Iterable<String> keys, IssueDigraph graph) {
+    List<IssueTree> result = new ArrayList<IssueTree>();
+    for (Iterator<String> keyIter = keys.iterator(); keyIter.hasNext(); ) {
+      result.add(graph.getIssueTree(keyIter.next()));
+    }
+    return result;
+  }
 
   /**
      @param issueKeys List of issue keys to display
@@ -84,13 +92,14 @@ public class TimeScheduleWriter {
 
     // report when priority levels are done
     Map<Integer,Date> maxDateForPriority = new HashMap<Integer,Date>();
-    for (String issueKey : issueKeys) {
+    for (Iterator<String> issueIter = issueKeys.iterator(); issueIter.hasNext(); ) {
+      String issueKey = issueIter.next();
       IssueTree detail = graph.getIssueTree(issueKey);
       detail.setPriorityCompleteDates(maxDateForPriority, graph, dPrefs);
     }
     int maxPriority = graph.getMaxPriority();
     Date[] priorityDates = new Date[maxPriority > -1 ? maxPriority : 0];
-    for (int i = 1; i <= graph.getMaxPriority(); i++) { // priority numbers are 1-based
+    for (int i = 1; i <= maxPriority; i++) { // priority numbers are 1-based
       if (maxDateForPriority.get(new Integer(i)) == null) {
         priorityDates[i - 1] = startDate;
       } else {
@@ -98,6 +107,32 @@ public class TimeScheduleWriter {
       }
     }
     return priorityDates;
+  }
+
+  /**
+   *
+   * @param issueKeys
+   * @param graph
+   * @return max end date from all issueKeys or dependents or subtasks
+   */
+  private static Date maxDisplayDate(Iterable<IssueTree> issueKeys, IssueDigraph graph) {
+    Date maxEndDate = null;
+    for (Iterator<IssueTree> issueIter = issueKeys.iterator(); issueIter.hasNext(); ) {
+      IssueTree issue = issueIter.next();
+      TimeSchedule.IssueSchedule<IssueTree> sched = graph.getIssueSchedule(issue.getKey());
+      if (maxEndDate == null || sched.getEndDate().after(maxEndDate)) {
+        maxEndDate = sched.getEndDate();
+      }
+      Date depMax = maxDisplayDate(issue.getDependents(), graph);
+      if (depMax != null && depMax.after(maxEndDate)) {
+        maxEndDate = depMax;
+      }
+      Date subMax = maxDisplayDate(issue.getSubtasks(), graph);
+      if (subMax != null && subMax.after(maxEndDate)) {
+        maxEndDate = subMax;
+      }
+    }
+    return maxEndDate;
   }
 
   public static void writeIssueTable
@@ -113,23 +148,18 @@ public class TimeScheduleWriter {
     out.write("<tbody>\n");
 
     // calculate priority complete dates
-    Date[] priorityDates =
-        priorityCompleteDates(dPrefs.showIssues, graph, sPrefs.getStartTime(), dPrefs);
+    Date[] priorityDates = priorityCompleteDates(dPrefs.showIssues, graph, sPrefs.getStartTime(), dPrefs);
 
     // find the maximum date for this display
-    Date maxEndDate = sPrefs.getStartTime();
-    // (At one point we used getEndDate() from all the issue scheduled,
-    //  but that ended up showing dates past the end of displayed issues.)
-    for (int i = 0; i < priorityDates.length; i++) {
-      if (priorityDates[i].after(maxEndDate)) {
-        maxEndDate = priorityDates[i];
-      }
+    Date maxEndDate = maxDisplayDate(issuesFromKeys(dPrefs.showIssues, graph), graph);
+    if (maxEndDate == null) {
+      maxEndDate = sPrefs.getStartTime();
     }
 
     // These two together add up to the total indentation.
     int maxAllPredecessorDist = 0;
     int maxAllSuccessorDist = 0;
-    Map<String, List<TimeScheduleSearch.DependencyBranch<IssueTree>>> allPredBranches = new TreeMap<>();
+    Map<String, List<TimeScheduleSearch.DependencyBranch<IssueTree>>> allPredBranches = new TreeMap();
     if (dPrefs.showHierarchically) {
       for (int i = 0; i < dPrefs.showIssues.size(); i++) {
         IssueTree tree = graph.getIssueTree(dPrefs.showIssues.get(i));

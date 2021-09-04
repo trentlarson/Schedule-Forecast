@@ -29,7 +29,6 @@ public class IssueDigraph {
 
   private TimeScheduleCreatePreferences prefs;
   private Date loadedDate = new Date();
-  private int maxPriority = -1;
   
   /**
      @param issueSchedules_ maps issue key to IssueSchedule object
@@ -118,23 +117,21 @@ public class IssueDigraph {
   public Date getLoadedDate() {
     return loadedDate;
   }
+
   /**
-   * Return the maximum priority found in all the issues, calculating it if this is the first call.
-   * 
-   * Remember: priorities are 1-based.  If no priorities exist, a -1 is returned.
+   * @return minimum & maximum priorities found in all the issues (recalculating each time)
    * 
    * @see IssueWorkDetail#getPriority()
    */
   public int getMaxPriority() {
-    if (maxPriority == -1) {
-      for (Iterator<TimeSchedule.IssueSchedule<IssueTree>> iter = getIssueSchedules().values().iterator(); iter.hasNext(); ) {
-        TimeSchedule.IssueSchedule<IssueTree> schedule = iter.next();
-        if (maxPriority < schedule.getIssue().getPriority()) {
-          maxPriority = schedule.getIssue().getPriority();
-        }
+    int max = 0;
+    for (Iterator<TimeSchedule.IssueSchedule<IssueTree>> iter = issueSchedules.values().iterator(); iter.hasNext(); ) {
+      TimeSchedule.IssueSchedule<IssueTree> schedule = iter.next();
+      if (schedule.getIssue().getPriority() > max) {
+        max = schedule.getIssue().getPriority();
       }
     }
-    return maxPriority;
+    return max;
   }
   public TimeScheduleCreatePreferences getTimeScheduleCreatePreferences() {
     return prefs;

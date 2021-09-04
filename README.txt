@@ -19,8 +19,10 @@ mvn package; java -classpath target/forecast-core-0.1-SNAPSHOT.jar:lib/commons-l
 - Run the time-graphing server (in core):
 mvn package; java -classpath target/forecast-core-$VERSION.jar:lib/commons-logging-1.1.1.jar:lib/hibernate-3.2.6.ga.jar:lib/hsqldb-1.8.0.jar:lib/log4j-1.2.15.jar:$HOME/.m2/repository/org/eclipse/jetty/jetty-server/9.4.3.v20170317/jetty-server-9.4.3.v20170317.jar:$HOME/.m2/repository/org/eclipse/jetty/jetty-servlet/9.4.3.v20170317/jetty-servlet-9.4.3.v20170317.jar:$HOME/.m2/repository/org/eclipse/jetty/jetty-util/9.4.3.v20170317/jetty-util-9.4.3.v20170317.jar:$HOME/.m2/repository/org/eclipse/jetty/jetty-http/9.4.3.v20170317/jetty-http-9.4.3.v20170317.jar:$HOME/.m2/repository/org/eclipse/jetty/jetty-io/9.4.3.v20170317/jetty-io-9.4.3.v20170317.jar:$HOME/.m2/repository/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0.jar:$HOME/.m2/repository/com/google/code/gson/gson/2.8.6/gson-2.8.6.jar com.trentlarson.forecast.core.helper.JettyServer
 - Test it
-curl -X POST localhost:8090/display -d '{issues:[{"key":"issue_6", "summary":"Run this issue", "dueDate":"2020-09-17"}]}'
-curl -X POST localhost:8090/graph -d '{issues:[{"key":"issue_6", "summary":"Run this issue", "dueDate":"2020-09-17"}]}'
+export SERVER=localhost:8090
+#export SERVER=http://ec2-3-86-70-139.compute-1.amazonaws.com:8090
+curl -X POST $SERVER/display -d '{issues:[{"key":"issue_6", "summary":"Run this issue", "dueDate":"2020-09-17"}]}'
+curl -X POST $SERVER/graph -d '{issues:[{"key":"issue_6", "summary":"Run this issue", "dueDate":"2020-09-17"}]}'
 
 - Dockerize
 docker build -t schedule-forecast:$VERSION .
@@ -30,6 +32,7 @@ docker run --name caster -p 8090:8090 -it schedule-forecast:$VERSION
 
 - Push to a repository, eg. GitHub's ghcr.io
 echo $PERSONAL_ACCESS_TOKEN | docker login ghcr.io -u trentlarson --password-stdin
+# tag repo, then update version in Dockerfile
 docker image tag schedule-forecast:$VERSION ghcr.io/trentlarson/schedule-forecast:$VERSION
 docker push ghcr.io/trentlarson/schedule-forecast:$VERSION
 
