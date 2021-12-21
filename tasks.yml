@@ -1,3 +1,5 @@
-- verify that subtask priorities come before the supertask's successors
-- purify HTML (eg. console complaints from React on distrinet)
-- refactor precursors: remove either those or dependents from InputTree(?)
+- .5 make TimeScheduleWriter.priorityCompleteDates recurse id:recurse-priority
+- 02 type:bug task with priority but non-priority subtasks does not get prioritized correctly; may be fixed by ref:#recurse-priority
+- 01 verify that subtask priorities come before the supertask's successors
+- 01 purify HTML (eg. console complaints from React on distrinet)
+- 01 refactor precursors: remove either those or dependents from InputTree(?)
